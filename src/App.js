@@ -20,7 +20,7 @@ class App extends Component {
     this.container = document.createElement("div");
     document.body.appendChild(this.container);
     this.camera = new THREE.PerspectiveCamera(
-      35,
+      40,
       window.innerWidth / window.innerHeight,
       0.25,
       20
@@ -56,8 +56,43 @@ class App extends Component {
         const envMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
 
         // Models
-        const Type = new GLTFLoader().setPath("/models/");
-        Type.load("contact_type.glb", function(gltf) {
+        const logoType = new GLTFLoader().setPath("/models/");
+        logoType.load("Logo_Type.glb", function(gltf) {
+          gltf.scene.traverse(function(child) {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial({
+                envMap: envMap,
+                color: 0x000000,
+                metalness: 1,
+                roughness: 0.2
+              });
+            }
+          });
+          gltf.scene.position.x = -2.5;
+          scene.add(gltf.scene);
+        });
+
+        const logoIcon = new GLTFLoader().setPath("/models/");
+        logoIcon.load("Logo_Icon.glb", function(gltf) {
+          gltf.scene.traverse(function(child) {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial({
+                envMap: envMap,
+                envMapIntensity: 1.5,
+                emissive: 0xfff000,
+                emissiveIntensity: 0.2,
+                color: 0xfddf73,
+                metalness: 1,
+                roughness: 0.2
+              });
+            }
+          });
+          gltf.scene.position.x = -2.5;
+          scene.add(gltf.scene);
+        });
+
+        const contactType = new GLTFLoader().setPath("/models/");
+        contactType.load("Contact_Button_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial({
@@ -71,8 +106,8 @@ class App extends Component {
           scene.add(gltf.scene);
         });
 
-        const Icon = new GLTFLoader().setPath("/models/");
-        Icon.load("contact_Icon.glb", function(gltf) {
+        const contactIcon = new GLTFLoader().setPath("/models/");
+        contactIcon.load("Contact_Button_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial({
@@ -88,6 +123,42 @@ class App extends Component {
           });
           scene.add(gltf.scene);
         });
+
+        const aboutType = new GLTFLoader().setPath("/models/");
+        aboutType.load("About_Button_Type.glb", function(gltf) {
+          gltf.scene.traverse(function(child) {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial({
+                envMap: envMap,
+                color: 0x000000,
+                metalness: 1,
+                roughness: 0.2
+              });
+            }
+          });
+          gltf.scene.position.x = -1;
+          scene.add(gltf.scene);
+        });
+
+        const aboutIcon = new GLTFLoader().setPath("/models/");
+        aboutIcon.load("About_Button_Icon.glb", function(gltf) {
+          gltf.scene.traverse(function(child) {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial({
+                envMap: envMap,
+                envMapIntensity: 1.5,
+                emissive: 0xfff000,
+                emissiveIntensity: 0.2,
+                color: 0xfddf73,
+                metalness: 1,
+                roughness: 0.2
+              });
+            }
+          });
+          gltf.scene.position.x = -1;
+          scene.add(gltf.scene);
+        });
+
         pmremGenerator.dispose();
         pmremCubeUVPacker.dispose();
 
@@ -98,10 +169,6 @@ class App extends Component {
 
   animate = () => {
     requestAnimationFrame(this.animate);
-    if (this.Icon && this.Type) {
-      this.Icon.rotation.y += 0.005;
-      this.Type.rotation.y += 0.005;
-    }
     renderer.render(scene, this.camera);
   };
 
