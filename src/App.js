@@ -62,10 +62,10 @@ class App extends Component {
         // Models
         const typeParams = {
           envMap: envMap,
-          color: 0x261f02,
-          // color: 0x000000,
+          envMapIntensity: 5,
+          color: 0x000000,
           metalness: 1,
-          roughness: 0.2
+          roughness: 0.1
         };
         const iconParams = {
           envMap: envMap,
@@ -89,7 +89,7 @@ class App extends Component {
         });
 
         const logoIcon = new GLTFLoader().setPath("/models/");
-        logoIcon.load("Logo_Icon.glb", function(gltf) {
+        logoIcon.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
@@ -110,7 +110,7 @@ class App extends Component {
         });
 
         const contactIcon = new GLTFLoader().setPath("/models/");
-        contactIcon.load("Contact_Button_Icon.glb", function(gltf) {
+        contactIcon.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
@@ -131,7 +131,7 @@ class App extends Component {
         });
 
         const aboutIcon = new GLTFLoader().setPath("/models/");
-        aboutIcon.load("About_Button_Icon.glb", function(gltf) {
+        aboutIcon.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
@@ -153,7 +153,7 @@ class App extends Component {
         });
 
         const projectsIcon = new GLTFLoader().setPath("/models/");
-        projectsIcon.load("Projects_Button_Icon.glb", function(gltf) {
+        projectsIcon.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
@@ -175,7 +175,7 @@ class App extends Component {
         });
 
         const clientIcon = new GLTFLoader().setPath("/models/");
-        clientIcon.load("Client_Button_Icon.glb", function(gltf) {
+        clientIcon.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
