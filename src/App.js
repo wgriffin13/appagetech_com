@@ -62,7 +62,8 @@ class App extends Component {
         // Models
         const typeParams = {
           envMap: envMap,
-          color: 0x000000,
+          color: 0x261f02,
+          // color: 0x000000,
           metalness: 1,
           roughness: 0.2
         };
@@ -162,6 +163,27 @@ class App extends Component {
           scene.add(gltf.scene);
         });
 
+        const clientType = new GLTFLoader().setPath("/models/");
+        clientType.load("Client_Button_Type.glb", function(gltf) {
+          gltf.scene.traverse(function(child) {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial(typeParams);
+            }
+          });
+          gltf.scene.position.x = 1.94;
+          scene.add(gltf.scene);
+        });
+
+        const clientIcon = new GLTFLoader().setPath("/models/");
+        clientIcon.load("Client_Button_Icon.glb", function(gltf) {
+          gltf.scene.traverse(function(child) {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial(iconParams);
+            }
+          });
+          gltf.scene.position.x = 1.94;
+          scene.add(gltf.scene);
+        });
         pmremGenerator.dispose();
         pmremCubeUVPacker.dispose();
 
