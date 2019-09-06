@@ -183,6 +183,7 @@ class Water extends Component {
             depthBuffer: false
         } );
     }
+    
     fillTexture = ( texture ) => {
         var waterMaxHeight = 10;
         function noise( x, y ) {
