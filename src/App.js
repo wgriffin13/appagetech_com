@@ -23,9 +23,10 @@ class App extends Component {
       40,
       window.innerWidth / window.innerHeight,
       0.25,
-      20
+      3000
     );
-    this.camera.position.z = 7;
+    //this.camera.position.z = 7;
+    this.camera.position.set( 0, 2, 20 );
     scene = new THREE.Scene();
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -68,6 +69,7 @@ class App extends Component {
               });
             }
           });
+          gltf.scene.position.y = 2;
           gltf.scene.position.x = -2.5;
           scene.add(gltf.scene);
         });
@@ -87,6 +89,7 @@ class App extends Component {
               });
             }
           });
+          gltf.scene.position.y = 2;
           gltf.scene.position.x = -2.5;
           scene.add(gltf.scene);
         });
@@ -103,6 +106,7 @@ class App extends Component {
               });
             }
           });
+          gltf.scene.position.y = 2;
           scene.add(gltf.scene);
         });
 
@@ -121,6 +125,7 @@ class App extends Component {
               });
             }
           });
+          gltf.scene.position.y = 2;
           scene.add(gltf.scene);
         });
 
@@ -136,6 +141,7 @@ class App extends Component {
               });
             }
           });
+          gltf.scene.position.y = 2;
           gltf.scene.position.x = -1;
           scene.add(gltf.scene);
         });
@@ -155,6 +161,7 @@ class App extends Component {
               });
             }
           });
+          gltf.scene.position.y = 2;
           gltf.scene.position.x = -1;
           scene.add(gltf.scene);
         });
