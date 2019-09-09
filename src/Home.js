@@ -10,12 +10,12 @@ import { GUI } from "three/examples/jsm/libs/dat.gui.module.js";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
 
-let cubeGenerator;
+let cubeGenerator, envMap;
 
 // Texture width for simulation
-let WIDTH = 256;
+let WIDTH = window.innerWidth;
 // Water size in system units
-let BOUNDS = 256;
+let BOUNDS = window.innerHeight;
 var BOUNDS_HALF = BOUNDS * 0.5;
 var controls;
 var camera, scene, renderer;
@@ -37,8 +37,8 @@ var spheres = [];
 var spheresEnabled = true;
 var simplex = new SimplexNoise();
 let effectController = {
-  mouseSize: 20.0,
-  viscosity: 0.98,
+  mouseSize: 10.0,
+  viscosity: 0.953,
   spheresEnabled: spheresEnabled
 };
 
@@ -108,8 +108,8 @@ class Home extends Component {
     window.addEventListener("resize", this.onWindowResize, false);
     var gui = new GUI();
     effectController = {
-      mouseSize: 20.0,
-      viscosity: 0.98,
+      mouseSize: 10.0,
+      viscosity: 0.953,
       spheresEnabled: spheresEnabled
     };
     gui
@@ -133,7 +133,8 @@ class Home extends Component {
   };
 
   initWater = () => {
-    var materialColor = 0x0040c0;
+    var materialColor = 0x1c2f55;
+    // var materialColor = 0x0040c0;
     var geometry = new THREE.PlaneBufferGeometry(
       BOUNDS,
       BOUNDS,
@@ -156,6 +157,7 @@ class Home extends Component {
     material.color = new THREE.Color(materialColor);
     material.specular = new THREE.Color(0x111111);
     material.shininess = 50;
+    // material.envMap = envMap;
     // Sets the uniforms with the material values
     material.uniforms["diffuse"].value = material.color;
     material.uniforms["specular"].value = material.specular;
@@ -351,7 +353,7 @@ class Home extends Component {
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
       .setPath("textures/")
-      .load("diyHdri_01c.hdr", function(texture) {
+      .load("diyHdri_01o.hdr", function(texture) {
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
           resolution: 1024
         });
@@ -364,7 +366,7 @@ class Home extends Component {
           pmremGenerator.cubeLods
         );
         pmremCubeUVPacker.update(renderer);
-        let envMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
+        envMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
         envMap.rotation = 180;
 
         // Models
@@ -384,7 +386,8 @@ class Home extends Component {
           metalness: 1,
           roughness: 0.2
         };
-        const yPos = 500;
+        const yPos = 235;
+        const xRot = Math.PI / -2;
 
         // let navGroup = new THREE.Group();
 
@@ -397,6 +400,7 @@ class Home extends Component {
           });
           gltf.scene.position.x = -2.5;
           gltf.scene.position.y = yPos;
+          gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
           // navGroup.add(gltf.scene);
         });
@@ -410,6 +414,7 @@ class Home extends Component {
           });
           gltf.scene.position.x = -2.5;
           gltf.scene.position.y = yPos;
+          gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
           // navGroup.add(gltf.scene);
         });
@@ -423,6 +428,7 @@ class Home extends Component {
           });
           scene.add(gltf.scene);
           gltf.scene.position.y = yPos;
+          gltf.scene.rotation.x = xRot;
           // navGroup.add(gltf.scene);
         });
 
@@ -435,6 +441,7 @@ class Home extends Component {
           });
           scene.add(gltf.scene);
           gltf.scene.position.y = yPos;
+          gltf.scene.rotation.x = xRot;
           // navGroup.add(gltf.scene);
         });
 
@@ -447,6 +454,7 @@ class Home extends Component {
           });
           gltf.scene.position.x = -0.97;
           gltf.scene.position.y = yPos;
+          gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
           // navGroup.add(gltf.scene);
         });
@@ -460,6 +468,7 @@ class Home extends Component {
           });
           gltf.scene.position.x = -0.97;
           gltf.scene.position.y = yPos;
+          gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
           // navGroup.add(gltf.scene);
         });
@@ -473,6 +482,7 @@ class Home extends Component {
           });
           gltf.scene.position.x = 0.97;
           gltf.scene.position.y = yPos;
+          gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
           // navGroup.add(gltf.scene);
         });
@@ -486,6 +496,7 @@ class Home extends Component {
           });
           gltf.scene.position.x = 0.97;
           gltf.scene.position.y = yPos;
+          gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
           // navGroup.add(gltf.scene);
         });
@@ -499,6 +510,7 @@ class Home extends Component {
           });
           gltf.scene.position.x = 1.94;
           gltf.scene.position.y = yPos;
+          gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
           // navGroup.add(gltf.scene);
         });
@@ -512,6 +524,7 @@ class Home extends Component {
           });
           gltf.scene.position.x = 1.94;
           gltf.scene.position.y = yPos;
+          gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
           // navGroup.add(gltf.scene);
         });
