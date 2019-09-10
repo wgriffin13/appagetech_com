@@ -93,9 +93,9 @@ class Home extends Component {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.gammaOutput = true;
     this.container.appendChild(renderer.domElement);
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0, 215);
-    controls.update();
+    // controls = new OrbitControls(camera, renderer.domElement);
+    // controls.target.set(0, 0, 215);
+    // controls.update();
     window.addEventListener("resize", this.onWindowResize, false);
     document.addEventListener("mousemove", this.onDocumentMouseMove, false);
     document.addEventListener("touchstart", this.onDocumentTouchStart, false);
