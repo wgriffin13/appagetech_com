@@ -40,7 +40,7 @@ class Home extends Component {
   componentDidMount() {
     this.sceneSetup();
     this.loadAssets();
-    this.lighting();
+    // this.lighting();
   }
 
   lighting = () => {
@@ -50,31 +50,28 @@ class Home extends Component {
     // light1.position.set(20, 500, 100);
     // scene.add(sun2);
     const spotLight1 = new THREE.SpotLight(0xffffff, 3, 0, Math.PI / 3);
-    spotLight1.position.set(0, 20, -500);
+    spotLight1.position.set(0, 500, 20);
     scene.add(spotLight1);
 
     RectAreaLightUniformsLib.init();
     // Red
     this.rectLight3 = new THREE.RectAreaLight(0xfb3f3f, 1, 8, 50);
     // this.rectLight3.position.x = 8;
-    // this.rectLight3.position.z = 12;
-    this.rectLight3.position.y = 230;
-    this.rectLight3.rotation.x = Math.PI / -2;
-    // this.rectLight3.lookAt(0, 0, 0);
+    this.rectLight3.position.z = 230;
+    // this.rectLight3.position.y = 230;
+
+    this.rectLight3.lookAt(0, 0, 215);
     scene.add(this.rectLight3);
     const helper3 = new THREE.RectAreaLightHelper(this.rectLight3);
     this.rectLight3.add(helper3);
     //Green 2
     this.rectLight5 = new THREE.RectAreaLight(0xff009c, 1, 5, 50);
-    this.rectLight5.position.set(12, 230, 0);
-    this.rectLight5.rotation.x = Math.PI / -2;
-    // this.rectLight5.lookAt(0, 0, 0);
+    this.rectLight5.position.set(12, 0, 230);
+
+    this.rectLight5.lookAt(0, 0, 215);
     const helper5 = new THREE.RectAreaLightHelper(this.rectLight5);
     this.rectLight5.add(helper5);
     scene.add(this.rectLight5);
-
-    // var light = new THREE.HemisphereLight(0xff00de, 0xff0066, 5);
-    // scene.add(light);
   };
 
   sceneSetup = () => {
@@ -83,13 +80,13 @@ class Home extends Component {
     scene = new THREE.Scene();
 
     camera = new THREE.PerspectiveCamera(
-      45,
+      25,
       window.innerWidth / window.innerHeight,
-      0.25,
+      1,
       500
     );
-    camera.position.set(0, 215, 0);
-    camera.lookAt(scene.position);
+    camera.position.set(0, 0, 225);
+    camera.lookAt(0, 0, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -97,7 +94,7 @@ class Home extends Component {
     renderer.gammaOutput = true;
     this.container.appendChild(renderer.domElement);
     controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 210, 0);
+    controls.target.set(0, 0, 215);
     controls.update();
     window.addEventListener("resize", this.onWindowResize, false);
     document.addEventListener("mousemove", this.onDocumentMouseMove, false);
@@ -121,7 +118,7 @@ class Home extends Component {
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
       .setPath("textures/")
-      .load("diyHdri_02d.hdr", function(texture) {
+      .load("diyHdri_04d.hdr", function(texture) {
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
           resolution: 1024
         });
@@ -148,15 +145,15 @@ class Home extends Component {
         const iconParams = {
           envMap: hdrEnvMap,
           envMapIntensity: 1,
-          emissive: 0xfff000,
-          emissiveIntensity: 0.2,
-          color: 0xfddf73,
+          // emissive: 0xfff000,
+          // emissiveIntensity: 0.2,
+          color: 0xfad44b,
           metalness: 0.95,
-          roughness: 0.2
+          roughness: 0.1
         };
-        const yPos = 210;
-        const zPos = -0.2;
-        const xRot = Math.PI / -2;
+        const yPos = 0;
+        const zPos = 215;
+        const zRot = null;
 
         const logoType = new GLTFLoader().setPath("/models/");
         logoType.load("Logo_Type.glb", function(gltf) {
@@ -168,7 +165,7 @@ class Home extends Component {
           gltf.scene.position.x = -2.2;
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
-          gltf.scene.rotation.x = xRot;
+          gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
         });
 
@@ -182,7 +179,7 @@ class Home extends Component {
           gltf.scene.position.x = -2.2;
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
-          gltf.scene.rotation.x = xRot;
+          gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
         });
 
@@ -196,7 +193,7 @@ class Home extends Component {
           scene.add(gltf.scene);
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
-          gltf.scene.rotation.x = xRot;
+          gltf.scene.rotation.z = zRot;
         });
 
         const contactIcon = new GLTFLoader().setPath("/models/");
@@ -209,7 +206,7 @@ class Home extends Component {
           scene.add(gltf.scene);
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
-          gltf.scene.rotation.x = xRot;
+          gltf.scene.rotation.z = zRot;
         });
 
         const aboutType = new GLTFLoader().setPath("/models/");
@@ -222,7 +219,7 @@ class Home extends Component {
           gltf.scene.position.x = -0.97;
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
-          gltf.scene.rotation.x = xRot;
+          gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
         });
 
@@ -236,7 +233,7 @@ class Home extends Component {
           gltf.scene.position.x = -0.97;
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
-          gltf.scene.rotation.x = xRot;
+          gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
         });
 
@@ -250,7 +247,7 @@ class Home extends Component {
           gltf.scene.position.x = 0.97;
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
-          gltf.scene.rotation.x = xRot;
+          gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
         });
 
@@ -264,7 +261,7 @@ class Home extends Component {
           gltf.scene.position.x = 0.97;
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
-          gltf.scene.rotation.x = xRot;
+          gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
         });
 
@@ -278,7 +275,7 @@ class Home extends Component {
           gltf.scene.position.x = 1.94;
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
-          gltf.scene.rotation.x = xRot;
+          gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
         });
 
@@ -292,7 +289,7 @@ class Home extends Component {
           gltf.scene.position.x = 1.94;
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
-          gltf.scene.rotation.x = xRot;
+          gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
         });
 
@@ -338,7 +335,7 @@ class Home extends Component {
           material.defines.BOUNDS = BOUNDS.toFixed(1);
           waterUniforms = material.uniforms;
           waterMesh = new THREE.Mesh(geometry, material);
-          waterMesh.rotation.x = -Math.PI / 2;
+          waterMesh.rotation.x = Math.PI / 2;
           waterMesh.matrixAutoUpdate = false;
           waterMesh.updateMatrix();
           scene.add(waterMesh);
@@ -348,7 +345,7 @@ class Home extends Component {
             geometryRay,
             new THREE.MeshBasicMaterial({ color: 0xffffff, visible: false })
           );
-          meshRay.rotation.x = -Math.PI / 2;
+          // meshRay.rotation.x = Math.PI / 2;
           meshRay.matrixAutoUpdate = false;
           meshRay.updateMatrix();
           scene.add(meshRay);
