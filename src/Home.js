@@ -9,13 +9,14 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GUI } from "three/examples/jsm/libs/dat.gui.module.js";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
+import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 
-let cubeGenerator, envMap;
+let cubeGenerator, hdrEnvMap;
 
 // Texture width for simulation
 let WIDTH = 512;
 // Water size in system units
-let BOUNDS = 512;
+let BOUNDS = 366;
 var BOUNDS_HALF = BOUNDS * 0.5;
 var controls;
 var camera, scene, renderer;
@@ -32,22 +33,49 @@ var readWaterLevelShader;
 var readWaterLevelRenderTarget;
 var readWaterLevelImage;
 var waterNormal = new THREE.Vector3();
-var NUM_SPHERES = 5;
-var spheres = [];
-var spheresEnabled = true;
+
 var simplex = new SimplexNoise();
-let effectController = {
-  mouseSize: 20.0,
-  viscosity: 0.98,
-  spheresEnabled: spheresEnabled
-};
 
 class Home extends Component {
   componentDidMount() {
     this.sceneSetup();
-    // this.animate();
     this.loadAssets();
+    this.lighting();
   }
+
+  lighting = () => {
+    // const light1 = new THREE.DirectionalLight(0xffffff, 1.0);
+    // scene.add(light1);
+    // var sun2 = new THREE.DirectionalLight(0xffffff, 0.6);
+    // light1.position.set(20, 500, 100);
+    // scene.add(sun2);
+    const spotLight1 = new THREE.SpotLight(0xffffff, 3, 0, Math.PI / 3);
+    spotLight1.position.set(0, 20, -500);
+    scene.add(spotLight1);
+
+    RectAreaLightUniformsLib.init();
+    // Red
+    this.rectLight3 = new THREE.RectAreaLight(0xfb3f3f, 1, 8, 50);
+    // this.rectLight3.position.x = 8;
+    // this.rectLight3.position.z = 12;
+    this.rectLight3.position.y = 230;
+    this.rectLight3.rotation.x = Math.PI / -2;
+    // this.rectLight3.lookAt(0, 0, 0);
+    scene.add(this.rectLight3);
+    const helper3 = new THREE.RectAreaLightHelper(this.rectLight3);
+    this.rectLight3.add(helper3);
+    //Green 2
+    this.rectLight5 = new THREE.RectAreaLight(0xff009c, 1, 5, 50);
+    this.rectLight5.position.set(12, 230, 0);
+    this.rectLight5.rotation.x = Math.PI / -2;
+    // this.rectLight5.lookAt(0, 0, 0);
+    const helper5 = new THREE.RectAreaLightHelper(this.rectLight5);
+    this.rectLight5.add(helper5);
+    scene.add(this.rectLight5);
+
+    // var light = new THREE.HemisphereLight(0xff00de, 0xff0066, 5);
+    // scene.add(light);
+  };
 
   sceneSetup = () => {
     this.container = document.createElement("div");
@@ -60,23 +88,17 @@ class Home extends Component {
       0.25,
       500
     );
-    camera.position.set(0, 240, 0);
+    camera.position.set(0, 215, 0);
     camera.lookAt(scene.position);
 
-    var sun = new THREE.DirectionalLight(0xffffff, 1.0);
-    sun.position.set(300, 400, 175);
-    scene.add(sun);
-    var sun2 = new THREE.DirectionalLight(0xffffff, 0.6);
-    sun2.position.set(-100, 350, -200);
-    scene.add(sun2);
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.gammaOutput = true;
     this.container.appendChild(renderer.domElement);
-    // controls = new OrbitControls(camera, renderer.domElement);
-    // controls.target.set(0, 0, 0);
-    // controls.update();
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 210, 0);
+    controls.update();
     window.addEventListener("resize", this.onWindowResize, false);
     document.addEventListener("mousemove", this.onDocumentMouseMove, false);
     document.addEventListener("touchstart", this.onDocumentTouchStart, false);
@@ -93,34 +115,13 @@ class Home extends Component {
       false
     );
     window.addEventListener("resize", this.onWindowResize, false);
-    var gui = new GUI();
-    effectController = {
-      mouseSize: 20.0,
-      viscosity: 0.98,
-      spheresEnabled: spheresEnabled
-    };
-    gui
-      .add(effectController, "mouseSize", 1.0, 100.0, 1.0)
-      .onChange(this.valuesChanger);
-    gui
-      .add(effectController, "viscosity", 0.9, 0.999, 0.001)
-      .onChange(this.valuesChanger);
-    gui
-      .add(effectController, "spheresEnabled", 0, 1, 1)
-      .onChange(this.valuesChanger);
-    var buttonSmooth = {
-      smoothWater: function() {
-        this.smoothWater();
-      }
-    };
-    gui.add(buttonSmooth, "smoothWater");
   };
 
   loadAssets = () => {
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
       .setPath("textures/")
-      .load("diyHdri_01c.hdr", function(texture) {
+      .load("diyHdri_02d.hdr", function(texture) {
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
           resolution: 1024
         });
@@ -133,30 +134,29 @@ class Home extends Component {
           pmremGenerator.cubeLods
         );
         pmremCubeUVPacker.update(renderer);
-        envMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
-        envMap.rotation = 180;
+        hdrEnvMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
+        // hdrEnvMap.rotation = 180;
 
         // Models
         const typeParams = {
-          envMap: envMap,
+          envMap: hdrEnvMap,
           envMapIntensity: 5,
           color: 0x000000,
           metalness: 1,
           roughness: 0
         };
         const iconParams = {
-          envMap: envMap,
-          envMapIntensity: 1.5,
+          envMap: hdrEnvMap,
+          envMapIntensity: 1,
           emissive: 0xfff000,
           emissiveIntensity: 0.2,
           color: 0xfddf73,
-          metalness: 1,
+          metalness: 0.95,
           roughness: 0.2
         };
-        const yPos = 235;
+        const yPos = 210;
+        const zPos = -0.2;
         const xRot = Math.PI / -2;
-
-        // let navGroup = new THREE.Group();
 
         const logoType = new GLTFLoader().setPath("/models/");
         logoType.load("Logo_Type.glb", function(gltf) {
@@ -165,11 +165,11 @@ class Home extends Component {
               child.material = new THREE.MeshStandardMaterial(typeParams);
             }
           });
-          gltf.scene.position.x = -2.5;
+          gltf.scene.position.x = -2.2;
           gltf.scene.position.y = yPos;
+          gltf.scene.position.z = zPos;
           gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
-          // navGroup.add(gltf.scene);
         });
 
         const logoIcon = new GLTFLoader().setPath("/models/");
@@ -179,11 +179,11 @@ class Home extends Component {
               child.material = new THREE.MeshStandardMaterial(iconParams);
             }
           });
-          gltf.scene.position.x = -2.5;
+          gltf.scene.position.x = -2.2;
           gltf.scene.position.y = yPos;
+          gltf.scene.position.z = zPos;
           gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
-          // navGroup.add(gltf.scene);
         });
 
         const contactType = new GLTFLoader().setPath("/models/");
@@ -195,8 +195,8 @@ class Home extends Component {
           });
           scene.add(gltf.scene);
           gltf.scene.position.y = yPos;
+          gltf.scene.position.z = zPos;
           gltf.scene.rotation.x = xRot;
-          // navGroup.add(gltf.scene);
         });
 
         const contactIcon = new GLTFLoader().setPath("/models/");
@@ -208,8 +208,8 @@ class Home extends Component {
           });
           scene.add(gltf.scene);
           gltf.scene.position.y = yPos;
+          gltf.scene.position.z = zPos;
           gltf.scene.rotation.x = xRot;
-          // navGroup.add(gltf.scene);
         });
 
         const aboutType = new GLTFLoader().setPath("/models/");
@@ -221,9 +221,9 @@ class Home extends Component {
           });
           gltf.scene.position.x = -0.97;
           gltf.scene.position.y = yPos;
+          gltf.scene.position.z = zPos;
           gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
-          // navGroup.add(gltf.scene);
         });
 
         const aboutIcon = new GLTFLoader().setPath("/models/");
@@ -235,9 +235,9 @@ class Home extends Component {
           });
           gltf.scene.position.x = -0.97;
           gltf.scene.position.y = yPos;
+          gltf.scene.position.z = zPos;
           gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
-          // navGroup.add(gltf.scene);
         });
 
         const projectsType = new GLTFLoader().setPath("/models/");
@@ -249,9 +249,9 @@ class Home extends Component {
           });
           gltf.scene.position.x = 0.97;
           gltf.scene.position.y = yPos;
+          gltf.scene.position.z = zPos;
           gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
-          // navGroup.add(gltf.scene);
         });
 
         const projectsIcon = new GLTFLoader().setPath("/models/");
@@ -263,9 +263,9 @@ class Home extends Component {
           });
           gltf.scene.position.x = 0.97;
           gltf.scene.position.y = yPos;
+          gltf.scene.position.z = zPos;
           gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
-          // navGroup.add(gltf.scene);
         });
 
         const clientType = new GLTFLoader().setPath("/models/");
@@ -277,9 +277,9 @@ class Home extends Component {
           });
           gltf.scene.position.x = 1.94;
           gltf.scene.position.y = yPos;
+          gltf.scene.position.z = zPos;
           gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
-          // navGroup.add(gltf.scene);
         });
 
         const clientIcon = new GLTFLoader().setPath("/models/");
@@ -291,15 +291,15 @@ class Home extends Component {
           });
           gltf.scene.position.x = 1.94;
           gltf.scene.position.y = yPos;
+          gltf.scene.position.z = zPos;
           gltf.scene.rotation.x = xRot;
           scene.add(gltf.scene);
-          // navGroup.add(gltf.scene);
         });
-        // navGroup.position.set(0, 20, 0);
 
         const initWater = () => {
-          var materialColor = 0x00000;
-          // var materialColor = 0x0040c0;
+          // var materialColor = 0x00000;
+          var materialColor = 0x010204;
+          // var materialColor = 0x020202;
           var geometry = new THREE.PlaneBufferGeometry(
             BOUNDS,
             BOUNDS,
@@ -321,13 +321,12 @@ class Home extends Component {
           material.lights = true;
           // Material attributes from THREE.MeshPhongMaterial
           material.color = new THREE.Color(materialColor);
-          material.specular = new THREE.Color(0x111111);
-          material.shininess = 50;
+          material.specular = new THREE.Color(0xffffff);
+          material.shininess = 100;
 
-          material.env = envMap;
+          // material.envMap = hdrEnvMap;
           // Sets the uniforms with the material values
           material.uniforms["diffuse"].value = material.color;
-          material.uniforms["envMap"].value = material.envMap;
           material.uniforms["specular"].value = material.specular;
           material.uniforms["shininess"].value = Math.max(
             material.shininess,
@@ -368,9 +367,9 @@ class Home extends Component {
           heightmapVariable.material.uniforms["mousePos"] = {
             value: new THREE.Vector2(10000, 10000)
           };
-          heightmapVariable.material.uniforms["mouseSize"] = { value: 20.0 };
+          heightmapVariable.material.uniforms["mouseSize"] = { value: 10.0 };
           heightmapVariable.material.uniforms["viscosityConstant"] = {
-            value: 0.98
+            value: 0.93
           };
           heightmapVariable.material.uniforms["heightCompensation"] = {
             value: 0
@@ -437,19 +436,6 @@ class Home extends Component {
           }
         };
 
-        const valuesChanger = () => {
-          heightmapVariable.material.uniforms["mouseSize"].value =
-            effectController.mouseSize;
-          heightmapVariable.material.uniforms["viscosityConstant"].value =
-            effectController.viscosity;
-          spheresEnabled = effectController.spheresEnabled;
-          for (var i = 0; i < NUM_SPHERES; i++) {
-            if (spheres[i]) {
-              spheres[i].visible = spheresEnabled;
-            }
-          }
-        };
-
         const animate = () => {
           requestAnimationFrame(animate);
           sceneRender();
@@ -484,14 +470,13 @@ class Home extends Component {
           renderer.render(scene, camera);
         };
 
-        // fillTexture();
         initWater();
         animate();
         pmremGenerator.dispose();
         pmremCubeUVPacker.dispose();
 
         // scene.background = cubeGenerator.renderTarget;
-        // scene.background = new THREE.Color(0x000000);
+        scene.background = new THREE.Color(0xffffff);
       });
   };
 
