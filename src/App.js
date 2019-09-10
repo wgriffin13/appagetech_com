@@ -6,9 +6,6 @@ import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/Equir
 import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator.js";
 import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
-import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer.js';
-import { SimplexNoise } from 'three/examples/jsm/math/SimplexNoise.js';
 
 let cubeGenerator
 
@@ -83,6 +80,9 @@ class App extends Component {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.gammaOutput = true;
+    this.controls = new OrbitControls(this.camera, renderer.domElement);
+    this.controls.target.set(0, -0.2, -0.2);
+    this.controls.update();
     this.container.appendChild(renderer.domElement);
     var controls = new OrbitControls( camera, renderer.domElement );
     document.addEventListener( 'mousemove', this.onDocumentMouseMove, false );
@@ -294,9 +294,9 @@ class App extends Component {
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
       .setPath("textures/")
-      .load("hdrvfx_chanc_1_n1_v3_3k_Env.hdr", function(texture) {
+      .load("diyHdri_01c.hdr", function(texture) {
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
-          resolution: 5000
+          resolution: 1024
         });
         cubeGenerator.update(renderer);
         const pmremGenerator = new PMREMGenerator(
@@ -307,19 +307,32 @@ class App extends Component {
           pmremGenerator.cubeLods
         );
         pmremCubeUVPacker.update(renderer);
-        const envMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
+        let envMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
+        envMap.rotation = 180;
 
         // Models
+        const typeParams = {
+          envMap: envMap,
+          envMapIntensity: 5,
+          color: 0x000000,
+          metalness: 1,
+          roughness: 0.1
+        };
+        const iconParams = {
+          envMap: envMap,
+          envMapIntensity: 1.5,
+          emissive: 0xfff000,
+          emissiveIntensity: 0.2,
+          color: 0xfddf73,
+          metalness: 1,
+          roughness: 0.2
+        };
+
         const logoType = new GLTFLoader().setPath("/models/");
         logoType.load("Logo_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                envMap: envMap,
-                color: 0x000000,
-                metalness: 1,
-                roughness: 0.2
-              });
+              child.material = new THREE.MeshStandardMaterial(typeParams);
             }
           });
           gltf.scene.position.y = 2;
@@ -328,18 +341,10 @@ class App extends Component {
         });
 
         const logoIcon = new GLTFLoader().setPath("/models/");
-        logoIcon.load("Logo_Icon.glb", function(gltf) {
+        logoIcon.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                envMap: envMap,
-                envMapIntensity: 1.5,
-                emissive: 0xfff000,
-                emissiveIntensity: 0.2,
-                color: 0xfddf73,
-                metalness: 1,
-                roughness: 0.2
-              });
+              child.material = new THREE.MeshStandardMaterial(iconParams);
             }
           });
           gltf.scene.position.y = 2;
@@ -351,12 +356,7 @@ class App extends Component {
         contactType.load("Contact_Button_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                envMap: envMap,
-                color: 0x000000,
-                metalness: 1,
-                roughness: 0.2
-              });
+              child.material = new THREE.MeshStandardMaterial(typeParams);
             }
           });
           gltf.scene.position.y = 2;
@@ -364,18 +364,10 @@ class App extends Component {
         });
 
         const contactIcon = new GLTFLoader().setPath("/models/");
-        contactIcon.load("Contact_Button_Icon.glb", function(gltf) {
+        contactIcon.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                envMap: envMap,
-                envMapIntensity: 1.5,
-                emissive: 0xfff000,
-                emissiveIntensity: 0.2,
-                color: 0xfddf73,
-                metalness: 1,
-                roughness: 0.2
-              });
+              child.material = new THREE.MeshStandardMaterial(iconParams);
             }
           });
           gltf.scene.position.y = 2;
@@ -386,39 +378,67 @@ class App extends Component {
         aboutType.load("About_Button_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                envMap: envMap,
-                color: 0x000000,
-                metalness: 1,
-                roughness: 0.2
-              });
+              child.material = new THREE.MeshStandardMaterial(typeParams);
             }
           });
-          gltf.scene.position.y = 2;
-          gltf.scene.position.x = -1;
+          gltf.scene.position.x = -0.97;
           scene.add(gltf.scene);
         });
 
         const aboutIcon = new GLTFLoader().setPath("/models/");
-        aboutIcon.load("About_Button_Icon.glb", function(gltf) {
+        aboutIcon.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                envMap: envMap,
-                envMapIntensity: 1.5,
-                emissive: 0xfff000,
-                emissiveIntensity: 0.2,
-                color: 0xfddf73,
-                metalness: 1,
-                roughness: 0.2
-              });
+              child.material = new THREE.MeshStandardMaterial(iconParams);
             }
           });
-          gltf.scene.position.y = 2;
-          gltf.scene.position.x = -1;
+          gltf.scene.position.x = -0.97;
           scene.add(gltf.scene);
         });
 
+        const projectsType = new GLTFLoader().setPath("/models/");
+        projectsType.load("Projects_Button_Type.glb", function(gltf) {
+          gltf.scene.traverse(function(child) {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial(typeParams);
+            }
+          });
+          gltf.scene.position.x = 0.97;
+          scene.add(gltf.scene);
+        });
+
+        const projectsIcon = new GLTFLoader().setPath("/models/");
+        projectsIcon.load("Solid_Icon.glb", function(gltf) {
+          gltf.scene.traverse(function(child) {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial(iconParams);
+            }
+          });
+          gltf.scene.position.x = 0.97;
+          scene.add(gltf.scene);
+        });
+
+        const clientType = new GLTFLoader().setPath("/models/");
+        clientType.load("Client_Button_Type.glb", function(gltf) {
+          gltf.scene.traverse(function(child) {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial(typeParams);
+            }
+          });
+          gltf.scene.position.x = 1.94;
+          scene.add(gltf.scene);
+        });
+
+        const clientIcon = new GLTFLoader().setPath("/models/");
+        clientIcon.load("Solid_Icon.glb", function(gltf) {
+          gltf.scene.traverse(function(child) {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial(iconParams);
+            }
+          });
+          gltf.scene.position.x = 1.94;
+          scene.add(gltf.scene);
+        });
         pmremGenerator.dispose();
         pmremCubeUVPacker.dispose();
 
