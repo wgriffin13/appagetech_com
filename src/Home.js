@@ -14,9 +14,9 @@ import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLigh
 let cubeGenerator, hdrEnvMap;
 
 // Texture width for simulation
-let WIDTH = 512;
+let WIDTH = 256;
 // Water size in system units
-let BOUNDS = 366;
+let BOUNDS = 256;
 var BOUNDS_HALF = BOUNDS * 0.5;
 var controls;
 var camera, scene, renderer;
@@ -40,38 +40,41 @@ class Home extends Component {
   componentDidMount() {
     this.sceneSetup();
     this.loadAssets();
-    // this.lighting();
+    this.lighting();
   }
 
   lighting = () => {
-    // const light1 = new THREE.DirectionalLight(0xffffff, 1.0);
-    // scene.add(light1);
     // var sun2 = new THREE.DirectionalLight(0xffffff, 0.6);
     // light1.position.set(20, 500, 100);
     // scene.add(sun2);
-    const spotLight1 = new THREE.SpotLight(0xffffff, 3, 0, Math.PI / 3);
-    spotLight1.position.set(0, 500, 20);
+    const spotLight1 = new THREE.SpotLight(0xffffff, 1, 0, Math.PI / 3);
+    spotLight1.position.set(0, 50, 100);
+    spotLight1.lookAt(0, 0, 0);
+    spotLight1.penumbra = 1;
+    spotLight1.angle = 1.05;
+    const spotLightHelper1 = new THREE.SpotLightHelper(spotLight1);
+    scene.add(spotLightHelper1);
     scene.add(spotLight1);
 
-    RectAreaLightUniformsLib.init();
+    // RectAreaLightUniformsLib.init();
     // Red
-    this.rectLight3 = new THREE.RectAreaLight(0xfb3f3f, 1, 8, 50);
+    // this.rectLight3 = new THREE.RectAreaLight(0xfb3f3f, 1, 8, 50);
     // this.rectLight3.position.x = 8;
-    this.rectLight3.position.z = 230;
+    // this.rectLight3.position.z = 230;
     // this.rectLight3.position.y = 230;
 
-    this.rectLight3.lookAt(0, 0, 215);
-    scene.add(this.rectLight3);
-    const helper3 = new THREE.RectAreaLightHelper(this.rectLight3);
-    this.rectLight3.add(helper3);
+    // this.rectLight3.lookAt(0, 0, 215);
+    // scene.add(this.rectLight3);
+    // const helper3 = new THREE.RectAreaLightHelper(this.rectLight3);
+    // this.rectLight3.add(helper3);
     //Green 2
-    this.rectLight5 = new THREE.RectAreaLight(0xff009c, 1, 5, 50);
-    this.rectLight5.position.set(12, 0, 230);
+    // this.rectLight5 = new THREE.RectAreaLight(0xff009c, 1, 5, 50);
+    // this.rectLight5.position.set(12, 0, 230);
 
-    this.rectLight5.lookAt(0, 0, 215);
-    const helper5 = new THREE.RectAreaLightHelper(this.rectLight5);
-    this.rectLight5.add(helper5);
-    scene.add(this.rectLight5);
+    // this.rectLight5.lookAt(0, 0, 215);
+    // const helper5 = new THREE.RectAreaLightHelper(this.rectLight5);
+    // this.rectLight5.add(helper5);
+    // scene.add(this.rectLight5);
   };
 
   sceneSetup = () => {
@@ -132,7 +135,6 @@ class Home extends Component {
         );
         pmremCubeUVPacker.update(renderer);
         hdrEnvMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
-        // hdrEnvMap.rotation = 180;
 
         // Models
         const typeParams = {
@@ -294,9 +296,10 @@ class Home extends Component {
         });
 
         const initWater = () => {
-          // var materialColor = 0x00000;
-          var materialColor = 0x010204;
-          // var materialColor = 0x020202;
+          // var materialColor = 0x000000;
+          const materialColor = 0xffffff;
+          // var materialColor = 0x010204;
+
           var geometry = new THREE.PlaneBufferGeometry(
             BOUNDS,
             BOUNDS,
@@ -320,8 +323,6 @@ class Home extends Component {
           material.color = new THREE.Color(materialColor);
           material.specular = new THREE.Color(0xffffff);
           material.shininess = 100;
-
-          // material.envMap = hdrEnvMap;
           // Sets the uniforms with the material values
           material.uniforms["diffuse"].value = material.color;
           material.uniforms["specular"].value = material.specular;
@@ -473,7 +474,9 @@ class Home extends Component {
         pmremCubeUVPacker.dispose();
 
         // scene.background = cubeGenerator.renderTarget;
+
         scene.background = new THREE.Color(0xffffff);
+        // scene.background = new THREE.Color(0x000000);
       });
   };
 
