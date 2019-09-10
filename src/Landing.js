@@ -19,7 +19,7 @@ class Landing extends Component {
     this.container = document.createElement("div");
     document.body.appendChild(this.container);
     this.camera = new THREE.PerspectiveCamera(
-      35,
+      40,
       window.innerWidth / window.innerHeight,
       0.25,
       20
