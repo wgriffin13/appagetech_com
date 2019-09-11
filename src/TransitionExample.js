@@ -3,6 +3,7 @@ import * as THREE from "three";
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import LandingTransition from './LandingTransition';
 
 var container, stats;
 var renderer;
@@ -222,7 +223,8 @@ class TransitionExample extends Component {
 		container.appendChild( renderer.domElement );
 		stats = new Stats();
 		container.appendChild( stats.dom );
-		var sceneA = new FXScene( "cube", 5000, 1200, 120, new THREE.Vector3( 0, - 0.4, 0 ), 0xffffff );
+		//var sceneA = new FXScene( "cube", 5000, 1200, 120, new THREE.Vector3( 0, - 0.4, 0 ), 0xffffff );
+		var sceneA = new LandingTransition( renderer, 0xffffff)
 		var sceneB = new FXScene( "sphere", 500, 2000, 50, new THREE.Vector3( 0, 0.2, 0.1 ), 0x000000 );
 		transition = new Transition( sceneA, sceneB );
 	}

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 // import App from './App';
 import Home from "./Home";
-// import Landing from "./Landing";
+import Landing from "./Landing";
 import TransitionExample from './TransitionExample';
 import * as serviceWorker from "./serviceWorker";
 
