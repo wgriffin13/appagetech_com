@@ -44,37 +44,15 @@ class Home extends Component {
   }
 
   lighting = () => {
-    // var sun2 = new THREE.DirectionalLight(0xffffff, 0.6);
-    // light1.position.set(20, 500, 100);
-    // scene.add(sun2);
-    const spotLight1 = new THREE.SpotLight(0xffffff, 1, 0, Math.PI / 3);
-    spotLight1.position.set(0, 50, 100);
+    // const spotLight1 = new THREE.SpotLight(0x512047, 2, 0, Math.PI / 3);
+    const spotLight1 = new THREE.SpotLight(0xffffff, 0.7, 0, Math.PI / 3);
+    spotLight1.position.set(0, 0, 100);
     spotLight1.lookAt(0, 0, 0);
     spotLight1.penumbra = 1;
-    spotLight1.angle = 1.05;
-    const spotLightHelper1 = new THREE.SpotLightHelper(spotLight1);
-    scene.add(spotLightHelper1);
+    spotLight1.angle = 0.8;
+    // const spotLightHelper1 = new THREE.SpotLightHelper(spotLight1);
+    // scene.add(spotLightHelper1);
     scene.add(spotLight1);
-
-    // RectAreaLightUniformsLib.init();
-    // Red
-    // this.rectLight3 = new THREE.RectAreaLight(0xfb3f3f, 1, 8, 50);
-    // this.rectLight3.position.x = 8;
-    // this.rectLight3.position.z = 230;
-    // this.rectLight3.position.y = 230;
-
-    // this.rectLight3.lookAt(0, 0, 215);
-    // scene.add(this.rectLight3);
-    // const helper3 = new THREE.RectAreaLightHelper(this.rectLight3);
-    // this.rectLight3.add(helper3);
-    //Green 2
-    // this.rectLight5 = new THREE.RectAreaLight(0xff009c, 1, 5, 50);
-    // this.rectLight5.position.set(12, 0, 230);
-
-    // this.rectLight5.lookAt(0, 0, 215);
-    // const helper5 = new THREE.RectAreaLightHelper(this.rectLight5);
-    // this.rectLight5.add(helper5);
-    // scene.add(this.rectLight5);
   };
 
   sceneSetup = () => {
@@ -88,7 +66,7 @@ class Home extends Component {
       1,
       500
     );
-    camera.position.set(0, 0, 225);
+    camera.position.set(0, 0, 224);
     camera.lookAt(0, 0, 0);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -121,7 +99,7 @@ class Home extends Component {
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
       .setPath("textures/")
-      .load("diyHdri_04d.hdr", function(texture) {
+      .load("diyHdri_04i.hdr", function(texture) {
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
           resolution: 1024
         });
@@ -146,12 +124,14 @@ class Home extends Component {
         };
         const iconParams = {
           envMap: hdrEnvMap,
-          envMapIntensity: 1,
-          // emissive: 0xfff000,
-          // emissiveIntensity: 0.2,
-          color: 0xfad44b,
-          metalness: 0.95,
-          roughness: 0.1
+          envMapIntensity: 4,
+          // emissive: 0x536060,
+          // emissiveIntensity: 0.4,
+          // color: 0xb29a2b,
+          color: 0x694112,
+          // color: 0xfad44b,
+          metalness: 1,
+          roughness: 0.05
         };
         const yPos = 0;
         const zPos = 215;
@@ -323,6 +303,7 @@ class Home extends Component {
           material.color = new THREE.Color(materialColor);
           material.specular = new THREE.Color(0xffffff);
           material.shininess = 100;
+
           // Sets the uniforms with the material values
           material.uniforms["diffuse"].value = material.color;
           material.uniforms["specular"].value = material.specular;
@@ -365,9 +346,9 @@ class Home extends Component {
           heightmapVariable.material.uniforms["mousePos"] = {
             value: new THREE.Vector2(10000, 10000)
           };
-          heightmapVariable.material.uniforms["mouseSize"] = { value: 10.0 };
+          heightmapVariable.material.uniforms["mouseSize"] = { value: 16.0 };
           heightmapVariable.material.uniforms["viscosityConstant"] = {
-            value: 0.93
+            value: 0.975
           };
           heightmapVariable.material.uniforms["heightCompensation"] = {
             value: 0
@@ -455,11 +436,8 @@ class Home extends Component {
           } else {
             uniforms["mousePos"].value.set(10000, 10000);
           }
-          // Do the gpu computation
+
           gpuCompute.compute();
-          // if (spheresEnabled) {
-          //   this.sphereDynamics();
-          // }
           // Get compute output in custom uniform
           waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
             heightmapVariable
@@ -474,7 +452,6 @@ class Home extends Component {
         pmremCubeUVPacker.dispose();
 
         // scene.background = cubeGenerator.renderTarget;
-
         scene.background = new THREE.Color(0xffffff);
         // scene.background = new THREE.Color(0x000000);
       });
