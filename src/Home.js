@@ -12,9 +12,10 @@ import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
 import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 
 let cubeGenerator, hdrEnvMap;
+let logo, about, contact, projects, client;
 
 // Texture width for simulation
-let WIDTH = 256;
+let WIDTH = 512;
 // Water size in system units
 let BOUNDS = 256;
 var BOUNDS_HALF = BOUNDS * 0.5;
@@ -41,15 +42,16 @@ class Home extends Component {
     this.sceneSetup();
     this.loadAssets();
     this.lighting();
+    this.INTERSECTED = undefined;
   }
 
   lighting = () => {
     // const spotLight1 = new THREE.SpotLight(0x512047, 2, 0, Math.PI / 3);
-    const spotLight1 = new THREE.SpotLight(0xffffff, 0.7, 0, Math.PI / 3);
+    const spotLight1 = new THREE.SpotLight(0xffffff, 1.2, 0, Math.PI / 3);
     spotLight1.position.set(0, 0, 100);
     spotLight1.lookAt(0, 0, 0);
     spotLight1.penumbra = 1;
-    spotLight1.angle = 0.8;
+    spotLight1.angle = 1;
     // const spotLightHelper1 = new THREE.SpotLightHelper(spotLight1);
     // scene.add(spotLightHelper1);
     scene.add(spotLight1);
@@ -59,7 +61,8 @@ class Home extends Component {
     this.container = document.createElement("div");
     document.body.appendChild(this.container);
     scene = new THREE.Scene();
-
+    // scene.background = new THREE.Color(0x000000);
+    scene.background = new THREE.Color(0xffffff);
     camera = new THREE.PerspectiveCamera(
       25,
       window.innerWidth / window.innerHeight,
@@ -68,7 +71,6 @@ class Home extends Component {
     );
     camera.position.set(0, 0, 224);
     camera.lookAt(0, 0, 0);
-
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -127,9 +129,7 @@ class Home extends Component {
           envMapIntensity: 4,
           // emissive: 0x536060,
           // emissiveIntensity: 0.4,
-          // color: 0xb29a2b,
           color: 0x694112,
-          // color: 0xfad44b,
           metalness: 1,
           roughness: 0.05
         };
@@ -156,6 +156,7 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              logo = child;
             }
           });
           gltf.scene.position.x = -2.2;
@@ -183,6 +184,7 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              contact = child;
             }
           });
           scene.add(gltf.scene);
@@ -210,6 +212,7 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              about = child;
             }
           });
           gltf.scene.position.x = -0.97;
@@ -238,6 +241,7 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              projects = child;
             }
           });
           gltf.scene.position.x = 0.97;
@@ -266,6 +270,7 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              client = child;
             }
           });
           gltf.scene.position.x = 1.94;
@@ -277,7 +282,7 @@ class Home extends Component {
 
         const initWater = () => {
           // var materialColor = 0x000000;
-          const materialColor = 0xffffff;
+          const materialColor = 0xa7ebff;
           // var materialColor = 0x010204;
 
           var geometry = new THREE.PlaneBufferGeometry(
@@ -301,8 +306,9 @@ class Home extends Component {
           material.lights = true;
           // Material attributes from THREE.MeshPhongMaterial
           material.color = new THREE.Color(materialColor);
-          material.specular = new THREE.Color(0xffffff);
-          material.shininess = 100;
+          material.specular = new THREE.Color(0x111111);
+          material.shininess = 50;
+          // material.opacity = 50;
 
           // Sets the uniforms with the material values
           material.uniforms["diffuse"].value = material.color;
@@ -346,9 +352,9 @@ class Home extends Component {
           heightmapVariable.material.uniforms["mousePos"] = {
             value: new THREE.Vector2(10000, 10000)
           };
-          heightmapVariable.material.uniforms["mouseSize"] = { value: 16.0 };
+          heightmapVariable.material.uniforms["mouseSize"] = { value: 3.0 };
           heightmapVariable.material.uniforms["viscosityConstant"] = {
-            value: 0.975
+            value: 0.97
           };
           heightmapVariable.material.uniforms["heightCompensation"] = {
             value: 0
@@ -388,7 +394,7 @@ class Home extends Component {
         };
 
         const fillTexture = texture => {
-          var waterMaxHeight = 10;
+          var waterMaxHeight = 3;
           function noise(x, y) {
             var multR = waterMaxHeight;
             var mult = 0.025;
@@ -450,10 +456,6 @@ class Home extends Component {
         animate();
         pmremGenerator.dispose();
         pmremCubeUVPacker.dispose();
-
-        // scene.background = cubeGenerator.renderTarget;
-        scene.background = new THREE.Color(0xffffff);
-        // scene.background = new THREE.Color(0x000000);
       });
   };
 
