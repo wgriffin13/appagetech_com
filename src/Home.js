@@ -9,7 +9,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GUI } from "three/examples/jsm/libs/dat.gui.module.js";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
-import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 
 let cubeGenerator, hdrEnvMap;
 let logo, about, contact, projects, client;
@@ -103,7 +102,7 @@ class Home extends Component {
       .setPath("textures/")
       .load("diyHdri_04i.hdr", function(texture) {
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
-          resolution: 1024
+          resolution: 512
         });
         cubeGenerator.update(renderer);
         const pmremGenerator = new PMREMGenerator(
@@ -428,20 +427,51 @@ class Home extends Component {
 
         const sceneRender = () => {
           // Set uniforms: mouse interaction
-          var uniforms = heightmapVariable.material.uniforms;
           if (mouseMoved) {
+            var uniforms = heightmapVariable.material.uniforms;
             raycaster.setFromCamera(mouseCoords, camera);
-            var intersects = raycaster.intersectObject(meshRay);
-            if (intersects.length > 0) {
-              var point = intersects[0].point;
+            var intersectWater = raycaster.intersectObject(meshRay);
+            // var intersectLogo = raycaster.intersectObject(logo);
+            // var intersectButton = raycaster.intersectObjects(
+            //   [logo, about, contact, projects, client],
+            //   true
+            // );
+            // for (let i = 0; i < scene.children.length - 1; i++) {
+            //   if (intersects[i] !== undefined && intersects[i].distance < 10) {
+            //     console.log("interscets[i] ", intersects[i]);
+            //     console.log("about ", about);
+            //   }
+            // }
+
+            if (intersectWater.length > 0) {
+              var point = intersectWater[0].point;
               uniforms["mousePos"].value.set(point.x, point.z);
             } else {
               uniforms["mousePos"].value.set(10000, 10000);
             }
             mouseMoved = false;
-          } else {
-            uniforms["mousePos"].value.set(10000, 10000);
           }
+
+          // if (intersectLogo.length > 0) {
+          //   if (this.INTERSECTED !== intersectLogo[0].object) {
+          //     if (this.INTERSECTED) {
+          //       this.INTERSECTED.material.emissive.setHex(
+          //         this.INTERSECTED.currentHex
+          //       );
+          //     }
+          //     this.INTERSECTED = intersectLogo[0].object;
+          //     this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex();
+          //     this.INTERSECTED.material.emissive.setHex(0xff0000);
+          //     // console.log("intersected", this.INTERSECTED);
+          //     // console.log("icon ", icon);
+          //   }
+          // } else {
+          //   if (this.INTERSECTED)
+          //     this.INTERSECTED.material.emissive.setHex(
+          //       this.INTERSECTED.currentHex
+          //     );
+          //   this.INTERSECTED = null;
+          // }
 
           gpuCompute.compute();
           // Get compute output in custom uniform
