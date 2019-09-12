@@ -12,6 +12,7 @@ import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
 
 let cubeGenerator, hdrEnvMap;
 let logo, about, contact, projects, client;
+let intersected;
 
 // Texture width for simulation
 let WIDTH = 512;
@@ -41,11 +42,9 @@ class Home extends Component {
     this.sceneSetup();
     this.loadAssets();
     this.lighting();
-    this.INTERSECTED = undefined;
   }
 
   lighting = () => {
-    // const spotLight1 = new THREE.SpotLight(0x512047, 2, 0, Math.PI / 3);
     const spotLight1 = new THREE.SpotLight(0xffffff, 1.2, 0, Math.PI / 3);
     spotLight1.position.set(0, 0, 100);
     spotLight1.lookAt(0, 0, 0);
@@ -126,8 +125,6 @@ class Home extends Component {
         const iconParams = {
           envMap: hdrEnvMap,
           envMapIntensity: 4,
-          // emissive: 0x536060,
-          // emissiveIntensity: 0.4,
           color: 0x694112,
           metalness: 1,
           roughness: 0.05
@@ -307,7 +304,6 @@ class Home extends Component {
           material.color = new THREE.Color(materialColor);
           material.specular = new THREE.Color(0x111111);
           material.shininess = 50;
-          // material.opacity = 50;
 
           // Sets the uniforms with the material values
           material.uniforms["diffuse"].value = material.color;
@@ -427,22 +423,12 @@ class Home extends Component {
 
         const sceneRender = () => {
           // Set uniforms: mouse interaction
-          if (mouseMoved) {
+          if (mouseMoved && logo && about && contact && projects && client) {
             var uniforms = heightmapVariable.material.uniforms;
             raycaster.setFromCamera(mouseCoords, camera);
-            var intersectWater = raycaster.intersectObject(meshRay);
-            // var intersectLogo = raycaster.intersectObject(logo);
-            // var intersectButton = raycaster.intersectObjects(
-            //   [logo, about, contact, projects, client],
-            //   true
-            // );
-            // for (let i = 0; i < scene.children.length - 1; i++) {
-            //   if (intersects[i] !== undefined && intersects[i].distance < 10) {
-            //     console.log("interscets[i] ", intersects[i]);
-            //     console.log("about ", about);
-            //   }
-            // }
 
+            var intersectWater = raycaster.intersectObject(meshRay);
+            // raycast water
             if (intersectWater.length > 0) {
               var point = intersectWater[0].point;
               uniforms["mousePos"].value.set(point.x, point.z);
@@ -450,35 +436,35 @@ class Home extends Component {
               uniforms["mousePos"].value.set(10000, 10000);
             }
             mouseMoved = false;
+
+            var intersectButtons = raycaster.intersectObjects([
+              logo,
+              about,
+              contact,
+              projects,
+              client
+            ]);
+            // raycast buttons
+            if (intersectButtons.length > 0) {
+              if (intersected !== intersectButtons[0].object) {
+                if (intersected) {
+                  intersected.material.emissive.setHex(intersected.currentHex);
+                }
+                intersected = intersectButtons[0].object;
+                intersected.currentHex = intersected.material.emissive.getHex();
+                intersected.material.emissive.setHex(0xff0000);
+              }
+            } else {
+              if (intersected)
+                intersected.material.emissive.setHex(intersected.currentHex);
+
+              intersected = null;
+            }
           }
-
-          // if (intersectLogo.length > 0) {
-          //   if (this.INTERSECTED !== intersectLogo[0].object) {
-          //     if (this.INTERSECTED) {
-          //       this.INTERSECTED.material.emissive.setHex(
-          //         this.INTERSECTED.currentHex
-          //       );
-          //     }
-          //     this.INTERSECTED = intersectLogo[0].object;
-          //     this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex();
-          //     this.INTERSECTED.material.emissive.setHex(0xff0000);
-          //     // console.log("intersected", this.INTERSECTED);
-          //     // console.log("icon ", icon);
-          //   }
-          // } else {
-          //   if (this.INTERSECTED)
-          //     this.INTERSECTED.material.emissive.setHex(
-          //       this.INTERSECTED.currentHex
-          //     );
-          //   this.INTERSECTED = null;
-          // }
-
           gpuCompute.compute();
-          // Get compute output in custom uniform
           waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
             heightmapVariable
           ).texture;
-          // Render
           renderer.render(scene, camera);
         };
 
