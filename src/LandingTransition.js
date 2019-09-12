@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/EquirectangularToCubeGenerator.js";
@@ -7,7 +6,12 @@ import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator.js";
 import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker.js";
 
 export default function LandingTransition(renderer, clearColor) {
+    // Initial variables
+    const raycaster = new THREE.Raycaster();
+    let INTERSECTED = undefined;
+    const mouse = new THREE.Vector2();
     this.clearColor = clearColor;
+    // Scene & Camera
     this.camera = new THREE.PerspectiveCamera(
       40,
       window.innerWidth / window.innerHeight,
@@ -17,6 +21,14 @@ export default function LandingTransition(renderer, clearColor) {
     this.camera.position.z = 7.5;
     const scene = new THREE.Scene();
 
+    const handeDocumentMouseMove = event => {
+        event.preventDefault();
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    };
+    document.addEventListener("mousemove", handeDocumentMouseMove, false);
+
+    // Objects
     let cubeGenerator, type, icon
     // load HDR, then Models
     new RGBELoader()
@@ -92,6 +104,28 @@ export default function LandingTransition(renderer, clearColor) {
         if (icon && type) {
             icon.rotation.y += 0.009;
             type.rotation.y += 0.009;
+        }
+        raycaster.setFromCamera(mouse, this.camera);
+        var intersects = raycaster.intersectObjects(scene.children, true);
+        if (intersects.length > 0) {
+            if (INTERSECTED !== intersects[0].object) {
+            if (INTERSECTED) {
+                INTERSECTED.material.emissive.setHex(
+                    INTERSECTED.currentHex
+                );
+            }
+            INTERSECTED = intersects[0].object;
+            INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+            INTERSECTED.material.emissive.setHex(0xff0000);
+            console.log("intersected", INTERSECTED);
+            console.log("icon ", icon);
+            }
+        } else {
+            if (INTERSECTED)
+            INTERSECTED.material.emissive.setHex(
+                INTERSECTED.currentHex
+            );
+            INTERSECTED = null;
         }
         renderer.setClearColor( this.clearColor );
         if ( rtt ) {

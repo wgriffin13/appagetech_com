@@ -20,85 +20,6 @@ var transitionParams = {
 };
 var clock = new THREE.Clock();
 
-function generateGeometry( objectType, numObjects ) {
-	function applyVertexColors( geometry, color ) {
-		var position = geometry.attributes.position;
-		var colors = [];
-		for ( var i = 0; i < position.count; i ++ ) {
-			colors.push( color.r, color.g, color.b );
-		}
-		geometry.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-	}
-	var geometries = [];
-	var matrix = new THREE.Matrix4();
-	var position = new THREE.Vector3();
-	var rotation = new THREE.Euler();
-	var quaternion = new THREE.Quaternion();
-	var scale = new THREE.Vector3();
-	var color = new THREE.Color();
-	for ( var i = 0; i < numObjects; i ++ ) {
-		position.x = Math.random() * 10000 - 5000;
-		position.y = Math.random() * 6000 - 3000;
-		position.z = Math.random() * 8000 - 4000;
-		rotation.x = Math.random() * 2 * Math.PI;
-		rotation.y = Math.random() * 2 * Math.PI;
-		rotation.z = Math.random() * 2 * Math.PI;
-		quaternion.setFromEuler( rotation );
-		scale.x = Math.random() * 200 + 100;
-		var geometry;
-		if ( objectType === 'cube' ) {
-			geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
-			geometry = geometry.toNonIndexed(); // merging needs consistent buffer geometries
-			scale.y = Math.random() * 200 + 100;
-			scale.z = Math.random() * 200 + 100;
-			color.setRGB( 0, 0, 0.1 + 0.9 * Math.random() );
-		} else if ( objectType === 'sphere' ) {
-			geometry = new THREE.IcosahedronBufferGeometry( 1, 1 );
-			scale.y = scale.z = scale.x;
-			color.setRGB( 0.1 + 0.9 * Math.random(), 0, 0 );
-		}
-		// give the geom's vertices a random color, to be displayed
-		applyVertexColors( geometry, color );
-		matrix.compose( position, quaternion, scale );
-		geometry.applyMatrix( matrix );
-		geometries.push( geometry );
-	}
-	return BufferGeometryUtils.mergeBufferGeometries( geometries );
-}
-
-
-function FXScene( type, numObjects, cameraZ, fov, rotationSpeed, clearColor ) {
-	this.clearColor = clearColor;
-	this.camera = new THREE.PerspectiveCamera( fov, window.innerWidth / window.innerHeight, 1, 10000 );
-	this.camera.position.z = cameraZ;
-	// Setup scene
-	this.scene = new THREE.Scene();
-	this.scene.add( new THREE.AmbientLight( 0x555555 ) );
-	var light = new THREE.SpotLight( 0xffffff, 1.5 );
-	light.position.set( 0, 500, 2000 );
-	this.scene.add( light );
-	this.rotationSpeed = rotationSpeed;
-	var defaultMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: true, vertexColors: THREE.VertexColors } );
-	this.mesh = new THREE.Mesh( generateGeometry( type, numObjects ), defaultMaterial );
-	this.scene.add( this.mesh );
-	var renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
-	this.fbo = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );
-	this.render = function ( delta, rtt ) {
-		this.mesh.rotation.x += delta * this.rotationSpeed.x;
-		this.mesh.rotation.y += delta * this.rotationSpeed.y;
-		this.mesh.rotation.z += delta * this.rotationSpeed.z;
-		renderer.setClearColor( this.clearColor );
-		if ( rtt ) {
-			renderer.setRenderTarget( this.fbo );
-			renderer.clear();
-			renderer.render( this.scene, this.camera );
-		} else {
-			renderer.setRenderTarget( null );
-			renderer.render( this.scene, this.camera );
-		}
-	};
-}
-
 function Transition( sceneA, sceneB ) {
 	this.scene = new THREE.Scene();
 	this.cameraOrtho = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, - 10, 10 );
@@ -177,7 +98,9 @@ function Transition( sceneA, sceneB ) {
 	this.render = function ( delta ) {
 		// Transition animation
 		if ( transitionParams.animateTransition ) {
+			// Sin wave creates the render loop
 			var t = ( 1 + Math.sin( transitionParams.transitionSpeed * clock.getElapsedTime() / Math.PI ) ) / 2;
+			//console.log(t)
 			transitionParams.transition = THREE.Math.smoothstep( t, 0.3, 0.7 );
 			// Change the current alpha texture after each transition
 			if ( transitionParams.loopTexture && ( transitionParams.transition == 0 || transitionParams.transition == 1 ) ) {
@@ -193,6 +116,7 @@ function Transition( sceneA, sceneB ) {
 		// Prevent render both scenes when it's not necessary
 		if ( transitionParams.transition == 0 ) {
 			this.sceneB.render( delta, false );
+			///transitionParams.animateTransition = false;
 		} else if ( transitionParams.transition == 1 ) {
 			this.sceneA.render( delta, false );
 		} else {
@@ -224,9 +148,7 @@ class TransitionExample extends Component {
 		container.appendChild( renderer.domElement );
 		stats = new Stats();
 		container.appendChild( stats.dom );
-		//var sceneA = new FXScene( "cube", 5000, 1200, 120, new THREE.Vector3( 0, - 0.4, 0 ), 0xffffff );
 		var sceneA = new LandingTransition( renderer, 0xffffff)
-		//var sceneB = new FXScene( "sphere", 500, 2000, 50, new THREE.Vector3( 0, 0.2, 0.1 ), 0x000000 );
 		var sceneB = new HomeTransition( renderer, 0x000000)
 		transition = new Transition( sceneA, sceneB );
 	}
