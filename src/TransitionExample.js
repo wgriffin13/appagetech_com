@@ -11,14 +11,36 @@ var renderer;
 var transition;
 var transitionParams = {
 	"useTexture": true,
-	"transition": 0.5,
+	"transition": 1,
 	"transitionSpeed": 2.0,
-	"texture": 5,
-	"loopTexture": true,
-	"animateTransition": true,
-	"textureThreshold": 0.3
+	"transitionIncrement": 0.02,
+	"transitionIndex": 0,
+	"texture": 1,
+	"loopTexture": false,
+	"animateTransition": false,
+	"textureThreshold": 0.3,
 };
 var clock = new THREE.Clock();
+
+const createTransitionSinWaveArray = (inc, speed) => {
+	const sinWaveConvert = (convertValue) => {
+		return ( 1 + Math.sin( speed * convertValue / Math.PI ) ) / 2;
+	}
+	const startValue = 2.47;
+	let testValue = 0;
+	let i = 0;
+	const incArray = [startValue];
+	const returnArray = [sinWaveConvert(startValue)];
+	do {
+		testValue = sinWaveConvert(incArray[i] + inc);
+		if (testValue < returnArray[i]) {
+			incArray.push(incArray[i] + inc)
+			returnArray.push(testValue)
+		}
+		i++;
+	} while(testValue < returnArray[i-1])
+	return returnArray;
+}
 
 function Transition( sceneA, sceneB ) {
 	this.scene = new THREE.Scene();
@@ -92,31 +114,25 @@ function Transition( sceneA, sceneB ) {
 	this.useTexture = function ( value ) {
 		this.quadmaterial.uniforms.useTexture.value = value ? 1 : 0;
 	};
-	this.setTexture = function ( i ) {
-		this.quadmaterial.uniforms.tMixTexture.value = this.textures[ i ];
-	};
+	// this.setTexture = function ( i ) {
+	// 	this.quadmaterial.uniforms.tMixTexture.value = this.textures[ i ];
+	// };
+	this.quadmaterial.uniforms.tMixTexture.value = this.textures[ transitionParams.texture ];
+	// Function to build the transition increments
+	const sinWaveArray = createTransitionSinWaveArray(transitionParams.transitionIncrement, transitionParams.transitionSpeed)
 	this.render = function ( delta ) {
 		// Transition animation
 		if ( transitionParams.animateTransition ) {
-			// Sin wave creates the render loop
-			var t = ( 1 + Math.sin( transitionParams.transitionSpeed * clock.getElapsedTime() / Math.PI ) ) / 2;
-			//console.log(t)
-			transitionParams.transition = THREE.Math.smoothstep( t, 0.3, 0.7 );
-			// Change the current alpha texture after each transition
-			if ( transitionParams.loopTexture && ( transitionParams.transition == 0 || transitionParams.transition == 1 ) ) {
-				if ( this.needChange ) {
-					transitionParams.texture = ( transitionParams.texture + 1 ) % this.textures.length;
-					this.quadmaterial.uniforms.tMixTexture.value = this.textures[ transitionParams.texture ];
-					this.needChange = false;
-				}
-			} else
-				this.needChange = true;
+			transitionParams.transition = THREE.Math.smoothstep( sinWaveArray[transitionParams.transitionIndex], 0.59, 0.9999 );
+			// Checks size of transition increment array before increasing the index
+			if (transitionParams.transitionIndex + 1 < sinWaveArray.length) {
+				transitionParams.transitionIndex++;
+			};
 		}
 		this.quadmaterial.uniforms.mixRatio.value = transitionParams.transition;
 		// Prevent render both scenes when it's not necessary
 		if ( transitionParams.transition == 0 ) {
 			this.sceneB.render( delta, false );
-			///transitionParams.animateTransition = false;
 		} else if ( transitionParams.transition == 1 ) {
 			this.sceneA.render( delta, false );
 		} else {
@@ -130,12 +146,20 @@ function Transition( sceneA, sceneB ) {
 	};
 }
 
-
 class TransitionExample extends Component {
 
 	componentDidMount() {
+		console.log(createTransitionSinWaveArray(.02, transitionParams.transitionSpeed))
 		this.init();
 		this.animate();
+	}
+
+	toggleTransition = () => {
+		if (transitionParams.animateTransition) {
+			transitionParams.animateTransition = false;
+		} else {
+			transitionParams.animateTransition = true;
+		}
 	}
 
 	init = () => {
@@ -148,7 +172,7 @@ class TransitionExample extends Component {
 		container.appendChild( renderer.domElement );
 		stats = new Stats();
 		container.appendChild( stats.dom );
-		var sceneA = new LandingTransition( renderer, 0xffffff)
+		var sceneA = new LandingTransition( renderer, 0xffffff, this.toggleTransition)
 		var sceneB = new HomeTransition( renderer, 0x000000)
 		transition = new Transition( sceneA, sceneB );
 	}

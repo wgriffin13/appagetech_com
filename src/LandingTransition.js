@@ -5,10 +5,9 @@ import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/Equir
 import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator.js";
 import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker.js";
 
-export default function LandingTransition(renderer, clearColor) {
+export default function LandingTransition(renderer, clearColor, toggleTransitionFunc) {
     // Initial variables
     const raycaster = new THREE.Raycaster();
-    let INTERSECTED = undefined;
     const mouse = new THREE.Vector2();
     this.clearColor = clearColor;
     // Scene & Camera
@@ -21,12 +20,26 @@ export default function LandingTransition(renderer, clearColor) {
     this.camera.position.z = 7.5;
     const scene = new THREE.Scene();
 
-    const handeDocumentMouseMove = event => {
+    // Document functions --> should be moved to parent component
+    const onDocumentMouseDown = event => {
         event.preventDefault();
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-    document.addEventListener("mousemove", handeDocumentMouseMove, false);
+        raycaster.setFromCamera(mouse, this.camera);
+        let intersects = raycaster.intersectObjects(scene.children, true);
+        if (intersects.length > 0) {
+            if (intersects[0].object.callback) {
+                intersects[0].object.callback();
+            }
+        }
+    }
+    document.addEventListener('mousedown', onDocumentMouseDown, false);
+
+    // Object callback function
+    const startTransition = (objectName) => {
+        console.log('Objected has been clicked:' + objectName)
+        toggleTransitionFunc();
+    }
 
     // Objects
     let cubeGenerator, type, icon
@@ -52,7 +65,6 @@ export default function LandingTransition(renderer, clearColor) {
 
         const envMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
 
-        let model1, model2
         // Models
         new GLTFLoader()
             .setPath("/models/")
@@ -70,6 +82,7 @@ export default function LandingTransition(renderer, clearColor) {
                     });
                     }
                 });
+            type.callback = () => startTransition('Type');
             scene.add(gltf.scene);
             });
 
@@ -90,6 +103,7 @@ export default function LandingTransition(renderer, clearColor) {
                     });
                     }
                 });
+            icon.callback = () => startTransition('Icon');
             scene.add(gltf.scene);
             });
         pmremGenerator.dispose();
@@ -104,28 +118,6 @@ export default function LandingTransition(renderer, clearColor) {
         if (icon && type) {
             icon.rotation.y += 0.009;
             type.rotation.y += 0.009;
-        }
-        raycaster.setFromCamera(mouse, this.camera);
-        var intersects = raycaster.intersectObjects(scene.children, true);
-        if (intersects.length > 0) {
-            if (INTERSECTED !== intersects[0].object) {
-            if (INTERSECTED) {
-                INTERSECTED.material.emissive.setHex(
-                    INTERSECTED.currentHex
-                );
-            }
-            INTERSECTED = intersects[0].object;
-            INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-            INTERSECTED.material.emissive.setHex(0xff0000);
-            console.log("intersected", INTERSECTED);
-            console.log("icon ", icon);
-            }
-        } else {
-            if (INTERSECTED)
-            INTERSECTED.material.emissive.setHex(
-                INTERSECTED.currentHex
-            );
-            INTERSECTED = null;
         }
         renderer.setClearColor( this.clearColor );
         if ( rtt ) {
