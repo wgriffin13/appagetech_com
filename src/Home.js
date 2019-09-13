@@ -9,6 +9,10 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GUI } from "three/examples/jsm/libs/dat.gui.module.js";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
+import {
+  CSS3DRenderer,
+  CSS3DObject
+} from "three/examples/jsm/renderers/CSS3DRenderer.js";
 
 let cubeGenerator, hdrEnvMap;
 let logo, about, contact, projects, client;
@@ -42,6 +46,7 @@ class Home extends Component {
     this.sceneSetup();
     this.loadAssets();
     this.lighting();
+    this.load2D();
   }
 
   lighting = () => {
@@ -60,7 +65,7 @@ class Home extends Component {
     document.body.appendChild(this.container);
     scene = new THREE.Scene();
     // scene.background = new THREE.Color(0x000000);
-    scene.background = new THREE.Color(0xffffff);
+    // scene.background = new THREE.Color(0xffffff);
     camera = new THREE.PerspectiveCamera(
       25,
       window.innerWidth / window.innerHeight,
@@ -74,9 +79,9 @@ class Home extends Component {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.gammaOutput = true;
     this.container.appendChild(renderer.domElement);
-    // controls = new OrbitControls(camera, renderer.domElement);
-    // controls.target.set(0, 0, 215);
-    // controls.update();
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 0, 215);
+    controls.update();
     window.addEventListener("resize", this.onWindowResize, false);
     document.addEventListener("mousemove", this.onDocumentMouseMove, false);
     document.addEventListener("touchstart", this.onDocumentTouchStart, false);
@@ -92,7 +97,34 @@ class Home extends Component {
       },
       false
     );
-    window.addEventListener("resize", this.onWindowResize, false);
+    // window.addEventListener("resize", this.onWindowResize, false);
+  };
+  load2D = () => {
+    // create the plane mesh
+    var material = new THREE.MeshBasicMaterial({ wireframe: true });
+    material.color.set("black");
+    material.opacity = 0;
+    material.blending = THREE.NoBlending;
+    var geometry = new THREE.PlaneBufferGeometry();
+    var planeMesh = new THREE.Mesh(geometry, material);
+    planeMesh.position.z = 220;
+    planeMesh.position.y = -0.7;
+    scene.add(planeMesh);
+
+    // create the dom Element
+    var element = document.createElement("div");
+    // element.src = "textures/star.png";
+    // create the object3d for this element
+    var cssObject = new CSS3DObject(element);
+    cssObject.position.z = 220;
+    cssObject.position.y = -0.7;
+
+    scene.add(cssObject);
+
+    var cssRenderer = new CSS3DRenderer();
+    cssRenderer.setSize(window.innerWidth, window.innerHeight);
+    cssRenderer.domElement.style.position = "absolute";
+    cssRenderer.domElement.style.top = 0;
   };
 
   loadAssets = () => {
