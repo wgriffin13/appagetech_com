@@ -12,10 +12,10 @@ import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator.js";
 import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker.js";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
-import About from "./2D/About";
+// import About from "./2D/About";
 
 let camera, glScene, cssScene, glRenderer, cssRenderer, controls, container;
-let cubeGenerator;
+let cubeGenerator, pmremGenerator, pmremCubeUVPacker;
 let logo, about, contact, projects, client;
 let intersected;
 let waterUniforms,
@@ -27,16 +27,32 @@ let waterUniforms,
   readWaterLevelShader,
   readWaterLevelImage,
   readWaterLevelRenderTarget;
-
-// Texture width for simulation
+let mouseMoved = false;
+let mouseCoords = new THREE.Vector2();
+let raycaster = new THREE.Raycaster();
 let WIDTH = 512;
-// Water size in system units
 let BOUNDS = 256;
 
 class Test3 extends Component {
   componentDidMount() {
     this.initialize();
+    this.loadAssets();
+    this.initWater();
+    this.update();
+    this.rayCast();
+    this.lighting();
   }
+
+  lighting = () => {
+    const spotLight1 = new THREE.SpotLight(0xffffff, 1.2, 0, Math.PI / 3);
+    spotLight1.position.set(0, 0, 100);
+    spotLight1.lookAt(0, 0, 0);
+    spotLight1.penumbra = 1;
+    spotLight1.angle = 1;
+    // const spotLightHelper1 = new THREE.SpotLightHelper(spotLight1);
+    // glScene.add(spotLightHelper1);
+    glScene.add(spotLight1);
+  };
 
   createGlRenderer = () => {
     var glRenderer = new THREE.WebGLRenderer({ alpha: true });
@@ -88,7 +104,7 @@ class Test3 extends Component {
     return cssObject;
   };
 
-  embed2DPage = (w, h, position, rotation, url) => {
+  embed2DPage = (w, h, position, rotation) => {
     var plane = this.createPlane(w, h, position, rotation);
     glScene.add(plane);
     var cssObject = this.createCssObject();
@@ -100,9 +116,10 @@ class Test3 extends Component {
       30,
       window.innerWidth / window.innerHeight,
       0.25,
-      10000
+      2200
     );
-    camera.position.set(0, 0, 2000);
+    camera.position.set(0, 0, 224);
+    camera.lookAt(0, 0, 0);
     glRenderer = this.createGlRenderer();
     cssRenderer = this.createCssRenderer();
     container = document.createElement("div");
@@ -111,20 +128,23 @@ class Test3 extends Component {
     cssRenderer.domElement.appendChild(glRenderer.domElement);
     glScene = new THREE.Scene();
     cssScene = new THREE.Scene();
-    controls = new OrbitControls(camera, glRenderer.domElement);
-
+    // controls = new OrbitControls(camera, glRenderer.domElement);
+    // controls.target.set(0, 0, 2000);
+    // controls.update();
     this.embed2DPage(
-      1800,
-      1000,
+      // 1500,
+      // 1000,
       // window.innerWidth,
       // window.innerHeight,
-      new THREE.Vector3(0, 0, -14),
+      500,
+      500,
+      new THREE.Vector3(0, 0, -1800),
       new THREE.Vector3(0, 0, 0)
     );
-
-    this.loadAssets();
-    this.update();
-    this.initWater();
+    window.addEventListener("resize", this.onWindowResize, false);
+    document.addEventListener("mousemove", this.onDocumentMouseMove, false);
+    document.addEventListener("touchstart", this.onDocumentTouchStart, false);
+    document.addEventListener("touchmove", this.onDocumentTouchMove, false);
   };
 
   loadAssets = () => {
@@ -136,13 +156,9 @@ class Test3 extends Component {
           resolution: 512
         });
         cubeGenerator.update(glRenderer);
-        const pmremGenerator = new PMREMGenerator(
-          cubeGenerator.renderTarget.texture
-        );
+        pmremGenerator = new PMREMGenerator(cubeGenerator.renderTarget.texture);
         pmremGenerator.update(glRenderer);
-        const pmremCubeUVPacker = new PMREMCubeUVPacker(
-          pmremGenerator.cubeLods
-        );
+        pmremCubeUVPacker = new PMREMCubeUVPacker(pmremGenerator.cubeLods);
         pmremCubeUVPacker.update(glRenderer);
         const hdrEnvMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
 
@@ -156,23 +172,25 @@ class Test3 extends Component {
         };
         const iconParams = {
           envMap: hdrEnvMap,
-          envMapIntensity: 4,
+          envMapIntensity: 5,
           color: 0x694112,
           metalness: 1,
           roughness: 0.05
         };
         const yPos = 0;
-        const zPos = 1994;
+        const zPos = 215;
         const zRot = null;
+        const scale = new THREE.Vector3(1.3, 1.3, 1.3);
 
         const logoType = new GLTFLoader().setPath("/models/");
         logoType.load("Logo_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
+              child.scale.copy(scale);
             }
           });
-          gltf.scene.position.x = -2;
+          gltf.scene.position.x = -2.2;
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
@@ -184,10 +202,11 @@ class Test3 extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              child.scale.copy(scale);
               logo = child;
             }
           });
-          gltf.scene.position.x = -2;
+          gltf.scene.position.x = -2.2;
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
@@ -307,6 +326,8 @@ class Test3 extends Component {
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
         });
+        // pmremGenerator.dispose();
+        // pmremCubeUVPacker.dispose();
       });
   };
 
@@ -318,6 +339,7 @@ class Test3 extends Component {
       WIDTH - 1,
       WIDTH - 1
     );
+
     // material: make a THREE.ShaderMaterial clone of THREE.MeshPhongMaterial, with customized vertex shader
     var material = new THREE.ShaderMaterial({
       uniforms: THREE.UniformsUtils.merge([
@@ -344,8 +366,9 @@ class Test3 extends Component {
 
     waterUniforms = material.uniforms;
     waterMesh = new THREE.Mesh(geometry, material);
-    waterMesh.rotation.x = Math.PI / 2;
     waterMesh.matrixAutoUpdate = false;
+    waterMesh.rotation.x = -Math.PI / 2;
+    // waterMesh.position.z = 1785;
     waterMesh.updateMatrix();
     glScene.add(waterMesh);
     // THREE.Mesh just for mouse raycasting
@@ -354,11 +377,13 @@ class Test3 extends Component {
       geometryRay,
       new THREE.MeshBasicMaterial({ color: 0xffffff, visible: false })
     );
-    meshRay.rotation.x = Math.PI / 2;
+    // meshRay.rotation.x = -Math.PI / 2;
+    // meshRay.position.z = 0;
+
     meshRay.matrixAutoUpdate = false;
     meshRay.updateMatrix();
     glScene.add(meshRay);
-    // Creates the gpu computation class and sets it up
+
     gpuCompute = new GPUComputationRenderer(WIDTH, WIDTH, glRenderer);
     var heightmap0 = gpuCompute.createTexture();
     this.fillTexture(heightmap0);
@@ -410,6 +435,10 @@ class Test3 extends Component {
       stencilBuffer: false,
       depthBuffer: false
     });
+    gpuCompute.compute();
+    waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
+      heightmapVariable
+    ).texture;
   };
 
   fillTexture = texture => {
@@ -440,12 +469,66 @@ class Test3 extends Component {
       }
     }
   };
+  rayCast = () => {
+    // Set uniforms: mouse interaction
+    if (mouseMoved && logo && about && contact && projects && client) {
+      var uniforms = heightmapVariable.material.uniforms;
+      raycaster.setFromCamera(mouseCoords, camera);
+
+      var intersectWater = raycaster.intersectObject(meshRay);
+      // raycast water
+      if (intersectWater.length > 0) {
+        console.log("intersected water");
+        var point = intersectWater[0].point;
+        uniforms["mousePos"].value.set(point.x, point.z);
+      } else {
+        uniforms["mousePos"].value.set(10000, 10000);
+      }
+      mouseMoved = false;
+
+      var intersectButtons = raycaster.intersectObjects([
+        logo,
+        about,
+        contact,
+        projects,
+        client
+      ]);
+      // raycast buttons
+      if (intersectButtons.length > 0) {
+        if (intersected !== intersectButtons[0].object) {
+          if (intersected) {
+            intersected.material.emissive.setHex(intersected.currentHex);
+          }
+          intersected = intersectButtons[0].object;
+          intersected.currentHex = intersected.material.emissive.getHex();
+          intersected.material.emissive.setHex(0xff0000);
+          console.log("intersected button");
+        }
+      } else {
+        if (intersected)
+          intersected.material.emissive.setHex(intersected.currentHex);
+
+        intersected = null;
+      }
+    }
+    gpuCompute.compute();
+    waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
+      heightmapVariable
+    ).texture;
+  };
+
+  // initWater();
+  // animate();
+  // pmremGenerator.dispose();
+  // pmremCubeUVPacker.dispose();
+  // });
 
   update = () => {
-    controls.update();
+    // controls.update();
+    requestAnimationFrame(this.update);
     glRenderer.render(glScene, camera);
     cssRenderer.render(cssScene, camera);
-    requestAnimationFrame(this.update);
+    this.rayCast();
   };
 
   onWindowResize = () => {
@@ -453,9 +536,30 @@ class Test3 extends Component {
     camera.updateProjectionMatrix();
     glRenderer.setSize(window.innerWidth, window.innerHeight);
   };
-
+  setMouseCoords = (x, y) => {
+    mouseCoords.set(
+      (x / glRenderer.domElement.clientWidth) * 2 - 1,
+      -(y / glRenderer.domElement.clientHeight) * 2 + 1
+    );
+    mouseMoved = true;
+  };
+  onDocumentMouseMove = event => {
+    this.setMouseCoords(event.clientX, event.clientY);
+  };
+  onDocumentTouchStart = event => {
+    if (event.touches.length === 1) {
+      event.preventDefault();
+      this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
+    }
+  };
+  onDocumentTouchMove = event => {
+    if (event.touches.length === 1) {
+      event.preventDefault();
+      this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
+    }
+  };
   render() {
-    return <div ref={this.container} />;
+    return <div ref={container} />;
   }
 }
 
