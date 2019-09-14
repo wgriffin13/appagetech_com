@@ -24,7 +24,7 @@ let WIDTH = 512;
 let BOUNDS = 256;
 var BOUNDS_HALF = BOUNDS * 0.5;
 var controls;
-var camera, scene, renderer;
+var camera, glScene, cssScene, glRenderer, cssRenderer;
 var mouseMoved = false;
 var mouseCoords = new THREE.Vector2();
 var raycaster = new THREE.Raycaster();
@@ -46,7 +46,7 @@ class Home extends Component {
     this.sceneSetup();
     this.loadAssets();
     this.lighting();
-    this.load2D();
+    // this.load2D();
   }
 
   lighting = () => {
@@ -57,15 +57,20 @@ class Home extends Component {
     spotLight1.angle = 1;
     // const spotLightHelper1 = new THREE.SpotLightHelper(spotLight1);
     // scene.add(spotLightHelper1);
-    scene.add(spotLight1);
+    glScene.add(spotLight1);
   };
 
   sceneSetup = () => {
     this.container = document.createElement("div");
+    this.container.id = "div1";
     document.body.appendChild(this.container);
-    scene = new THREE.Scene();
-    // scene.background = new THREE.Color(0x000000);
-    // scene.background = new THREE.Color(0xffffff);
+
+    glScene = new THREE.Scene();
+    cssScene = new THREE.Scene();
+    // cssScene.background = new THREE.Color(0x694112);
+    // cssScene.background = new THREE.Color(0x000000);
+    glScene.background = new THREE.Color(0x694112);
+    // glScene.background = new THREE.Color(0xffffff);
     camera = new THREE.PerspectiveCamera(
       25,
       window.innerWidth / window.innerHeight,
@@ -74,12 +79,17 @@ class Home extends Component {
     );
     camera.position.set(0, 0, 224);
     camera.lookAt(0, 0, 0);
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.gammaOutput = true;
-    this.container.appendChild(renderer.domElement);
-    controls = new OrbitControls(camera, renderer.domElement);
+    glRenderer = new THREE.WebGLRenderer({ antialias: true });
+    glRenderer.setPixelRatio(window.devicePixelRatio);
+    glRenderer.setSize(window.innerWidth, window.innerHeight);
+    glRenderer.gammaOutput = true;
+    glRenderer.domElement.style.position = "absolute";
+    glRenderer.domElement.style.zIndex = 215;
+    glRenderer.domElement.style.top = 0;
+
+    // container.appendChild(glRenderer.domElement);
+
+    controls = new OrbitControls(camera, glRenderer.domElement);
     controls.target.set(0, 0, 215);
     controls.update();
     window.addEventListener("resize", this.onWindowResize, false);
@@ -97,34 +107,50 @@ class Home extends Component {
       },
       false
     );
-    // window.addEventListener("resize", this.onWindowResize, false);
-  };
-  load2D = () => {
+
     // create the plane mesh
-    var material = new THREE.MeshBasicMaterial({ wireframe: true });
+    var material = new THREE.MeshBasicMaterial({
+      wireframe: false
+    });
     material.color.set("black");
     material.opacity = 0;
     material.blending = THREE.NoBlending;
-    var geometry = new THREE.PlaneBufferGeometry();
+    var geometry = new THREE.PlaneGeometry();
     var planeMesh = new THREE.Mesh(geometry, material);
-    planeMesh.position.z = 220;
-    planeMesh.position.y = -0.7;
-    scene.add(planeMesh);
+    planeMesh.position.z = 215;
+    planeMesh.position.y = 1;
+    glScene.add(planeMesh);
 
     // create the dom Element
-    var element = document.createElement("div");
+
+    // let element = document.createElement("img");
     // element.src = "textures/star.png";
-    // create the object3d for this element
+
+    var element = document.createElement("div");
+    var node = document.createTextNode(
+      "Hi there and greetings!xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    );
+    element.appendChild(node);
     var cssObject = new CSS3DObject(element);
-    cssObject.position.z = 220;
-    cssObject.position.y = -0.7;
+    cssObject.position.z = planeMesh.position.z;
+    cssObject.position.y = planeMesh.position.y;
+    cssScene.add(cssObject);
 
-    scene.add(cssObject);
-
-    var cssRenderer = new CSS3DRenderer();
+    cssRenderer = new CSS3DRenderer();
     cssRenderer.setSize(window.innerWidth, window.innerHeight);
     cssRenderer.domElement.style.position = "absolute";
     cssRenderer.domElement.style.top = 0;
+    cssRenderer.domElement.style.zIndex = 214;
+    cssRenderer.domElement.style.yIndex = 1;
+    // cssRenderer.domElement.style.color
+    this.container.appendChild(glRenderer.domElement);
+    glRenderer.domElement.appendChild(cssRenderer.domElement);
+    // this.container.appendChild(glRenderer.domElement);
+    // cssRenderer.domElement.appendChild(glRenderer.domElement);
+    // this.container.appendChild(cssRenderer.domElement);
+    // this.container.appendChild(glRenderer.domElement);
+
+    // document.getElementById("div1").appendChild(cssRenderer.domElement);
   };
 
   loadAssets = () => {
@@ -135,15 +161,15 @@ class Home extends Component {
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
           resolution: 512
         });
-        cubeGenerator.update(renderer);
+        cubeGenerator.update(glRenderer);
         const pmremGenerator = new PMREMGenerator(
           cubeGenerator.renderTarget.texture
         );
-        pmremGenerator.update(renderer);
+        pmremGenerator.update(glRenderer);
         const pmremCubeUVPacker = new PMREMCubeUVPacker(
           pmremGenerator.cubeLods
         );
-        pmremCubeUVPacker.update(renderer);
+        pmremCubeUVPacker.update(glRenderer);
         hdrEnvMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
 
         // Models
@@ -176,7 +202,7 @@ class Home extends Component {
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
-          scene.add(gltf.scene);
+          glScene.add(gltf.scene);
         });
 
         const logoIcon = new GLTFLoader().setPath("/models/");
@@ -191,7 +217,7 @@ class Home extends Component {
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
-          scene.add(gltf.scene);
+          glScene.add(gltf.scene);
         });
 
         const contactType = new GLTFLoader().setPath("/models/");
@@ -201,7 +227,7 @@ class Home extends Component {
               child.material = new THREE.MeshStandardMaterial(typeParams);
             }
           });
-          scene.add(gltf.scene);
+          glScene.add(gltf.scene);
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
@@ -215,7 +241,7 @@ class Home extends Component {
               contact = child;
             }
           });
-          scene.add(gltf.scene);
+          glScene.add(gltf.scene);
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
@@ -232,7 +258,7 @@ class Home extends Component {
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
-          scene.add(gltf.scene);
+          glScene.add(gltf.scene);
         });
 
         const aboutIcon = new GLTFLoader().setPath("/models/");
@@ -247,7 +273,7 @@ class Home extends Component {
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
-          scene.add(gltf.scene);
+          glScene.add(gltf.scene);
         });
 
         const projectsType = new GLTFLoader().setPath("/models/");
@@ -261,7 +287,7 @@ class Home extends Component {
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
-          scene.add(gltf.scene);
+          glScene.add(gltf.scene);
         });
 
         const projectsIcon = new GLTFLoader().setPath("/models/");
@@ -276,7 +302,7 @@ class Home extends Component {
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
-          scene.add(gltf.scene);
+          glScene.add(gltf.scene);
         });
 
         const clientType = new GLTFLoader().setPath("/models/");
@@ -290,7 +316,7 @@ class Home extends Component {
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
-          scene.add(gltf.scene);
+          glScene.add(gltf.scene);
         });
 
         const clientIcon = new GLTFLoader().setPath("/models/");
@@ -305,13 +331,11 @@ class Home extends Component {
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
-          scene.add(gltf.scene);
+          glScene.add(gltf.scene);
         });
 
         const initWater = () => {
-          // var materialColor = 0x000000;
           const materialColor = 0xa7ebff;
-          // var materialColor = 0x010204;
 
           var geometry = new THREE.PlaneBufferGeometry(
             BOUNDS,
@@ -336,7 +360,6 @@ class Home extends Component {
           material.color = new THREE.Color(materialColor);
           material.specular = new THREE.Color(0x111111);
           material.shininess = 50;
-
           // Sets the uniforms with the material values
           material.uniforms["diffuse"].value = material.color;
           material.uniforms["specular"].value = material.specular;
@@ -345,7 +368,6 @@ class Home extends Component {
             1e-4
           );
           material.uniforms["opacity"].value = material.opacity;
-          // Defines
           material.defines.WIDTH = WIDTH.toFixed(1);
           material.defines.BOUNDS = BOUNDS.toFixed(1);
           waterUniforms = material.uniforms;
@@ -353,7 +375,7 @@ class Home extends Component {
           waterMesh.rotation.x = Math.PI / 2;
           waterMesh.matrixAutoUpdate = false;
           waterMesh.updateMatrix();
-          scene.add(waterMesh);
+          glScene.add(waterMesh);
           // THREE.Mesh just for mouse raycasting
           var geometryRay = new THREE.PlaneBufferGeometry(BOUNDS, BOUNDS, 1, 1);
           meshRay = new THREE.Mesh(
@@ -363,9 +385,9 @@ class Home extends Component {
           // meshRay.rotation.x = Math.PI / 2;
           meshRay.matrixAutoUpdate = false;
           meshRay.updateMatrix();
-          scene.add(meshRay);
+          glScene.add(meshRay);
           // Creates the gpu computation class and sets it up
-          gpuCompute = new GPUComputationRenderer(WIDTH, WIDTH, renderer);
+          gpuCompute = new GPUComputationRenderer(WIDTH, WIDTH, glRenderer);
           var heightmap0 = gpuCompute.createTexture();
           fillTexture(heightmap0);
           heightmapVariable = gpuCompute.addVariable(
@@ -451,6 +473,8 @@ class Home extends Component {
         const animate = () => {
           requestAnimationFrame(animate);
           sceneRender();
+          glRenderer.render(glScene, camera);
+          cssRenderer.render(cssScene, camera);
         };
 
         const sceneRender = () => {
@@ -497,7 +521,6 @@ class Home extends Component {
           waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
             heightmapVariable
           ).texture;
-          renderer.render(scene, camera);
         };
 
         initWater();
@@ -510,12 +533,12 @@ class Home extends Component {
   onWindowResize = () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    glRenderer.setSize(window.innerWidth, window.innerHeight);
   };
   setMouseCoords = (x, y) => {
     mouseCoords.set(
-      (x / renderer.domElement.clientWidth) * 2 - 1,
-      -(y / renderer.domElement.clientHeight) * 2 + 1
+      (x / glRenderer.domElement.clientWidth) * 2 - 1,
+      -(y / glRenderer.domElement.clientHeight) * 2 + 1
     );
     mouseMoved = true;
   };
@@ -536,7 +559,7 @@ class Home extends Component {
   };
 
   render() {
-    return <div ref={el => (this.mount = el)} />;
+    return <div ref={this.container} />;
   }
 }
 
