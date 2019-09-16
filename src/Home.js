@@ -17,6 +17,7 @@ import About from "./2D/About";
 let camera, glScene, cssScene, glRenderer, cssRenderer, controls, container;
 let cubeGenerator, pmremGenerator, pmremCubeUVPacker;
 let logo, about, contact, projects, client;
+let logoType, aboutType, contactType, projectsType, clientType;
 let intersected;
 let waterUniforms,
   waterMesh,
@@ -33,7 +34,8 @@ let raycaster = new THREE.Raycaster();
 let WIDTH = 512;
 let BOUNDS = 256;
 let zPosition2D = -2000;
-
+let navGroup = new THREE.Group();
+// let navGroup = new THREE.AnimationObjectGroup();
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -194,18 +196,20 @@ class Home extends Component {
           metalness: 1,
           roughness: 0.05
         };
-        const yPos = 1.75;
+        // const yPos = 1.75;
+        const yPos = 0;
         const zPos = 215;
         const zRot = null;
         const scale = new THREE.Vector3(1.3, 1.3, 1.3);
         const scaleY = new THREE.Vector3(1, 0.5, 1);
 
-        const logoType = new GLTFLoader().setPath("/models/");
-        logoType.load("Logo_Type.glb", function(gltf) {
+        const logoTypeLoader = new GLTFLoader().setPath("/models/");
+        logoTypeLoader.load("Logo_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
               child.scale.copy(scale);
+              logoType = child;
             }
           });
           gltf.scene.position.x = -2.2;
@@ -215,14 +219,15 @@ class Home extends Component {
           glScene.add(gltf.scene);
         });
 
-        const logoIcon = new GLTFLoader().setPath("/models/");
-        logoIcon.load("Solid_Icon.glb", function(gltf) {
+        const logoIconLoader = new GLTFLoader().setPath("/models/");
+        logoIconLoader.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
               child.scale.copy(scale);
               child.callback = () => onClick();
               logo = child;
+              console.log("logo icon ", child);
             }
           });
           gltf.scene.position.x = -2.2;
@@ -232,11 +237,12 @@ class Home extends Component {
           glScene.add(gltf.scene);
         });
 
-        const contactType = new GLTFLoader().setPath("/models/");
-        contactType.load("Contact_Button_Type.glb", function(gltf) {
+        const contactTypeLoader = new GLTFLoader().setPath("/models/");
+        contactTypeLoader.load("Contact_Button_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
+              contactType = child;
             }
           });
           glScene.add(gltf.scene);
@@ -245,13 +251,14 @@ class Home extends Component {
           gltf.scene.rotation.z = zRot;
         });
 
-        const contactIcon = new GLTFLoader().setPath("/models/");
-        contactIcon.load("Solid_Icon.glb", function(gltf) {
+        const contactIconLoader = new GLTFLoader().setPath("/models/");
+        contactIconLoader.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
-              child.scale.copy(scaleY);
+              // child.scale.copy(scaleY);
               contact = child;
+              console.log("contact icon ", child);
             }
           });
           gltf.scene.position.y = yPos;
@@ -262,11 +269,12 @@ class Home extends Component {
           contact.callback = () => onClick();
         });
 
-        const aboutType = new GLTFLoader().setPath("/models/");
-        aboutType.load("About_Button_Type.glb", function(gltf) {
+        const aboutTypeLoader = new GLTFLoader().setPath("/models/");
+        aboutTypeLoader.load("About_Button_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
+              aboutType = child;
             }
           });
           gltf.scene.position.x = -0.97;
@@ -276,12 +284,12 @@ class Home extends Component {
           glScene.add(gltf.scene);
         });
 
-        const aboutIcon = new GLTFLoader().setPath("/models/");
-        aboutIcon.load("Solid_Icon.glb", function(gltf) {
+        const aboutIconLoader = new GLTFLoader().setPath("/models/");
+        aboutIconLoader.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
-              child.scale.copy(scaleY);
+              // child.scale.copy(scaleY);
               about = child;
             }
           });
@@ -293,11 +301,12 @@ class Home extends Component {
           about.callback = () => onClick();
         });
 
-        const projectsType = new GLTFLoader().setPath("/models/");
-        projectsType.load("Projects_Button_Type.glb", function(gltf) {
+        const projectsTypeLoader = new GLTFLoader().setPath("/models/");
+        projectsTypeLoader.load("Projects_Button_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
+              projectsType = child;
             }
           });
           gltf.scene.position.x = 0.97;
@@ -307,12 +316,12 @@ class Home extends Component {
           glScene.add(gltf.scene);
         });
 
-        const projectsIcon = new GLTFLoader().setPath("/models/");
-        projectsIcon.load("Solid_Icon.glb", function(gltf) {
+        const projectsIconLoader = new GLTFLoader().setPath("/models/");
+        projectsIconLoader.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
-              child.scale.copy(scaleY);
+              // child.scale.copy(scaleY);
               projects = child;
             }
           });
@@ -324,11 +333,12 @@ class Home extends Component {
           projects.callback = () => onClick();
         });
 
-        const clientType = new GLTFLoader().setPath("/models/");
-        clientType.load("Client_Button_Type.glb", function(gltf) {
+        const clientTypeLoader = new GLTFLoader().setPath("/models/");
+        clientTypeLoader.load("Client_Button_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
+              clientType = child;
             }
           });
           gltf.scene.position.x = 1.94;
@@ -338,12 +348,12 @@ class Home extends Component {
           glScene.add(gltf.scene);
         });
 
-        const clientIcon = new GLTFLoader().setPath("/models/");
-        clientIcon.load("Solid_Icon.glb", function(gltf) {
+        const clientIconLoader = new GLTFLoader().setPath("/models/");
+        clientIconLoader.load("Solid_Icon.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
-              child.scale.copy(scaleY);
+              // child.scale.copy(scaleY);
               client = child;
             }
           });
@@ -354,9 +364,38 @@ class Home extends Component {
           glScene.add(gltf.scene);
           client.callback = () => onClick();
         });
+        // console.log("logoType", logoType);
+        // console.log("logoIcon", logoIcon);
         pmremGenerator.dispose();
         pmremCubeUVPacker.dispose();
       });
+    // if (
+    //   logo &&
+    //   logoType &&
+    //   about &&
+    //   aboutType &&
+    //   contact &&
+    //   contactType &&
+    //   projects &&
+    //   projectsType &&
+    //   client &&
+    //   clientType
+    // ) {
+    //   navGroup.add(
+    //     logo,
+    //     about,
+    //     contact,
+    //     projects,
+    //     client,
+    //     logoType,
+    //     aboutType,
+    //     contactType,
+    //     projectsType,
+    //     clientType
+    //   );
+    // }
+    // glScene.add(navGroup);
+    // console.log(navGroup);
   };
 
   initWater = () => {
@@ -501,9 +540,12 @@ class Home extends Component {
     cssRenderer.render(cssScene, camera);
     // this.rayCast();
     controls.update();
+    // console.log(navGroup);
 
     raycaster.setFromCamera(mouseCoords, camera);
     if (mouseMoved && logo && about && contact && projects && client) {
+      // console.log(client);
+
       var uniforms = heightmapVariable.material.uniforms;
       var intersectWater = raycaster.intersectObject(meshRay);
       // raycast water
@@ -538,6 +580,34 @@ class Home extends Component {
           intersected.material.emissive.setHex(intersected.currentHex);
         intersected = null;
       }
+    }
+    if (
+      logo &&
+      about &&
+      contact &&
+      projects &&
+      client &&
+      logoType &&
+      aboutType &&
+      contactType &&
+      projectsType &&
+      clientType
+    ) {
+      if (logo.position.y <= 1.75) {
+        logo.position.y += 0.03;
+        about.position.y += 0.03;
+        contact.position.y += 0.03;
+        projects.position.y += 0.03;
+        client.position.y += 0.03;
+        logoType.position.y += 0.03;
+        aboutType.position.y += 0.03;
+        contactType.position.y += 0.03;
+        projectsType.position.y += 0.03;
+        clientType.position.y += 0.03;
+      }
+      // navGroup.position.y += 0.01;
+      // navGroup.translateY(0.01);
+      // console.log(navGroup);
     }
     gpuCompute.compute();
     waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
