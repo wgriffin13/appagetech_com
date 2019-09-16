@@ -12,8 +12,7 @@ import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator.js";
 import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker.js";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
-import { Object3D } from "three";
-// import About from "./2D/About";
+import About from "./2D/About";
 
 let camera, glScene, cssScene, glRenderer, cssRenderer, controls, container;
 let cubeGenerator, pmremGenerator, pmremCubeUVPacker;
@@ -36,8 +35,8 @@ let BOUNDS = 256;
 let zPosition2D = -2000;
 
 class Home extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       show2D: false
     };
@@ -104,6 +103,15 @@ class Home extends Component {
     const element = document.createElement("img");
     element.src = "textures/star.png";
 
+    // const refComponent = React.createElement(About);
+    // console.log("refComponent", refComponent);
+    // const refComponent = document.createElement("About", {
+    //   ref: this.aboutRef
+    // });
+    // const refComponent = document.createElement("div");
+    // const comp = About;
+    // refComponent.appendChild(About);
+
     const div = document.createElement("h1");
     const node = document.createTextNode("Insert 2D Content Here!");
     div.appendChild(node);
@@ -111,6 +119,7 @@ class Home extends Component {
     // var cssObject = new CSS3DObject(element);
     const cssObject = new CSS3DObject(div);
     cssObject.position.z = zPosition2D;
+
     return cssObject;
   };
 
@@ -211,7 +220,6 @@ class Home extends Component {
               child.material = new THREE.MeshStandardMaterial(iconParams);
               child.scale.copy(scale);
               child.callback = () => onClick();
-              console.log("child", child);
               logo = child;
             }
           });
@@ -479,49 +487,6 @@ class Home extends Component {
       }
     }
   };
-  // rayCast = () => {
-  //   if (mouseMoved && logo && about && contact && projects && client) {
-  //     var uniforms = heightmapVariable.material.uniforms;
-  //     raycaster.setFromCamera(mouseCoords, camera);
-  //     var intersectWater = raycaster.intersectObject(meshRay);
-  //     // raycast water
-  //     if (intersectWater.length > 0) {
-  //       // console.log("intersected water");
-  //       var point = intersectWater[0].point;
-  //       uniforms["mousePos"].value.set(point.x, point.z);
-  //     } else {
-  //       uniforms["mousePos"].value.set(10000, 10000);
-  //     }
-  //     mouseMoved = false;
-  //     var intersectButtons = raycaster.intersectObjects([
-  //       logo,
-  //       about,
-  //       contact,
-  //       projects,
-  //       client
-  //     ]);
-  //     // raycast buttons
-  //     if (intersectButtons.length > 0) {
-  //       if (intersected !== intersectButtons[0].object) {
-  //         if (intersected) {
-  //           intersected.material.emissive.setHex(intersected.currentHex);
-  //         }
-  //         intersected = intersectButtons[0].object;
-  //         intersected.currentHex = intersected.material.emissive.getHex();
-  //         intersected.material.emissive.setHex(0xff0000);
-  //         console.log("intersected button");
-  //       }
-  //     } else {
-  //       if (intersected)
-  //         intersected.material.emissive.setHex(intersected.currentHex);
-  //       intersected = null;
-  //     }
-  //   }
-  //   gpuCompute.compute();
-  //   waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
-  //     heightmapVariable
-  //   ).texture;
-  // };
 
   update = () => {
     requestAnimationFrame(this.update);
@@ -559,7 +524,7 @@ class Home extends Component {
           intersected = intersectButtons[0].object;
           intersected.currentHex = intersected.material.emissive.getHex();
           intersected.material.emissive.setHex(0xff0000);
-          console.log("intersected button");
+          // console.log("intersected button");
         }
       } else {
         if (intersected)
@@ -573,15 +538,10 @@ class Home extends Component {
     ).texture;
   };
 
-  // Document functions --> should be moved to parent component
   onDocumentMouseDown = event => {
     event.preventDefault();
     this.setMouseCoords(event.clientX, event.clientY);
-    console.log("generic click");
-    // mouseCoords.x = (event.clientX / window.innerWidth) * 2 - 1;
-    // mouseCoords.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    // raycaster.setFromCamera(mouseCoords, camera);
-
+    // console.log("generic click");
     const intersectButtonsMd = raycaster.intersectObjects([
       logo,
       about,
@@ -591,19 +551,11 @@ class Home extends Component {
     ]);
     if (intersectButtonsMd.length > 0) {
       if (intersectButtonsMd[0].object.callback) {
-        // console.log("hasCallBack!")
         intersectButtonsMd[0].object.callback();
-        console.log(intersectButtonsMd[0].object);
+        // console.log(intersectButtonsMd[0].object);
       }
     }
   };
-  // document.addEventListener('mousedown', onDocumentMouseDown, false);
-
-  // Object callback function
-  // clickButton = objectName => {
-  //   console.log("Objected has been clicked:" + objectName);
-  //   this.onClick();
-  // };
 
   onWindowResize = () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -645,7 +597,7 @@ class Home extends Component {
         new THREE.Vector3(0, 0, 0)
       );
     }
-    return <div ref={container} />;
+    return <div ref={this.mount} />;
   }
 }
 
