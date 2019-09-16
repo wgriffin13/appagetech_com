@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import * as THREE from "three";
-import Stats from 'three/examples/jsm/libs/stats.module.js';
-import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
-import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import LandingTransition from './LandingTransition';
 import HomeTransition from './HomeTransition';
 
-var container, stats;
+var container;
 var renderer;
 var transition;
 var transitionParams = {
