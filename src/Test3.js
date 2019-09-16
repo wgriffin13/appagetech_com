@@ -524,7 +524,6 @@ class Test3 extends Component {
   // });
 
   update = () => {
-    // controls.update();
     requestAnimationFrame(this.update);
     glRenderer.render(glScene, camera);
     cssRenderer.render(cssScene, camera);
