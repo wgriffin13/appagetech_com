@@ -42,12 +42,10 @@ class Home extends Component {
     };
   }
   componentDidMount() {
-    console.log("mounted");
     this.initialize();
     this.loadAssets();
     this.initWater();
     this.update();
-    // this.rayCast();
     this.lighting();
   }
 
@@ -164,10 +162,13 @@ class Home extends Component {
   };
   loadAssets = () => {
     let onClick = this.onClick.bind(this);
+
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
       .setPath("textures/")
       .load("diyHdri_04i.hdr", function(texture) {
+        // let scaleY = this.state.show2D ? new THREE.Vector3(1, 0.5, 1) : null;
+
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
           resolution: 512
         });
@@ -193,10 +194,11 @@ class Home extends Component {
           metalness: 1,
           roughness: 0.05
         };
-        const yPos = 0;
+        const yPos = 1.75;
         const zPos = 215;
         const zRot = null;
         const scale = new THREE.Vector3(1.3, 1.3, 1.3);
+        const scaleY = new THREE.Vector3(1, 0.5, 1);
 
         const logoType = new GLTFLoader().setPath("/models/");
         logoType.load("Logo_Type.glb", function(gltf) {
@@ -248,12 +250,14 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              child.scale.copy(scaleY);
               contact = child;
             }
           });
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
+
           glScene.add(gltf.scene);
           contact.callback = () => onClick();
         });
@@ -277,6 +281,7 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              child.scale.copy(scaleY);
               about = child;
             }
           });
@@ -307,6 +312,7 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              child.scale.copy(scaleY);
               projects = child;
             }
           });
@@ -337,6 +343,7 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              child.scale.copy(scaleY);
               client = child;
             }
           });
