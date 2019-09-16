@@ -18,7 +18,6 @@ var meshRay;
 var gpuCompute;
 var heightmapVariable;
 var waterUniforms;
-var smoothShader;
 var readWaterLevelShader;
 var readWaterLevelRenderTarget;
 var readWaterLevelImage;
@@ -347,11 +346,6 @@ export default function HomeTransition(renderer, clearColor) {
         if (error !== null) {
             console.error(error);
         }
-        // Create compute shader to smooth the water surface and velocity
-        smoothShader = gpuCompute.createShaderMaterial(
-        document.getElementById("smoothFragmentShader").textContent,
-            { smoothTexture: { value: null } }
-        );
         // Create compute shader to read water level
         readWaterLevelShader = gpuCompute.createShaderMaterial(
         document.getElementById("readWaterLevelFragmentShader").textContent,
@@ -409,7 +403,7 @@ export default function HomeTransition(renderer, clearColor) {
     // scene.background = cubeGenerator.renderTarget;
     scene.background = new THREE.Color(0xffffff);
     var renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
-	this.fbo = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );
+	  this.fbo = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );
     this.render = function ( delta, rtt ) {
         var uniforms = heightmapVariable.material.uniforms;
         if (mouseMoved) {
@@ -432,13 +426,13 @@ export default function HomeTransition(renderer, clearColor) {
             ).texture;
         renderer.setClearColor( this.clearColor );
         if ( rtt ) {
-			renderer.setRenderTarget( this.fbo );
-            renderer.clear()
-			renderer.render( scene, this.camera );
-		} else {
-			renderer.setRenderTarget( null );
-			renderer.render( scene, this.camera );
-		}
+          renderer.setRenderTarget( this.fbo );
+          renderer.clear()
+          renderer.render( scene, this.camera );
+        } else {
+          renderer.setRenderTarget( null );
+          renderer.render( scene, this.camera );
+        }
     }
 
     this.onDocumentTouchMove = event => {
