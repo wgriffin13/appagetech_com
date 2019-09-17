@@ -34,6 +34,8 @@ export default function HomeTransition(renderer, clearColor, container) {
     let WIDTH = 512;
     // Water size in system units
     let BOUNDS = 366;
+    // Object variables
+    let about;
 
     // Scene creation
     const scene = new THREE.Scene();
@@ -60,10 +62,10 @@ export default function HomeTransition(renderer, clearColor, container) {
     var object = new CSS3DObject( element );
     object.position.x = 0;
     object.position.y = 0;
-    object.position.z = 0;
-    object.rotation.x = Math.random();
-    object.rotation.y = Math.random();
-    object.rotation.z = Math.random();
+    object.position.z = 1000;
+    //object.rotation.x = Math.random();
+    //object.rotation.y = Math.random();
+    //object.rotation.z = Math.random();
     scene2.add( object );
 
     //
@@ -72,8 +74,9 @@ export default function HomeTransition(renderer, clearColor, container) {
     renderer2.domElement.style.position = 'absolute';
     renderer2.domElement.style.top = 0;
     container.appendChild( renderer2.domElement );
-    const renderCSS3D = () => {
-      renderer2.render( scene2, this.camera );
+    const shpwCSS3D = () => {
+      console.log('Callback works')
+      object.position.z = 0;
     }
 
     // Window functions
@@ -81,6 +84,7 @@ export default function HomeTransition(renderer, clearColor, container) {
         setMouseCoords(event.clientX, event.clientY);
     };
     document.addEventListener("mousemove", onDocumentMouseMove, false);
+
     const setMouseCoords = (x, y) => {
         mouseCoords.set(
         (x / renderer.domElement.clientWidth) * 2 - 1,
@@ -88,6 +92,24 @@ export default function HomeTransition(renderer, clearColor, container) {
         );
         mouseMoved = true;
     };
+
+    const onDocumentMouseDown = event => {
+      event.preventDefault();
+      setMouseCoords(event.clientX, event.clientY);
+      // console.log("generic click");
+      const intersectButtonsMd = raycaster.intersectObjects([
+        about,
+      ]);
+      if (intersectButtonsMd.length > 0) {
+        if (intersectButtonsMd[0].object.callback) {
+          console.log('requesting callback')
+          intersectButtonsMd[0].object.callback();
+          // console.log(intersectButtonsMd[0].object);
+        }
+      }
+    };
+    document.addEventListener("mousedown", onDocumentMouseDown, false);
+
     const onDocumentTouchStart = event => {
         if (event.touches.length === 1) {
         event.preventDefault();
@@ -95,6 +117,7 @@ export default function HomeTransition(renderer, clearColor, container) {
         }
     };
     document.addEventListener("touchstart", onDocumentTouchStart, false);
+
     const onDocumentTouchMove = event => {
         if (event.touches.length === 1) {
         event.preventDefault();
@@ -102,6 +125,7 @@ export default function HomeTransition(renderer, clearColor, container) {
         }
     };
     document.addEventListener("touchmove", onDocumentTouchMove, false);
+
     document.addEventListener(
       "keydown",
       function(event) {
@@ -228,6 +252,7 @@ export default function HomeTransition(renderer, clearColor, container) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              about = child;
             }
           });
           gltf.scene.position.x = -0.97;
@@ -235,6 +260,7 @@ export default function HomeTransition(renderer, clearColor, container) {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
+          about.callback = () => object.position.z = 0;
         });
 
         const projectsType = new GLTFLoader().setPath("/models/");
@@ -439,18 +465,18 @@ export default function HomeTransition(renderer, clearColor, container) {
 	  this.fbo = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, renderTargetParameters );
     this.render = function ( delta, rtt ) {
         var uniforms = heightmapVariable.material.uniforms;
-        if (mouseMoved) {
-            raycaster.setFromCamera(mouseCoords, this.camera);
-        var intersects = raycaster.intersectObject(meshRay);
-        if (intersects.length > 0) {
-            var point = intersects[0].point;
+        if (mouseMoved && about) {
+          raycaster.setFromCamera(mouseCoords, this.camera);
+          let intersectsWater = raycaster.intersectObject(meshRay);
+          if (intersectsWater.length > 0) {
+            var point = intersectsWater[0].point;
             uniforms["mousePos"].value.set(point.x, point.z);
-        } else {
+          } else {
             uniforms["mousePos"].value.set(10000, 10000);
-        }
-            mouseMoved = false;
+          }
+          mouseMoved = false;
         } else {
-            uniforms["mousePos"].value.set(10000, 10000);
+          uniforms["mousePos"].value.set(10000, 10000);
         }
         // Do the gpu computation
         gpuCompute.compute();
