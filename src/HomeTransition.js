@@ -53,6 +53,7 @@ export default function HomeTransition(renderer, clearColor, container) {
     var element = document.createElement( 'div' );
     element.style.width = '50px';
     element.style.height = '50px';
+    element.style.top = 0;
     element.style.opacity = 0.5;
     element.style.background = new THREE.Color( Math.random() * 0xffffff ).getStyle();
     element.id = "abouttest"
@@ -60,6 +61,9 @@ export default function HomeTransition(renderer, clearColor, container) {
     object.position.x = 0;
     object.position.y = 0;
     object.position.z = 0;
+    object.rotation.x = Math.random();
+    object.rotation.y = Math.random();
+    object.rotation.z = Math.random();
     scene2.add( object );
 
     //
@@ -114,7 +118,7 @@ export default function HomeTransition(renderer, clearColor, container) {
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
       .setPath("textures/")
-      .load("diyHdri_04d.hdr", function(texture) {
+      .load("diyHdri_04i.hdr", function(texture) {
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
           resolution: 1024
         });
@@ -140,10 +144,10 @@ export default function HomeTransition(renderer, clearColor, container) {
         };
         const iconParams = {
           envMap: hdrEnvMap,
-          envMapIntensity: 1,
+          envMapIntensity: 5,
           // emissive: 0xfff000,
           // emissiveIntensity: 0.2,
-          color: 0xfad44b,
+          color: 0x694112,
           metalness: 0.95,
           roughness: 0.1
         };
