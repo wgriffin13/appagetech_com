@@ -8,6 +8,9 @@ import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRe
 import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
 import About from './2D/About';
+import Contact from './2D/Contact';
+import Client from './2D/Client';
+import Projects from './2D/Projects';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -20,22 +23,20 @@ var gpuCompute;
 var heightmapVariable;
 var waterUniforms;
 var readWaterLevelShader;
-var readWaterLevelRenderTarget;
-var readWaterLevelImage;
-var waterNormal = new THREE.Vector3();
 var simplex = new SimplexNoise();
 
 export default function HomeTransition(renderer, clearColor, container) {
 
     // State variagels
-    let reactAboutRendered = false;
+    let reactRendered = false;
     // Water variables
+    let readWaterLevelImage, readWaterLevelRenderTarget;
     // Texture width for simulation
     let WIDTH = 512;
     // Water size in system units
     let BOUNDS = 366;
     // Object variables
-    let about;
+    let logo, about, contact, projects, client;
 
     // Scene creation
     const scene = new THREE.Scene();
@@ -48,35 +49,43 @@ export default function HomeTransition(renderer, clearColor, container) {
     this.camera.position.set(0, 0, 225);
     this.camera.lookAt(0, 0, 0)
 
-    // CSS RENDER EXAMPLE
+    // CSS Render
     const scene2 = new THREE.Scene();
-    //var material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: true, wireframeLinewidth: 1, side: THREE.DoubleSide } );
-    //
-    var element = document.createElement( 'div' );
-    element.style.width = '50px';
-    element.style.height = '50px';
-    element.style.top = 0;
-    element.style.opacity = 0.5;
-    element.style.background = new THREE.Color( Math.random() * 0xffffff ).getStyle();
-    element.id = "abouttest"
-    var object = new CSS3DObject( element );
-    object.position.x = 0;
-    object.position.y = 0;
-    object.position.z = 1000;
-    //object.rotation.x = Math.random();
-    //object.rotation.y = Math.random();
-    //object.rotation.z = Math.random();
-    scene2.add( object );
-
-    //
+    const reactComponents = ['about', 'contact', 'projects', 'client']
+    const reactComponentsObj = {};
+    reactComponents.forEach(item => {
+      let element = document.createElement( 'div' );
+      element.style.width = '50px';
+      element.style.height = '50px';
+      element.style.top = 0;
+      element.style.opacity = 1;
+      element.style.background = new THREE.Color( Math.random() * 0xffffff ).getStyle();
+      element.id = item
+      let object = new CSS3DObject( element );
+      object.position.x = 0;
+      object.position.y = 0;
+      object.position.z = 1000;
+      //object.rotation.x = Math.random();
+      //object.rotation.y = Math.random();
+      //object.rotation.z = Math.random();
+      scene2.add( object );
+      reactComponentsObj[item] = object;
+    })
+  
     const renderer2 = new CSS3DRenderer();
     renderer2.setSize( window.innerWidth, window.innerHeight );
     renderer2.domElement.style.position = 'absolute';
     renderer2.domElement.style.top = 0;
     container.appendChild( renderer2.domElement );
-    const shpwCSS3D = () => {
-      console.log('Callback works')
-      object.position.z = 0;
+
+    // CSS Show object function
+    const showCSS3D = (item) => {
+      reactComponentsObj[item].position.z = 0;
+    }
+    const hideAllCSS3D = () => {
+      Object.entries(reactComponentsObj).forEach(([key, value]) => {
+        value.position.z = 1000;
+      })
     }
 
     // Window functions
@@ -96,15 +105,12 @@ export default function HomeTransition(renderer, clearColor, container) {
     const onDocumentMouseDown = event => {
       event.preventDefault();
       setMouseCoords(event.clientX, event.clientY);
-      // console.log("generic click");
       const intersectButtonsMd = raycaster.intersectObjects([
-        about,
+        logo, about, contact, projects, client
       ]);
       if (intersectButtonsMd.length > 0) {
         if (intersectButtonsMd[0].object.callback) {
-          console.log('requesting callback')
           intersectButtonsMd[0].object.callback();
-          // console.log(intersectButtonsMd[0].object);
         }
       }
     };
@@ -178,12 +184,14 @@ export default function HomeTransition(renderer, clearColor, container) {
         const yPos = 0;
         const zPos = 215;
         const zRot = null;
+        const scale = new THREE.Vector3(1.3, 1.3, 1.3);
 
         const logoType = new GLTFLoader().setPath("/models/");
         logoType.load("Logo_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
+              child.scale.copy(scale);
             }
           });
           gltf.scene.position.x = -2.2;
@@ -198,6 +206,8 @@ export default function HomeTransition(renderer, clearColor, container) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              child.scale.copy(scale)
+              logo = child;
             }
           });
           gltf.scene.position.x = -2.2;
@@ -205,6 +215,7 @@ export default function HomeTransition(renderer, clearColor, container) {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
+          logo.callback = () => hideAllCSS3D();
         });
 
         const contactType = new GLTFLoader().setPath("/models/");
@@ -225,12 +236,14 @@ export default function HomeTransition(renderer, clearColor, container) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              contact = child;
             }
           });
           scene.add(gltf.scene);
           gltf.scene.position.y = yPos;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
+          contact.callback = () => showCSS3D('contact');
         });
 
         const aboutType = new GLTFLoader().setPath("/models/");
@@ -260,7 +273,7 @@ export default function HomeTransition(renderer, clearColor, container) {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
-          about.callback = () => object.position.z = 0;
+          about.callback = () => showCSS3D('about');
         });
 
         const projectsType = new GLTFLoader().setPath("/models/");
@@ -282,6 +295,7 @@ export default function HomeTransition(renderer, clearColor, container) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              projects = child;
             }
           });
           gltf.scene.position.x = 0.97;
@@ -289,6 +303,7 @@ export default function HomeTransition(renderer, clearColor, container) {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
+          projects.callback = () => showCSS3D('projects');
         });
 
         const clientType = new GLTFLoader().setPath("/models/");
@@ -310,6 +325,7 @@ export default function HomeTransition(renderer, clearColor, container) {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
+              client = child;
             }
           });
           gltf.scene.position.x = 1.94;
@@ -317,6 +333,7 @@ export default function HomeTransition(renderer, clearColor, container) {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           scene.add(gltf.scene);
+          client.callback = () => showCSS3D('client');
         });
         pmremGenerator.dispose();
         pmremCubeUVPacker.dispose();
@@ -492,10 +509,16 @@ export default function HomeTransition(renderer, clearColor, container) {
           renderer.setRenderTarget( null );
           renderer.render( scene, this.camera );
           renderer2.render( scene2, this.camera );
-          if (reactAboutRendered === false) {
+          if (reactRendered === false) {
             // React rendering after div is appended
-            const aboutElement = document.getElementById("abouttest")
+            const aboutElement = document.getElementById("about")
             ReactDOM.render(<About />, aboutElement)
+            const projectsElement = document.getElementById("projects")
+            ReactDOM.render(<Projects />, projectsElement)
+            const contactElement = document.getElementById("contact")
+            ReactDOM.render(<Contact />, contactElement)
+            const clientElement = document.getElementById("client")
+            ReactDOM.render(<Client />, clientElement)
           }
         }
     }
