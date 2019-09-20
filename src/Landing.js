@@ -148,7 +148,6 @@ class Landing extends Component {
           this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex();
           this.INTERSECTED.material.emissive.setHex(0xff0000);
           // console.log("intersected", this.INTERSECTED);
-          // console.log("icon ", icon);
         }
       } else {
         if (this.INTERSECTED)
