@@ -10,6 +10,7 @@ import TransitionExample from './TransitionExample';
 // import Test2 from "./Test2.js";
 // import Test3 from "./Test3.js";
 import * as serviceWorker from "./serviceWorker";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 ReactDOM.render(<Home />, document.getElementById("root"));
 

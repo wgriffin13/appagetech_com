@@ -1,31 +1,25 @@
 import React, { Component } from "react";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
 
 class About extends Component {
-  constructor(props) {
-    super(props);
-    this.aboutRef = React.createRef();
-  }
   render() {
     return (
-      <div ref={this.aboutRef}>
-        <h1>TEST 1-2-3 !!!</h1>
-      </div>
+      <Container>
+        <Row>
+          <Col>
+            <h1>About</h1>
+            <h4>About</h4>
+            <h6>About</h6>
+            <button>html button</button>
+            <Button variant="primary">BootStrap Primary</Button>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
-
-// export default function About() {
-//   return (
-//     <div>
-//       <h1>TEST 1-2-3 !!! </h1>
-//     </div>
-//   );
-// }
-
-// class About extends Component {
-//   render() {
-//     return <h1>TEST 1-2-3 !!!</h1>;
-//   }
-// }
 
 export default About;

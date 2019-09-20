@@ -7,7 +7,7 @@ import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/Equir
 import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator.js";
 import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker.js";
 
-let camera, cubeGenerator, renderer, type, icon, scene;
+let camera, cubeGenerator, renderer, type, icon, scene, mouse;
 
 class Landing extends Component {
   componentDidMount() {
@@ -18,7 +18,7 @@ class Landing extends Component {
   }
 
   sceneSetup = () => {
-    this.mouse = new THREE.Vector2();
+    mouse = new THREE.Vector2();
     scene = new THREE.Scene();
     this.container = document.createElement("div");
     document.body.appendChild(this.container);
@@ -109,11 +109,15 @@ class Landing extends Component {
     renderer.setPixelRatio(window.devicePixelRatio);
     // renderer.gammaOutput = true;
     this.container.appendChild(renderer.domElement);
-    this.controls = new OrbitControls(camera, renderer.domElement);
-    this.controls.target.set(0, 0, 0);
-    this.controls.update();
+    // this.controls = new OrbitControls(camera, renderer.domElement);
+    // this.controls.target.set(0, 0, 0);
+    // this.controls.update();
     document.addEventListener("mousemove", this.handeDocumentMouseMove, false);
     window.addEventListener("resize", this.onWindowResize, false);
+    document.addEventListener("mousemove", this.onDocumentMouseMove, false);
+    document.addEventListener("touchstart", this.onDocumentTouchStart, false);
+    document.addEventListener("touchmove", this.onDocumentTouchMove, false);
+    document.addEventListener("mousedown", this.onDocumentMouseDown, false);
   };
 
   onWindowResize = () => {
@@ -130,7 +134,7 @@ class Landing extends Component {
 
       // renderer.domElement.addEventListener( 'click', raycast, false );
       this.raycaster = new THREE.Raycaster();
-      this.raycaster.setFromCamera(this.mouse, camera);
+      this.raycaster.setFromCamera(mouse, camera);
       var intersects = this.raycaster.intersectObjects([icon, type], true);
 
       if (intersects.length > 0) {
@@ -143,8 +147,8 @@ class Landing extends Component {
           this.INTERSECTED = intersects[0].object;
           this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex();
           this.INTERSECTED.material.emissive.setHex(0xff0000);
-          console.log("intersected", this.INTERSECTED);
-          console.log("icon ", icon);
+          // console.log("intersected", this.INTERSECTED);
+          // console.log("icon ", icon);
         }
       } else {
         if (this.INTERSECTED)
@@ -154,7 +158,6 @@ class Landing extends Component {
         this.INTERSECTED = null;
       }
     }
-    // console.log(renderer.info.render.calls);
     renderer.render(scene, camera);
   };
 
@@ -163,7 +166,7 @@ class Landing extends Component {
     const starGeometry = new THREE.SphereGeometry(200, 10, 10);
 
     const materialOptions = {
-      size: 0.06, //I know this is the default, it's for you.  Play with it if you want.
+      size: 0.06,
       transparency: true,
       opacity: 0.7
     };
@@ -182,12 +185,41 @@ class Landing extends Component {
     const stars = new THREE.PointCloud(starGeometry, starStuff);
     scene.add(stars);
   };
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleWindowResize);
+    window.cancelAnimationFrame(this.requestID);
+    this.controls.dispose();
+  }
 
-  handeDocumentMouseMove = event => {
-    event.preventDefault();
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  onWindowResize = () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth, window.innerHeight);
   };
+  setMouseCoords = (x, y) => {
+    mouse.set(
+      (x / renderer.domElement.clientWidth) * 2 - 1,
+      -(y / renderer.domElement.clientHeight) * 2 + 1
+    );
+    this.mouse = true;
+  };
+  onDocumentMouseMove = event => {
+    this.setMouseCoords(event.clientX, event.clientY);
+  };
+  onDocumentTouchStart = event => {
+    if (event.touches.length === 1) {
+      event.preventDefault();
+      this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
+    }
+  };
+  onDocumentTouchMove = event => {
+    if (event.touches.length === 1) {
+      event.preventDefault();
+      this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
+    }
+  };
+
   componentWillUnmount() {
     window.removeEventListener("resize", this.handleWindowResize);
     window.cancelAnimationFrame(this.requestID);
