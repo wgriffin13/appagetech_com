@@ -380,11 +380,6 @@ class Home extends Component {
       });
   };
 
-        pmremGenerator.dispose();
-        pmremCubeUVPacker.dispose();
-      });
-  };
-
   initWater = () => {
     console.log("initWater fired!");
     console.log("showWater", this.state.showWater);
