@@ -34,27 +34,29 @@ let mouseCoords = new THREE.Vector2();
 let raycaster = new THREE.Raycaster();
 let WIDTH = 512;
 let BOUNDS = 256;
-let zPosition2D = -2000;
+
+//this sets 2D scale - <h4> should be 16px in hieght
+let zPosition2D = -2928;
+
+const reactComponents = ["about", "contact", "projects", "client"];
+let reactComponentsObj = {};
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       show2D: false,
-      showWater: true
+      showWater: true,
+      showComponent: null
     };
   }
   componentDidMount() {
     this.initialize();
     this.loadAssets();
     this.update();
-    this.lighting();
+    // this.lighting();
     console.log("CDM fired!");
   }
-
-  // componentDidUpdate() {
-  //   console.log("CDU fired!");
-  // }
 
   lighting = () => {
     const spotLight1 = new THREE.SpotLight(0xffffff, 1.2, 0, Math.PI / 3);
@@ -82,8 +84,9 @@ class Home extends Component {
   createCssRenderer = () => {
     var cssRenderer = new CSS3DRenderer();
     cssRenderer.setSize(window.innerWidth, window.innerHeight);
-    cssRenderer.domElement.style.position = "absolute";
-    cssRenderer.domElement.style.top = 0;
+    // cssRenderer.domElement.style.position = "absolute";
+    // cssRenderer.domElement.style.top = 0;
+    // cssRenderer.domElement.style.zIndex = zPosition2D;
     return cssRenderer;
   };
 
@@ -104,45 +107,32 @@ class Home extends Component {
     return mesh;
   };
 
-  createCssObject = () => {
-    const reactComponents = ["about", "contact", "projects", "client"];
-    const reactComponentsObj = {};
-    reactComponents.forEach(item => {
-      let element = document.createElement("div");
-      element.style.background = new THREE.Color(
-        Math.random() * 0xffffff
-      ).getStyle();
-      element.id = item;
-      let object = new CSS3DObject(element);
-      // object.position.x = 0;
-      // object.position.y = 0;
-      // object.position.z = 1000;
-      //object.rotation.x = Math.random();
-      //object.rotation.y = Math.random();
-      //object.rotation.z = Math.random();
-      cssScene.add(object);
-      reactComponentsObj[item] = object;
-    });
-
-    const element = document.createElement("img");
-    element.src = "textures/star.png";
-
+  createCssObject = elementId => {
     // const div = document.createElement("h1");
     // const node = document.createTextNode("Insert 2D Content Here!");
     // div.appendChild(node);
-
     // var cssObject = new CSS3DObject(element);
     // const cssObject = new CSS3DObject(div);
     // cssObject.position.z = zPosition2D;
-
     // return cssObject;
+    // const projectsElement = document.getElementById("projects")
+    // ReactDOM.render(<Projects />, projectsElement)
+    // const contactElement = document.getElementById("contact")
+    // ReactDOM.render(<Contact />, contactElement)
+    // const clientElement = document.getElementById("client")
+    // ReactDOM.render(<Client />, clientElement)
   };
 
   embed2DPage = (w, h, position, rotation) => {
     var plane = this.createPlane(w, h, position, rotation);
     glScene.add(plane);
-    var cssObject = this.createCssObject();
-    cssScene.add(cssObject);
+    const aboutElement = document.getElementById("about");
+    console.log("aboutElement", aboutElement);
+    ReactDOM.render(<About />, aboutElement);
+    // var cssObject = this.createCssObject();
+    // cssScene.add(reactComponentsObj["about"]);
+    cssScene.add(aboutElement);
+    // cssScene.add(cssObject);
   };
 
   initialize = () => {
@@ -168,6 +158,15 @@ class Home extends Component {
     // controls.update();
 
     // console.log("window.innerWidth", window.innerWidth);
+
+    reactComponents.forEach(item => {
+      let element = document.createElement("div");
+      element.id = item;
+      let object = new CSS3DObject(element);
+      object.position.z = zPosition2D;
+      cssScene.add(object);
+      reactComponentsObj[item] = object;
+    });
 
     window.addEventListener("resize", this.onWindowResize, false);
     document.addEventListener("mousemove", this.onDocumentMouseMove, false);
