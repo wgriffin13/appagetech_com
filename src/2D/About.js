@@ -14,18 +14,4 @@ class About extends Component {
   }
 }
 
-// export default function About() {
-//   return (
-//     <div>
-//       <h1>TEST 1-2-3 !!! </h1>
-//     </div>
-//   );
-// }
-
-// class About extends Component {
-//   render() {
-//     return <h1>TEST 1-2-3 !!!</h1>;
-//   }
-// }
-
 export default About;

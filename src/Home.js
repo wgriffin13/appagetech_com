@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import {
@@ -34,22 +35,26 @@ let raycaster = new THREE.Raycaster();
 let WIDTH = 512;
 let BOUNDS = 256;
 let zPosition2D = -2000;
-let navGroup = new THREE.Group();
-// let navGroup = new THREE.AnimationObjectGroup();
+
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      show2D: false
+      show2D: false,
+      showWater: true
     };
   }
   componentDidMount() {
     this.initialize();
     this.loadAssets();
-    this.initWater();
     this.update();
     this.lighting();
+    console.log("CDM fired!");
   }
+
+  // componentDidUpdate() {
+  //   console.log("CDU fired!");
+  // }
 
   lighting = () => {
     const spotLight1 = new THREE.SpotLight(0xffffff, 1.2, 0, Math.PI / 3);
@@ -100,27 +105,37 @@ class Home extends Component {
   };
 
   createCssObject = () => {
+    const reactComponents = ["about", "contact", "projects", "client"];
+    const reactComponentsObj = {};
+    reactComponents.forEach(item => {
+      let element = document.createElement("div");
+      element.style.background = new THREE.Color(
+        Math.random() * 0xffffff
+      ).getStyle();
+      element.id = item;
+      let object = new CSS3DObject(element);
+      // object.position.x = 0;
+      // object.position.y = 0;
+      // object.position.z = 1000;
+      //object.rotation.x = Math.random();
+      //object.rotation.y = Math.random();
+      //object.rotation.z = Math.random();
+      cssScene.add(object);
+      reactComponentsObj[item] = object;
+    });
+
     const element = document.createElement("img");
     element.src = "textures/star.png";
 
-    // const refComponent = React.createElement(About);
-    // console.log("refComponent", refComponent);
-    // const refComponent = document.createElement("About", {
-    //   ref: this.aboutRef
-    // });
-    // const refComponent = document.createElement("div");
-    // const comp = About;
-    // refComponent.appendChild(About);
-
-    const div = document.createElement("h1");
-    const node = document.createTextNode("Insert 2D Content Here!");
-    div.appendChild(node);
+    // const div = document.createElement("h1");
+    // const node = document.createTextNode("Insert 2D Content Here!");
+    // div.appendChild(node);
 
     // var cssObject = new CSS3DObject(element);
-    const cssObject = new CSS3DObject(div);
-    cssObject.position.z = zPosition2D;
+    // const cssObject = new CSS3DObject(div);
+    // cssObject.position.z = zPosition2D;
 
-    return cssObject;
+    // return cssObject;
   };
 
   embed2DPage = (w, h, position, rotation) => {
@@ -131,11 +146,12 @@ class Home extends Component {
   };
 
   initialize = () => {
+    console.log("initialize fired!");
     camera = new THREE.PerspectiveCamera(
       30,
       window.innerWidth / window.innerHeight,
       0.25,
-      10000
+      4000
     );
     camera.position.set(0, 0, 224);
     camera.lookAt(0, 0, 0);
@@ -147,8 +163,9 @@ class Home extends Component {
     cssRenderer.domElement.appendChild(glRenderer.domElement);
     glScene = new THREE.Scene();
     cssScene = new THREE.Scene();
-    controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.target.set(0, 0, 0);
+    // controls = new OrbitControls(camera, glRenderer.domElement);
+    // controls.target.set(0, 0, 0);
+    // controls.update();
 
     // console.log("window.innerWidth", window.innerWidth);
 
@@ -157,10 +174,12 @@ class Home extends Component {
     document.addEventListener("touchstart", this.onDocumentTouchStart, false);
     document.addEventListener("touchmove", this.onDocumentTouchMove, false);
     document.addEventListener("mousedown", this.onDocumentMouseDown, false);
+
+    this.initWater();
   };
   onClick = () => {
     console.log("clicked");
-    this.setState(() => ({ show2D: true }));
+    this.setState(() => ({ show2D: true, showWater: false }));
   };
   loadAssets = () => {
     let onClick = this.onClick.bind(this);
@@ -169,8 +188,6 @@ class Home extends Component {
       .setDataType(THREE.UnsignedByteType)
       .setPath("textures/")
       .load("diyHdri_04i.hdr", function(texture) {
-        // let scaleY = this.state.show2D ? new THREE.Vector3(1, 0.5, 1) : null;
-
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
           resolution: 512
         });
@@ -201,7 +218,6 @@ class Home extends Component {
         const zPos = 215;
         const zRot = null;
         const scale = new THREE.Vector3(1.3, 1.3, 1.3);
-        const scaleY = new THREE.Vector3(1, 0.5, 1);
 
         const logoTypeLoader = new GLTFLoader().setPath("/models/");
         logoTypeLoader.load("Logo_Type.glb", function(gltf) {
@@ -227,7 +243,7 @@ class Home extends Component {
               child.scale.copy(scale);
               child.callback = () => onClick();
               logo = child;
-              console.log("logo icon ", child);
+              // console.log("logo icon ", child);
             }
           });
           gltf.scene.position.x = -2.2;
@@ -256,9 +272,8 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
-              // child.scale.copy(scaleY);
               contact = child;
-              console.log("contact icon ", child);
+              // console.log("contact icon ", child);
             }
           });
           gltf.scene.position.y = yPos;
@@ -321,7 +336,6 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
-              // child.scale.copy(scaleY);
               projects = child;
             }
           });
@@ -353,7 +367,6 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
-              // child.scale.copy(scaleY);
               client = child;
             }
           });
@@ -364,42 +377,19 @@ class Home extends Component {
           glScene.add(gltf.scene);
           client.callback = () => onClick();
         });
-        // console.log("logoType", logoType);
-        // console.log("logoIcon", logoIcon);
+
         pmremGenerator.dispose();
         pmremCubeUVPacker.dispose();
       });
-    // if (
-    //   logo &&
-    //   logoType &&
-    //   about &&
-    //   aboutType &&
-    //   contact &&
-    //   contactType &&
-    //   projects &&
-    //   projectsType &&
-    //   client &&
-    //   clientType
-    // ) {
-    //   navGroup.add(
-    //     logo,
-    //     about,
-    //     contact,
-    //     projects,
-    //     client,
-    //     logoType,
-    //     aboutType,
-    //     contactType,
-    //     projectsType,
-    //     clientType
-    //   );
-    // }
-    // glScene.add(navGroup);
-    // console.log(navGroup);
   };
 
   initWater = () => {
-    const materialColor = 0xa7ebff;
+    console.log("initWater fired!");
+    console.log("showWater", this.state.showWater);
+    const zPos = this.state.showWater ? 0 : -5000;
+
+    // const materialColor = 0xa7ebff;
+    const materialColor = 0x000000;
     var geometry = new THREE.PlaneBufferGeometry(
       BOUNDS,
       BOUNDS,
@@ -434,7 +424,7 @@ class Home extends Component {
     waterMesh = new THREE.Mesh(geometry, material);
     waterMesh.matrixAutoUpdate = false;
     waterMesh.rotation.x = -Math.PI / 2;
-    // waterMesh.position.z = 1785;
+    waterMesh.position.z = zPos;
     waterMesh.updateMatrix();
     glScene.add(waterMesh);
     // THREE.Mesh just for mouse raycasting
@@ -444,10 +434,11 @@ class Home extends Component {
       new THREE.MeshBasicMaterial({ color: 0xffffff, visible: false })
     );
     // meshRay.rotation.x = -Math.PI / 2;
-    // meshRay.position.z = 0;
+    // meshRay.position.z = zPos;
     meshRay.matrixAutoUpdate = false;
     meshRay.updateMatrix();
     glScene.add(meshRay);
+
     gpuCompute = new GPUComputationRenderer(WIDTH, WIDTH, glRenderer);
     var heightmap0 = gpuCompute.createTexture();
     this.fillTexture(heightmap0);
@@ -499,6 +490,7 @@ class Home extends Component {
       stencilBuffer: false,
       depthBuffer: false
     });
+
     gpuCompute.compute();
     waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
       heightmapVariable
@@ -538,14 +530,9 @@ class Home extends Component {
     requestAnimationFrame(this.update);
     glRenderer.render(glScene, camera);
     cssRenderer.render(cssScene, camera);
-    // this.rayCast();
-    controls.update();
-    // console.log(navGroup);
 
     raycaster.setFromCamera(mouseCoords, camera);
     if (mouseMoved && logo && about && contact && projects && client) {
-      // console.log(client);
-
       var uniforms = heightmapVariable.material.uniforms;
       var intersectWater = raycaster.intersectObject(meshRay);
       // raycast water
@@ -581,44 +568,40 @@ class Home extends Component {
         intersected = null;
       }
     }
-    if (
-      logo &&
-      about &&
-      contact &&
-      projects &&
-      client &&
-      logoType &&
-      aboutType &&
-      contactType &&
-      projectsType &&
-      clientType
-    ) {
+    if (!this.state.showWater) {
+      const scaleY = new THREE.Vector3(1, 0.5, 1);
+      const scaleLogo = new THREE.Vector3(1, 1, 1);
+
+      logo.scale.copy(scaleLogo);
+      logoType.scale.copy(scaleLogo);
+      contact.scale.copy(scaleY);
+      projects.scale.copy(scaleY);
+      client.scale.copy(scaleY);
+      about.scale.copy(scaleY);
       if (logo.position.y <= 1.75) {
-        logo.position.y += 0.03;
-        about.position.y += 0.03;
-        contact.position.y += 0.03;
-        projects.position.y += 0.03;
-        client.position.y += 0.03;
-        logoType.position.y += 0.03;
-        aboutType.position.y += 0.03;
-        contactType.position.y += 0.03;
-        projectsType.position.y += 0.03;
-        clientType.position.y += 0.03;
+        logo.position.y += 0.3;
+        about.position.y += 0.3;
+        contact.position.y += 0.3;
+        projects.position.y += 0.3;
+        client.position.y += 0.3;
+        logoType.position.y += 0.3;
+        aboutType.position.y += 0.3;
+        contactType.position.y += 0.3;
+        projectsType.position.y += 0.3;
+        clientType.position.y += 0.3;
       }
-      // navGroup.position.y += 0.01;
-      // navGroup.translateY(0.01);
-      // console.log(navGroup);
     }
-    gpuCompute.compute();
-    waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
-      heightmapVariable
-    ).texture;
+    if (this.state.showWater) {
+      waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
+        heightmapVariable
+      ).texture;
+      gpuCompute.compute();
+    }
   };
 
   onDocumentMouseDown = event => {
     event.preventDefault();
     this.setMouseCoords(event.clientX, event.clientY);
-    // console.log("generic click");
     const intersectButtonsMd = raycaster.intersectObjects([
       logo,
       about,
@@ -634,12 +617,6 @@ class Home extends Component {
     }
   };
 
-  onWindowResize = () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    glRenderer.setSize(window.innerWidth, window.innerHeight);
-    cssRenderer.setSize(window.innerWidth, window.innerHeight);
-  };
   setMouseCoords = (x, y) => {
     mouseCoords.set(
       (x / glRenderer.domElement.clientWidth) * 2 - 1,
@@ -647,15 +624,25 @@ class Home extends Component {
     );
     mouseMoved = true;
   };
+
+  onWindowResize = () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    glRenderer.setSize(window.innerWidth, window.innerHeight);
+    cssRenderer.setSize(window.innerWidth, window.innerHeight);
+  };
+
   onDocumentMouseMove = event => {
     this.setMouseCoords(event.clientX, event.clientY);
   };
+
   onDocumentTouchStart = event => {
     if (event.touches.length === 1) {
       event.preventDefault();
       this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
     }
   };
+
   onDocumentTouchMove = event => {
     if (event.touches.length === 1) {
       event.preventDefault();
@@ -670,10 +657,11 @@ class Home extends Component {
       this.embed2DPage(
         window.innerWidth,
         window.innerHeight,
-        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, 200),
         new THREE.Vector3(0, 0, 0)
       );
     }
+
     return <div ref={this.mount} />;
   }
 }
