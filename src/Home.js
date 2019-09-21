@@ -34,6 +34,7 @@ let mouseCoords = new THREE.Vector2();
 let raycaster = new THREE.Raycaster();
 let WIDTH = 512;
 let BOUNDS = 256;
+let plane;
 
 //this sets 2D scale - <h4> should be 16px in hieght
 // let zPosition2D = -2928;
@@ -54,6 +55,7 @@ class Home extends Component {
       reactComponentsMounted: false
     };
   }
+
   componentDidMount() {
     this.initialize();
     this.loadAssets();
@@ -161,15 +163,28 @@ class Home extends Component {
     this.setState(() => ({ show2D: true, showWater: false }));
   };
 
+  hideAllReactComponents = () => {
+    cssRenderer.domElement.style.zIndex = -1;
+    glScene.remove(plane);
+    this.setState(({ show2D: false, showWater: true }));
+  }
+
   // Show react component
-  showReactComponent = () => {
-    this.setState(() => ({ show2D: true, showWater: false }));
+  // TODO: allow to show specific component
+  showReactComponent = (reactComponent) => {
+    this.setState(({ show2D: true, showWater: false }));
+    plane = this.createPlane(window.innerWidth,
+      window.innerHeight,
+      new THREE.Vector3(0, 0, 200),
+      new THREE.Vector3(0, 0, 0));
+    glScene.add(plane);
     cssRenderer.domElement.style.zIndex = 0;
   }
   
   loadAssets = () => {
     let onClick = this.onClick.bind(this);
     let showReactComponent = this.showReactComponent.bind(this);
+    let hideAllReactComponents = this.hideAllReactComponents.bind(this);
 
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
@@ -238,6 +253,7 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
+          logo.callback = () => hideAllReactComponents();
         });
 
         const contactTypeLoader = new GLTFLoader().setPath("/models/");
@@ -367,7 +383,7 @@ class Home extends Component {
         pmremCubeUVPacker.dispose();
       });
   };
-  
+
   initWater = () => {
     console.log("initWater fired!");
     console.log("showWater", this.state.showWater);
