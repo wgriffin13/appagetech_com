@@ -37,7 +37,6 @@ let BOUNDS = 256;
 //this sets 2D scale - <h4> should be 16px in hieght
 // let zPosition2D = -2928;
 let zPosition2D = -2200;
-
 const reactComponents = ["about", "contact", "projects", "client"];
 let reactComponentsObj = {};
 let aboutElement;
@@ -58,151 +57,6 @@ class Home extends Component {
     this.lighting();
     // console.log("CDM fired!");
   }
-
-  initialize = () => {
-    console.log("initialize fired!");
-    camera = new THREE.PerspectiveCamera(
-      30,
-      window.innerWidth / window.innerHeight,
-      0.25,
-      4000
-    );
-    camera.position.set(0, 0, 224);
-    camera.lookAt(0, 0, 0);
-    glRenderer = this.createGlRenderer();
-    cssRenderer = this.createCssRenderer();
-    container = document.createElement("div");
-    document.body.appendChild(container);
-    container.appendChild(cssRenderer.domElement);
-    cssRenderer.domElement.appendChild(glRenderer.domElement);
-    glScene = new THREE.Scene();
-    cssScene = new THREE.Scene();
-    // controls = new OrbitControls(camera, glRenderer.domElement);
-    // controls.target.set(0, 0, 0);
-    // controls.update();
-
-    reactComponents.forEach(item => {
-      let element = document.createElement("div");
-      element.id = item;
-      let object = new CSS3DObject(element);
-      object.position.z = zPosition2D;
-      cssScene.add(object);
-      reactComponentsObj[item] = object;
-    });
-
-    window.addEventListener("resize", this.onWindowResize, false);
-    document.addEventListener("mousemove", this.onDocumentMouseMove, false);
-    document.addEventListener("touchstart", this.onDocumentTouchStart, false);
-    document.addEventListener("touchmove", this.onDocumentTouchMove, false);
-    document.addEventListener("mousedown", this.onDocumentMouseDown, false);
-    cssRenderer.domElement.addEventListener("click", this.raycastCss, false);
-    cssRenderer.domElement.addEventListener(
-      "mousemove",
-      this.onDocumentMouseMoveCss,
-      false
-    );
-
-    this.initWater();
-  };
-
-  raycastCss = () => {
-    raycaster.setFromCamera(mouseCoords, camera);
-    let aboutObj = reactComponentsObj["about"];
-    console.log("aboutObj", aboutObj);
-    // if (aboutObj) {
-    // let intersectAbout = raycaster.intersectObjects(cssScene.children);
-    let intersectCss = raycaster.intersectObject(aboutObj);
-    if (intersectCss.length > 0) {
-      console.log("intersected About!!");
-    }
-    // }
-  };
-
-  update = () => {
-    requestAnimationFrame(this.update);
-    glRenderer.render(glScene, camera);
-    cssRenderer.render(cssScene, camera);
-    raycaster.setFromCamera(mouseCoords, camera);
-
-    if (mouseMoved && logo && about && contact && projects && client) {
-      var uniforms = heightmapVariable.material.uniforms;
-
-      // raycast water
-      var intersectWater = raycaster.intersectObject(meshRay);
-      if (intersectWater.length > 0) {
-        var point = intersectWater[0].point;
-        uniforms["mousePos"].value.set(point.x, point.z);
-      } else {
-        uniforms["mousePos"].value.set(10000, 10000);
-      }
-      mouseMoved = false;
-
-      if (this.state.showWater) {
-        waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
-          heightmapVariable
-        ).texture;
-        gpuCompute.compute();
-      }
-
-      // raycast buttons
-      var intersectButtons = raycaster.intersectObjects([
-        logo,
-        about,
-        contact,
-        projects,
-        client
-      ]);
-      if (intersectButtons.length > 0) {
-        if (intersected !== intersectButtons[0].object) {
-          if (intersected) {
-            intersected.material.emissive.setHex(intersected.currentHex);
-          }
-          intersected = intersectButtons[0].object;
-          intersected.currentHex = intersected.material.emissive.getHex();
-          intersected.material.emissive.setHex(0xff0000);
-          // console.log("intersected button");
-        }
-      } else {
-        if (intersected)
-          intersected.material.emissive.setHex(intersected.currentHex);
-        intersected = null;
-      }
-    }
-    //raycast cssScene
-
-    // let aboutObj = reactComponentsObj["about"];
-
-    // console.log("aboutObj", aboutObj);
-    let intersectCssChildren = raycaster.intersectObjects(cssScene.children);
-    if (intersectCssChildren.length > 0) {
-      console.log("intersected CssChildren!!");
-    }
-
-    //animates the navBar onClick
-    if (this.state.showWater === false) {
-      const scaleY = new THREE.Vector3(1, 0.5, 1);
-      const scaleLogo = new THREE.Vector3(1, 1, 1);
-
-      logo.scale.copy(scaleLogo);
-      logoType.scale.copy(scaleLogo);
-      contact.scale.copy(scaleY);
-      projects.scale.copy(scaleY);
-      client.scale.copy(scaleY);
-      about.scale.copy(scaleY);
-      if (logo.position.y <= 1.75) {
-        logo.position.y += 0.3;
-        about.position.y += 0.3;
-        contact.position.y += 0.3;
-        projects.position.y += 0.3;
-        client.position.y += 0.3;
-        logoType.position.y += 0.3;
-        aboutType.position.y += 0.3;
-        contactType.position.y += 0.3;
-        projectsType.position.y += 0.3;
-        clientType.position.y += 0.3;
-      }
-    }
-  };
 
   lighting = () => {
     const spotLight1 = new THREE.SpotLight(0xffffff, 1.2, 0, Math.PI / 3);
@@ -255,12 +109,53 @@ class Home extends Component {
     var plane = this.createPlane(w, h, position, rotation);
     glScene.add(plane);
     aboutElement = document.getElementById("about");
-    ReactDOM.render(<About />, aboutElement);
     cssScene.add(aboutElement);
+    ReactDOM.render(<About />, aboutElement);
+  };
+
+  initialize = () => {
+    console.log("initialize fired!");
+    camera = new THREE.PerspectiveCamera(
+      30,
+      window.innerWidth / window.innerHeight,
+      0.25,
+      4000
+    );
+    camera.position.set(0, 0, 224);
+    camera.lookAt(0, 0, 0);
+    glRenderer = this.createGlRenderer();
+    cssRenderer = this.createCssRenderer();
+    container = document.createElement("div");
+    document.body.appendChild(container);
+    container.appendChild(cssRenderer.domElement);
+    cssRenderer.domElement.appendChild(glRenderer.domElement);
+    glScene = new THREE.Scene();
+    cssScene = new THREE.Scene();
+    // controls = new OrbitControls(camera, glRenderer.domElement);
+    // controls.target.set(0, 0, 0);
+    // controls.update();
+
+    reactComponents.forEach(item => {
+      let element = document.createElement("div");
+      element.id = item;
+      let object = new CSS3DObject(element);
+      object.position.z = zPosition2D;
+      cssScene.add(object);
+      reactComponentsObj[item] = object;
+    });
+
+    window.addEventListener("resize", this.onWindowResize, false);
+    document.addEventListener("mousemove", this.onDocumentMouseMove, false);
+    document.addEventListener("touchstart", this.onDocumentTouchStart, false);
+    document.addEventListener("touchmove", this.onDocumentTouchMove, false);
+    document.addEventListener("mousedown", this.onDocumentMouseDown, false);
+    cssRenderer.domElement.addEventListener("click", this.raycast, false);
+
+    this.initWater();
   };
 
   onClick = () => {
-    console.log("this.onClick fired");
+    console.log("clicked");
     this.setState(() => ({ show2D: true, showWater: false }));
   };
 
@@ -606,6 +501,89 @@ class Home extends Component {
     }
   };
 
+  update = () => {
+    requestAnimationFrame(this.update);
+    glRenderer.render(glScene, camera);
+    cssRenderer.render(cssScene, camera);
+
+    raycaster.setFromCamera(mouseCoords, camera);
+    if (mouseMoved && logo && about && contact && projects && client) {
+      var uniforms = heightmapVariable.material.uniforms;
+      var intersectWater = raycaster.intersectObject(meshRay);
+      // raycast water
+      if (intersectWater.length > 0) {
+        // console.log("intersected water");
+        var point = intersectWater[0].point;
+        uniforms["mousePos"].value.set(point.x, point.z);
+      } else {
+        uniforms["mousePos"].value.set(10000, 10000);
+      }
+      mouseMoved = false;
+      var intersectButtons = raycaster.intersectObjects([
+        logo,
+        about,
+        contact,
+        projects,
+        client
+      ]);
+      // raycast buttons
+      if (intersectButtons.length > 0) {
+        if (intersected !== intersectButtons[0].object) {
+          if (intersected) {
+            intersected.material.emissive.setHex(intersected.currentHex);
+          }
+          intersected = intersectButtons[0].object;
+          intersected.currentHex = intersected.material.emissive.getHex();
+          intersected.material.emissive.setHex(0xff0000);
+          // console.log("intersected button");
+        }
+      } else {
+        if (intersected)
+          intersected.material.emissive.setHex(intersected.currentHex);
+        intersected = null;
+      }
+    }
+    let aboutObj = reactComponentsObj["about"];
+    if (aboutObj) {
+      // console.log("aboutObj", aboutObj);
+      let intersectAbout = raycaster.intersectObject(cssScene);
+      if (intersectAbout.length > 0) {
+        console.log("intersected About!!");
+      }
+    }
+
+    //animates the navBar onClick
+    if (!this.state.showWater) {
+      const scaleY = new THREE.Vector3(1, 0.5, 1);
+      const scaleLogo = new THREE.Vector3(1, 1, 1);
+
+      logo.scale.copy(scaleLogo);
+      logoType.scale.copy(scaleLogo);
+      contact.scale.copy(scaleY);
+      projects.scale.copy(scaleY);
+      client.scale.copy(scaleY);
+      about.scale.copy(scaleY);
+      if (logo.position.y <= 1.75) {
+        logo.position.y += 0.3;
+        about.position.y += 0.3;
+        contact.position.y += 0.3;
+        projects.position.y += 0.3;
+        client.position.y += 0.3;
+        logoType.position.y += 0.3;
+        aboutType.position.y += 0.3;
+        contactType.position.y += 0.3;
+        projectsType.position.y += 0.3;
+        clientType.position.y += 0.3;
+      }
+    }
+    if (this.state.showWater) {
+      waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
+        heightmapVariable
+      ).texture;
+      gpuCompute.compute();
+    }
+  };
+
   onDocumentMouseDown = event => {
     event.preventDefault();
     this.setMouseCoords(event.clientX, event.clientY);
@@ -624,21 +602,12 @@ class Home extends Component {
     }
   };
 
-  onDocumentMouseDownCss = event => {
-    // event.preventDefault();
-    this.setMouseCoords(event.clientX, event.clientY);
-    const intersectCssChildren = raycaster.intersectObjects(cssScene.children);
-    if (intersectCssChildren.length > 0) {
-      console.log("intersected CssChildren in onDocumentMouseDownCss!!");
-    }
-  };
-
   setMouseCoords = (x, y) => {
     mouseCoords.set(
-      // (x / cssRenderer.domElement.clientWidth) * 2 - 1,
-      // -(y / cssRenderer.domElement.clientHeight) * 2 + 1
-      (x / glRenderer.domElement.clientWidth) * 2 - 1,
-      -(y / glRenderer.domElement.clientHeight) * 2 + 1
+      (x / cssRenderer.domElement.clientWidth) * 2 - 1,
+      -(y / cssRenderer.domElement.clientHeight) * 2 + 1
+      // (x / glRenderer.domElement.clientWidth) * 2 - 1,
+      // -(y / glRenderer.domElement.clientHeight) * 2 + 1
     );
     mouseMoved = true;
   };
