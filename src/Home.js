@@ -42,7 +42,7 @@ let zPosition2D = -2200;
 const reactComponents = ["about", "contact", "projects", "client"];
 let reactComponentsObj = {};
 
-let aboutElement, rNode;
+let aboutElement;
 
 class Home extends Component {
   constructor(props) {
@@ -112,10 +112,7 @@ class Home extends Component {
     var plane = this.createPlane(w, h, position, rotation);
     glScene.add(plane);
     aboutElement = document.getElementById("about");
-    // const cssObj = new CSS3DObject(aboutElement);
-
     cssScene.add(aboutElement);
-
     ReactDOM.render(<About />, aboutElement);
   };
 

@@ -5,16 +5,28 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
 class About extends Component {
+  constructor() {
+    super();
+    this.state = {
+      showComment: false
+    };
+  }
   render() {
     return (
       <Container>
         <Row>
           <Col>
-            <h1>About</h1>
-            <h4>About</h4>
-            <h6>About</h6>
+            <h1>h1: About</h1>
+            <h4>h4: About</h4>
+            <h6>h6: About</h6>
             <button>html button</button>
-            <Button variant="primary">BootStrap Primary</Button>
+            <Button
+              variant="primary"
+              onClick={() => this.setState({ showComment: true })}
+            >
+              BootStrap Primary
+            </Button>
+            {this.state.showComment ? <h1>Button Triggered!!!</h1> : null}
           </Col>
         </Row>
       </Container>
