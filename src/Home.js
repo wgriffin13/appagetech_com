@@ -50,7 +50,8 @@ class Home extends Component {
     this.state = {
       show2D: false,
       showWater: true,
-      showComponent: null
+      showComponent: null,
+      reactComponentsMounted: false
     };
   }
   componentDidMount() {
@@ -78,7 +79,7 @@ class Home extends Component {
     glRenderer.setPixelRatio(window.devicePixelRatio);
     glRenderer.setSize(window.innerWidth, window.innerHeight);
     glRenderer.domElement.style.position = "absolute";
-    glRenderer.domElement.style.zIndex = 1;
+    //glRenderer.domElement.style.zIndex = 1;
     glRenderer.domElement.style.top = 0;
     return glRenderer;
   };
@@ -87,6 +88,7 @@ class Home extends Component {
     var cssRenderer = new CSS3DRenderer();
     cssRenderer.setSize(window.innerWidth, window.innerHeight);
     cssRenderer.domElement.style.position = "absolute";
+    cssRenderer.domElement.style.zIndex = -1;
     cssRenderer.domElement.style.top = 0;
     return cssRenderer;
   };
@@ -130,13 +132,11 @@ class Home extends Component {
     cssRenderer = this.createCssRenderer();
     container = document.createElement("div");
     document.body.appendChild(container);
+    container.appendChild(glRenderer.domElement);
     container.appendChild(cssRenderer.domElement);
-    cssRenderer.domElement.appendChild(glRenderer.domElement);
+    //cssRenderer.domElement.appendChild(glRenderer.domElement);
     glScene = new THREE.Scene();
     cssScene = new THREE.Scene();
-    // controls = new OrbitControls(camera, glRenderer.domElement);
-    // controls.target.set(0, 0, 0);
-    // controls.update();
 
     reactComponents.forEach(item => {
       let element = document.createElement("div");
@@ -155,12 +155,21 @@ class Home extends Component {
 
     this.initWater();
   };
+
   onClick = () => {
     console.log("clicked");
     this.setState(() => ({ show2D: true, showWater: false }));
   };
+
+  // Show react component
+  showReactComponent = () => {
+    this.setState(() => ({ show2D: true, showWater: false }));
+    cssRenderer.domElement.style.zIndex = 0;
+  }
+  
   loadAssets = () => {
     let onClick = this.onClick.bind(this);
+    let showReactComponent = this.showReactComponent.bind(this);
 
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
@@ -290,7 +299,7 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
-          about.callback = () => onClick();
+          about.callback = () => showReactComponent();
         });
 
         const projectsTypeLoader = new GLTFLoader().setPath("/models/");
@@ -358,7 +367,7 @@ class Home extends Component {
         pmremCubeUVPacker.dispose();
       });
   };
-
+  
   initWater = () => {
     console.log("initWater fired!");
     console.log("showWater", this.state.showWater);
@@ -505,8 +514,13 @@ class Home extends Component {
   update = () => {
     requestAnimationFrame(this.update);
     glRenderer.render(glScene, camera);
-    //cssRenderer.render(cssScene, camera);
-
+    cssRenderer.render(cssScene, camera);
+    if (this.state.reactComponentsMounted === false) {
+      aboutElement = document.getElementById("about");
+      ReactDOM.render(<About />, aboutElement);
+      //reactComponentsObj['about'].position.z = 0;
+      this.setState({ reactComponentsMounted: true })
+    }
     raycaster.setFromCamera(mouseCoords, camera);
     if (mouseMoved && logo && about && contact && projects && client) {
       var uniforms = heightmapVariable.material.uniforms;
@@ -545,12 +559,6 @@ class Home extends Component {
       }
     }
     let aboutObj = reactComponentsObj["about"];
-    if (aboutObj) {
-      let intersectAbout = raycaster.intersectObject(aboutObj);
-      // if (intersectAbout) {
-      //   console.log("intersected About!!");
-      // }
-    }
     //animates the navBar onClick
     if (!this.state.showWater) {
       const scaleY = new THREE.Vector3(1, 0.5, 1);
@@ -637,15 +645,7 @@ class Home extends Component {
     window.removeEventListener("resize", this.onWindowResize);
   }
   render() {
-    if (this.state.show2D) {
-      this.embed2DPage(
-        window.innerWidth,
-        window.innerHeight,
-        new THREE.Vector3(0, 0, 200),
-        new THREE.Vector3(0, 0, 0)
-      );
-    }
-
+    
     return <div ref={this.mount} />;
   }
 }
