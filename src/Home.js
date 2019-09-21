@@ -36,10 +36,13 @@ let WIDTH = 512;
 let BOUNDS = 256;
 
 //this sets 2D scale - <h4> should be 16px in hieght
-let zPosition2D = -2928;
+// let zPosition2D = -2928;
+let zPosition2D = -2200;
 
 const reactComponents = ["about", "contact", "projects", "client"];
 let reactComponentsObj = {};
+
+let aboutElement;
 
 class Home extends Component {
   constructor(props) {
@@ -54,13 +57,13 @@ class Home extends Component {
     this.initialize();
     this.loadAssets();
     this.update();
-    // this.lighting();
-    console.log("CDM fired!");
+    this.lighting();
+    // console.log("CDM fired!");
   }
 
   lighting = () => {
     const spotLight1 = new THREE.SpotLight(0xffffff, 1.2, 0, Math.PI / 3);
-    spotLight1.position.set(0, 0, 100);
+    spotLight1.position.set(0, -500, 100);
     spotLight1.lookAt(0, 0, 0);
     spotLight1.penumbra = 1;
     spotLight1.angle = 1;
@@ -71,7 +74,6 @@ class Home extends Component {
 
   createGlRenderer = () => {
     var glRenderer = new THREE.WebGLRenderer({ alpha: true });
-    //  setClearColor ( bg color , opacity )
     glRenderer.setClearColor(0xecf8ff, 1);
     glRenderer.setPixelRatio(window.devicePixelRatio);
     glRenderer.setSize(window.innerWidth, window.innerHeight);
@@ -84,9 +86,8 @@ class Home extends Component {
   createCssRenderer = () => {
     var cssRenderer = new CSS3DRenderer();
     cssRenderer.setSize(window.innerWidth, window.innerHeight);
-    // cssRenderer.domElement.style.position = "absolute";
-    // cssRenderer.domElement.style.top = 0;
-    // cssRenderer.domElement.style.zIndex = zPosition2D;
+    cssRenderer.domElement.style.position = "absolute";
+    cssRenderer.domElement.style.top = 0;
     return cssRenderer;
   };
 
@@ -107,32 +108,12 @@ class Home extends Component {
     return mesh;
   };
 
-  createCssObject = elementId => {
-    // const div = document.createElement("h1");
-    // const node = document.createTextNode("Insert 2D Content Here!");
-    // div.appendChild(node);
-    // var cssObject = new CSS3DObject(element);
-    // const cssObject = new CSS3DObject(div);
-    // cssObject.position.z = zPosition2D;
-    // return cssObject;
-    // const projectsElement = document.getElementById("projects")
-    // ReactDOM.render(<Projects />, projectsElement)
-    // const contactElement = document.getElementById("contact")
-    // ReactDOM.render(<Contact />, contactElement)
-    // const clientElement = document.getElementById("client")
-    // ReactDOM.render(<Client />, clientElement)
-  };
-
   embed2DPage = (w, h, position, rotation) => {
     var plane = this.createPlane(w, h, position, rotation);
     glScene.add(plane);
-    const aboutElement = document.getElementById("about");
-    console.log("aboutElement", aboutElement);
-    ReactDOM.render(<About />, aboutElement);
-    // var cssObject = this.createCssObject();
-    // cssScene.add(reactComponentsObj["about"]);
+    aboutElement = document.getElementById("about");
     cssScene.add(aboutElement);
-    // cssScene.add(cssObject);
+    ReactDOM.render(<About />, aboutElement);
   };
 
   initialize = () => {
@@ -156,8 +137,6 @@ class Home extends Component {
     // controls = new OrbitControls(camera, glRenderer.domElement);
     // controls.target.set(0, 0, 0);
     // controls.update();
-
-    // console.log("window.innerWidth", window.innerWidth);
 
     reactComponents.forEach(item => {
       let element = document.createElement("div");
@@ -526,7 +505,7 @@ class Home extends Component {
   update = () => {
     requestAnimationFrame(this.update);
     glRenderer.render(glScene, camera);
-    cssRenderer.render(cssScene, camera);
+    //cssRenderer.render(cssScene, camera);
 
     raycaster.setFromCamera(mouseCoords, camera);
     if (mouseMoved && logo && about && contact && projects && client) {
@@ -565,6 +544,14 @@ class Home extends Component {
         intersected = null;
       }
     }
+    let aboutObj = reactComponentsObj["about"];
+    if (aboutObj) {
+      let intersectAbout = raycaster.intersectObject(aboutObj);
+      // if (intersectAbout) {
+      //   console.log("intersected About!!");
+      // }
+    }
+    //animates the navBar onClick
     if (!this.state.showWater) {
       const scaleY = new THREE.Vector3(1, 0.5, 1);
       const scaleLogo = new THREE.Vector3(1, 1, 1);
