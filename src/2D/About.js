@@ -11,6 +11,7 @@ class About extends Component {
       showComment: false
     };
   }
+
   render() {
     return (
       <Container>

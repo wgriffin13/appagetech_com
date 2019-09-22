@@ -36,7 +36,7 @@ let WIDTH = 512;
 let BOUNDS = 256;
 //this sets 2D scale - <h4> should be 16px in hieght
 // let zPosition2D = -2928;
-let zPosition2D = -2200;
+let zPosition2D = -1800;
 
 const reactComponents = ["about", "contact", "projects", "client"];
 let reactComponentsObj = {};
