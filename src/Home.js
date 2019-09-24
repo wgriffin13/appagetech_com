@@ -14,6 +14,10 @@ import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker.js
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
 import About from "./2D/About";
+import Client from "./2D/Client";
+import Contact from "./2D/Contact";
+import Projects from "./2D/Projects";
+import LandingTransition from "./LandingTransition";
 
 let camera, glScene, cssScene, glRenderer, cssRenderer, controls, container;
 let cubeGenerator, pmremGenerator, pmremCubeUVPacker;
@@ -35,10 +39,12 @@ let raycaster = new THREE.Raycaster();
 let WIDTH = 512;
 let BOUNDS = 256;
 let plane;
+let landingScene;
 
 //this sets 2D scale - <h4> should be 16px in hieght
 // let zPosition2D = -2928;
 let zPosition2D = -2200;
+let offScreenZPosition2D = 10000;
 
 const reactComponents = ["about", "contact", "projects", "client"];
 let reactComponentsObj = {};
@@ -52,7 +58,10 @@ class Home extends Component {
       show2D: false,
       showWater: true,
       showComponent: null,
-      reactComponentsMounted: false
+      reactComponentsMounted: false,
+      landingPage: true,
+      navPosition: 'middle',
+      moveNavBar: false
     };
   }
 
@@ -81,7 +90,6 @@ class Home extends Component {
     glRenderer.setPixelRatio(window.devicePixelRatio);
     glRenderer.setSize(window.innerWidth, window.innerHeight);
     glRenderer.domElement.style.position = "absolute";
-    //glRenderer.domElement.style.zIndex = 1;
     glRenderer.domElement.style.top = 0;
     return glRenderer;
   };
@@ -112,16 +120,16 @@ class Home extends Component {
     return mesh;
   };
 
-  embed2DPage = (w, h, position, rotation) => {
-    var plane = this.createPlane(w, h, position, rotation);
-    glScene.add(plane);
-    aboutElement = document.getElementById("about");
-    cssScene.add(aboutElement);
-    ReactDOM.render(<About />, aboutElement);
-  };
+  toggleTransition = () => {
+		if (this.state.landingPage === true) {
+			this.setState({ landingPage: false})
+		} else {
+			this.setState({ landingPage: true})
+		}
+	}
 
   initialize = () => {
-    console.log("initialize fired!");
+    //console.log("initialize fired!");
     camera = new THREE.PerspectiveCamera(
       30,
       window.innerWidth / window.innerHeight,
@@ -140,11 +148,15 @@ class Home extends Component {
     glScene = new THREE.Scene();
     cssScene = new THREE.Scene();
 
+    // Landing scene
+    landingScene = new LandingTransition( glRenderer, 0xffffff, this.toggleTransition );
+
     reactComponents.forEach(item => {
       let element = document.createElement("div");
       element.id = item;
       let object = new CSS3DObject(element);
-      object.position.z = zPosition2D;
+      // Hides the element off camera => z = 10,000
+      object.position.z = offScreenZPosition2D;
       cssScene.add(object);
       reactComponentsObj[item] = object;
     });
@@ -163,23 +175,30 @@ class Home extends Component {
     this.setState(() => ({ show2D: true, showWater: false }));
   };
 
+  // Attached to logo to hide everything
   hideAllReactComponents = () => {
     cssRenderer.domElement.style.zIndex = -1;
     glScene.remove(plane);
-    this.setState(({ show2D: false, showWater: true }));
-  }
+    this.setState({ moveNavBar: true, show2D: false, showWater: true });
+    Object.entries(reactComponentsObj).forEach(([key, value]) => value.position.z = offScreenZPosition2D)
+  };
 
   // Show react component
-  // TODO: allow to show specific component
-  showReactComponent = (reactComponent) => {
-    this.setState(({ show2D: true, showWater: false }));
-    plane = this.createPlane(window.innerWidth,
-      window.innerHeight,
-      new THREE.Vector3(0, 0, 200),
-      new THREE.Vector3(0, 0, 0));
-    glScene.add(plane);
-    cssRenderer.domElement.style.zIndex = 0;
-  }
+  showReactComponent = (reactComponentName) => {
+    // Checks a second click: is the CSS renderer is visible
+    if (parseInt(cssRenderer.domElement.style.zIndex, 10) === 0) {
+      this.hideAllReactComponents()
+    } else {
+      reactComponentsObj[reactComponentName].position.z = zPosition2D;
+      this.setState(({ moveNavBar: true, show2D: true, showWater: false }));
+      plane = this.createPlane(window.innerWidth,
+        window.innerHeight,
+        new THREE.Vector3(0, 0, 200),
+        new THREE.Vector3(0, 0, 0));
+      glScene.add(plane);
+      cssRenderer.domElement.style.zIndex = 0;
+    }
+  };
   
   loadAssets = () => {
     let onClick = this.onClick.bind(this);
@@ -283,7 +302,7 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
-          contact.callback = () => onClick();
+          contact.callback = () => showReactComponent('contact');
         });
 
         const aboutTypeLoader = new GLTFLoader().setPath("/models/");
@@ -315,7 +334,7 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
-          about.callback = () => showReactComponent();
+          about.callback = () => showReactComponent('about');
         });
 
         const projectsTypeLoader = new GLTFLoader().setPath("/models/");
@@ -346,7 +365,7 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
-          projects.callback = () => onClick();
+          projects.callback = () => showReactComponent('projects');
         });
 
         const clientTypeLoader = new GLTFLoader().setPath("/models/");
@@ -377,7 +396,7 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
-          client.callback = () => onClick();
+          client.callback = () => showReactComponent('client');
         });
         pmremGenerator.dispose();
         pmremCubeUVPacker.dispose();
@@ -527,83 +546,126 @@ class Home extends Component {
     }
   };
 
+  checkNavBarMove = () => {
+    if (this.state.navPosition === 'middle') {
+      // Moving navbar up
+      if (this.state.moveNavBar === true) {
+        const scaleY = new THREE.Vector3(1, 0.5, 1);
+        const scaleLogo = new THREE.Vector3(1, 1, 1);
+        logo.scale.copy(scaleLogo);
+        logoType.scale.copy(scaleLogo);
+        contact.scale.copy(scaleY);
+        projects.scale.copy(scaleY);
+        client.scale.copy(scaleY);
+        about.scale.copy(scaleY);
+        if (logo.position.y <= 1.75) {
+          logo.position.y += 0.3;
+          about.position.y += 0.3;
+          contact.position.y += 0.3;
+          projects.position.y += 0.3;
+          client.position.y += 0.3;
+          logoType.position.y += 0.3;
+          aboutType.position.y += 0.3;
+          contactType.position.y += 0.3;
+          projectsType.position.y += 0.3;
+          clientType.position.y += 0.3;
+        } else {
+          this.setState({ moveNavBar: false, navPosition: 'top' });
+        }
+      }
+    } else if (this.state.navPosition === 'top') {
+      // Moving navbar down
+      if (this.state.moveNavBar === true) {
+        const scaleY = new THREE.Vector3(1, 1, 1);
+        const scaleLogo = new THREE.Vector3(1.3, 1.3, 1.3);
+        logo.scale.copy(scaleLogo);
+        logoType.scale.copy(scaleLogo);
+        contact.scale.copy(scaleY);
+        projects.scale.copy(scaleY);
+        client.scale.copy(scaleY);
+        about.scale.copy(scaleY);
+        if (logo.position.y >= 0) {
+          logo.position.y -= 0.3;
+          about.position.y -= 0.3;
+          contact.position.y -= 0.3;
+          projects.position.y -= 0.3;
+          client.position.y -= 0.3;
+          logoType.position.y -= 0.3;
+          aboutType.position.y -= 0.3;
+          contactType.position.y -= 0.3;
+          projectsType.position.y -= 0.3;
+          clientType.position.y -= 0.3;
+        } else {
+          this.setState({ moveNavBar: false, navPosition: 'middle' });
+        }
+      }
+    }
+  };
+
   update = () => {
     requestAnimationFrame(this.update);
-    glRenderer.render(glScene, camera);
-    cssRenderer.render(cssScene, camera);
-    if (this.state.reactComponentsMounted === false) {
-      aboutElement = document.getElementById("about");
-      ReactDOM.render(<About />, aboutElement);
-      //reactComponentsObj['about'].position.z = 0;
-      this.setState({ reactComponentsMounted: true })
-    }
-    raycaster.setFromCamera(mouseCoords, camera);
-    if (mouseMoved && logo && about && contact && projects && client) {
-      var uniforms = heightmapVariable.material.uniforms;
-      var intersectWater = raycaster.intersectObject(meshRay);
-      // raycast water
-      if (intersectWater.length > 0) {
-        // console.log("intersected water");
-        var point = intersectWater[0].point;
-        uniforms["mousePos"].value.set(point.x, point.z);
-      } else {
-        uniforms["mousePos"].value.set(10000, 10000);
+    if (this.state.landingPage) {
+      landingScene.render();
+    } else {
+      glRenderer.render(glScene, camera);
+      cssRenderer.render(cssScene, camera);
+      if (this.state.reactComponentsMounted === false) {
+        const aboutElement = document.getElementById("about");
+        ReactDOM.render(<About />, aboutElement);
+        const clientElement = document.getElementById("client");
+        ReactDOM.render(<Client />, clientElement);
+        const contactElement = document.getElementById("contact");
+        ReactDOM.render(<Contact />, contactElement);
+        const projectsElement = document.getElementById("projects");
+        ReactDOM.render(<Projects />, projectsElement);
+        this.setState({ reactComponentsMounted: true })
+        
       }
-      mouseMoved = false;
-      var intersectButtons = raycaster.intersectObjects([
-        logo,
-        about,
-        contact,
-        projects,
-        client
-      ]);
-      // raycast buttons
-      if (intersectButtons.length > 0) {
-        if (intersected !== intersectButtons[0].object) {
-          if (intersected) {
-            intersected.material.emissive.setHex(intersected.currentHex);
-          }
-          intersected = intersectButtons[0].object;
-          intersected.currentHex = intersected.material.emissive.getHex();
-          intersected.material.emissive.setHex(0xff0000);
-          // console.log("intersected button");
+      raycaster.setFromCamera(mouseCoords, camera);
+      if (mouseMoved && logo && about && contact && projects && client) {
+        var uniforms = heightmapVariable.material.uniforms;
+        var intersectWater = raycaster.intersectObject(meshRay);
+        // raycast water
+        if (intersectWater.length > 0) {
+          // console.log("intersected water");
+          var point = intersectWater[0].point;
+          uniforms["mousePos"].value.set(point.x, point.z);
+        } else {
+          uniforms["mousePos"].value.set(10000, 10000);
         }
-      } else {
-        if (intersected)
-          intersected.material.emissive.setHex(intersected.currentHex);
-        intersected = null;
+        mouseMoved = false;
+        var intersectButtons = raycaster.intersectObjects([
+          logo,
+          about,
+          contact,
+          projects,
+          client
+        ]);
+        // raycast buttons
+        if (intersectButtons.length > 0) {
+          if (intersected !== intersectButtons[0].object) {
+            if (intersected) {
+              intersected.material.emissive.setHex(intersected.currentHex);
+            }
+            intersected = intersectButtons[0].object;
+            intersected.currentHex = intersected.material.emissive.getHex();
+            intersected.material.emissive.setHex(0xff0000);
+            // console.log("intersected button");
+          }
+        } else {
+          if (intersected)
+            intersected.material.emissive.setHex(intersected.currentHex);
+          intersected = null;
+        }
       }
-    }
-    let aboutObj = reactComponentsObj["about"];
-    //animates the navBar onClick
-    if (!this.state.showWater) {
-      const scaleY = new THREE.Vector3(1, 0.5, 1);
-      const scaleLogo = new THREE.Vector3(1, 1, 1);
-
-      logo.scale.copy(scaleLogo);
-      logoType.scale.copy(scaleLogo);
-      contact.scale.copy(scaleY);
-      projects.scale.copy(scaleY);
-      client.scale.copy(scaleY);
-      about.scale.copy(scaleY);
-      if (logo.position.y <= 1.75) {
-        logo.position.y += 0.3;
-        about.position.y += 0.3;
-        contact.position.y += 0.3;
-        projects.position.y += 0.3;
-        client.position.y += 0.3;
-        logoType.position.y += 0.3;
-        aboutType.position.y += 0.3;
-        contactType.position.y += 0.3;
-        projectsType.position.y += 0.3;
-        clientType.position.y += 0.3;
+      // Checks the if update function needs to move the navbar based on click and component statefulness
+      this.checkNavBarMove();
+      if (this.state.showWater) {
+        waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
+          heightmapVariable
+        ).texture;
+        gpuCompute.compute();
       }
-    }
-    if (this.state.showWater) {
-      waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
-        heightmapVariable
-      ).texture;
-      gpuCompute.compute();
     }
   };
 
