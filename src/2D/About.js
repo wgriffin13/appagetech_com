@@ -7,9 +7,6 @@ import Button from "react-bootstrap/Button";
 class About extends Component {
   constructor() {
     super();
-    this.state = {
-      showComment: false
-    };
   }
 
   render() {
@@ -17,17 +14,18 @@ class About extends Component {
       <Container>
         <Row>
           <Col>
-            <h1>h1: About</h1>
-            <h4>h4: About</h4>
-            <h6>h6: About</h6>
-            <button>html button</button>
-            <Button
-              variant="primary"
-              onClick={() => this.setState({ showComment: true })}
-            >
-              BootStrap Primary
-            </Button>
-            {this.state.showComment ? <h1>Button Triggered!!!</h1> : null}
+            <h4>What We Do</h4>
+            <p style={{ textIndent: 25 }}>
+              We design and produce applications that solve problems. Our
+              solutions are based in process automation, data democracy, and web
+              presence expansion. From microsites to distributed mobile apps, we
+              enjoy working with individuals looking for creative and unique
+              solutions. Our goal is to produce software solutions that are
+              visually impressive and extremely usable.
+            </p>
+            <h4>Who We Are</h4>
+            <p>Preston Chaplin, Co-Founder…</p>
+            <p>William Griffin, Co-Founder…</p>
           </Col>
         </Row>
       </Container>

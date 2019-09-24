@@ -14,6 +14,10 @@ import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker.js
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
 import About from "./2D/About";
+import Client from "./2D/Client";
+import Contact from "./2D/Contact";
+import Projects from "./2D/Projects";
+import LandingTransition from "./LandingTransition";
 
 let camera, glScene, cssScene, glRenderer, cssRenderer, controls, container;
 let cubeGenerator, pmremGenerator, pmremCubeUVPacker;
@@ -35,14 +39,15 @@ let raycaster = new THREE.Raycaster();
 let WIDTH = 512;
 let BOUNDS = 256;
 let plane;
+let landingScene;
 
 //this sets 2D scale - <h4> should be 16px in hieght
 // let zPosition2D = -2928;
-let zPosition2D = -1800;
+let zPosition2D = -1600;
+let offScreenZPosition2D = 10000;
 
 const reactComponents = ["about", "contact", "projects", "client"];
 let reactComponentsObj = {};
-let aboutElement;
 
 class Home extends Component {
   constructor(props) {
@@ -51,7 +56,10 @@ class Home extends Component {
       show2D: false,
       showWater: true,
       showComponent: null,
-      reactComponentsMounted: false
+      reactComponentsMounted: false,
+      landingPage: true,
+      navPosition: "middle",
+      moveNavBar: false
     };
   }
 
@@ -59,8 +67,7 @@ class Home extends Component {
     this.initialize();
     this.loadAssets();
     this.update();
-    this.lighting();
-    // console.log("CDM fired!");
+    // this.lighting();
   }
 
   initialize = () => {
@@ -113,13 +120,10 @@ class Home extends Component {
     raycaster.setFromCamera(mouseCoords, camera);
     let aboutObj = reactComponentsObj["about"];
     console.log("aboutObj", aboutObj);
-    // if (aboutObj) {
-    // let intersectAbout = raycaster.intersectObjects(cssScene.children);
     let intersectCss = raycaster.intersectObject(aboutObj);
     if (intersectCss.length > 0) {
       console.log("intersected About!!");
     }
-    // }
   };
 
   update = () => {
@@ -174,9 +178,6 @@ class Home extends Component {
     }
     //raycast cssScene
 
-    // let aboutObj = reactComponentsObj["about"];
-
-    // console.log("aboutObj", aboutObj);
     let intersectCssChildren = raycaster.intersectObjects(cssScene.children);
     if (intersectCssChildren.length > 0) {
       console.log("intersected CssChildren!!");
@@ -225,7 +226,6 @@ class Home extends Component {
     glRenderer.setPixelRatio(window.devicePixelRatio);
     glRenderer.setSize(window.innerWidth, window.innerHeight);
     glRenderer.domElement.style.position = "absolute";
-    //glRenderer.domElement.style.zIndex = 1;
     glRenderer.domElement.style.top = 0;
     return glRenderer;
   };
@@ -256,16 +256,16 @@ class Home extends Component {
     return mesh;
   };
 
-  embed2DPage = (w, h, position, rotation) => {
-    var plane = this.createPlane(w, h, position, rotation);
-    glScene.add(plane);
-    aboutElement = document.getElementById("about");
-    ReactDOM.render(<About />, aboutElement);
-    cssScene.add(aboutElement);
+  toggleTransition = () => {
+    if (this.state.landingPage === true) {
+      this.setState({ landingPage: false });
+    } else {
+      this.setState({ landingPage: true });
+    }
   };
 
   initialize = () => {
-    console.log("initialize fired!");
+    //console.log("initialize fired!");
     camera = new THREE.PerspectiveCamera(
       30,
       window.innerWidth / window.innerHeight,
@@ -280,15 +280,22 @@ class Home extends Component {
     document.body.appendChild(container);
     container.appendChild(glRenderer.domElement);
     container.appendChild(cssRenderer.domElement);
-    //cssRenderer.domElement.appendChild(glRenderer.domElement);
     glScene = new THREE.Scene();
     cssScene = new THREE.Scene();
+
+    // Landing scene
+    landingScene = new LandingTransition(
+      glRenderer,
+      0xffffff,
+      this.toggleTransition
+    );
 
     reactComponents.forEach(item => {
       let element = document.createElement("div");
       element.id = item;
       let object = new CSS3DObject(element);
-      object.position.z = zPosition2D;
+      // Hides the element off camera => z = 10,000
+      object.position.z = offScreenZPosition2D;
       cssScene.add(object);
       reactComponentsObj[item] = object;
     });
@@ -307,24 +314,33 @@ class Home extends Component {
     this.setState(() => ({ show2D: true, showWater: false }));
   };
 
+  // Attached to logo to hide everything
   hideAllReactComponents = () => {
     cssRenderer.domElement.style.zIndex = -1;
     glScene.remove(plane);
-    this.setState({ show2D: false, showWater: true });
+    this.setState({ moveNavBar: true, show2D: false, showWater: true });
+    Object.entries(reactComponentsObj).forEach(
+      ([key, value]) => (value.position.z = offScreenZPosition2D)
+    );
   };
 
   // Show react component
-  // TODO: allow to show specific component
-  showReactComponent = reactComponent => {
-    this.setState({ show2D: true, showWater: false });
-    plane = this.createPlane(
-      window.innerWidth,
-      window.innerHeight,
-      new THREE.Vector3(0, 0, 200),
-      new THREE.Vector3(0, 0, 0)
-    );
-    glScene.add(plane);
-    cssRenderer.domElement.style.zIndex = 0;
+  showReactComponent = reactComponentName => {
+    // Checks a second click: is the CSS renderer is visible
+    if (parseInt(cssRenderer.domElement.style.zIndex, 10) === 0) {
+      this.hideAllReactComponents();
+    } else {
+      reactComponentsObj[reactComponentName].position.z = zPosition2D;
+      this.setState({ moveNavBar: true, show2D: true, showWater: false });
+      plane = this.createPlane(
+        window.innerWidth,
+        window.innerHeight,
+        new THREE.Vector3(0, 0, 200),
+        new THREE.Vector3(0, 0, 0)
+      );
+      glScene.add(plane);
+      cssRenderer.domElement.style.zIndex = 0;
+    }
   };
 
   loadAssets = () => {
@@ -361,7 +377,6 @@ class Home extends Component {
           metalness: 1,
           roughness: 0.05
         };
-        // const yPos = 1.75;
         const yPos = 0;
         const zPos = 215;
         const zRot = null;
@@ -427,7 +442,7 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
-          contact.callback = () => onClick();
+          contact.callback = () => showReactComponent("contact");
         });
 
         const aboutTypeLoader = new GLTFLoader().setPath("/models/");
@@ -450,7 +465,6 @@ class Home extends Component {
           gltf.scene.traverse(function(child) {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
-              // child.scale.copy(scaleY);
               about = child;
             }
           });
@@ -459,7 +473,7 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
-          about.callback = () => showReactComponent();
+          about.callback = () => showReactComponent("about");
         });
 
         const projectsTypeLoader = new GLTFLoader().setPath("/models/");
@@ -490,7 +504,7 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
-          projects.callback = () => onClick();
+          projects.callback = () => showReactComponent("projects");
         });
 
         const clientTypeLoader = new GLTFLoader().setPath("/models/");
@@ -521,7 +535,7 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
-          client.callback = () => onClick();
+          client.callback = () => showReactComponent("client");
         });
         pmremGenerator.dispose();
         pmremCubeUVPacker.dispose();
@@ -540,7 +554,6 @@ class Home extends Component {
       WIDTH - 1,
       WIDTH - 1
     );
-    // material: make a THREE.ShaderMaterial clone of THREE.MeshPhongMaterial, with customized vertex shader
     var material = new THREE.ShaderMaterial({
       uniforms: THREE.UniformsUtils.merge([
         THREE.ShaderLib["phong"].uniforms,
@@ -552,18 +565,15 @@ class Home extends Component {
       fragmentShader: THREE.ShaderChunk["meshphong_frag"]
     });
     material.lights = true;
-    // Material attributes from THREE.MeshPhongMaterial
     material.color = new THREE.Color(materialColor);
     material.specular = new THREE.Color(0x111111);
     material.shininess = 100;
-    // Sets the uniforms with the material values
     material.uniforms["diffuse"].value = material.color;
     material.uniforms["specular"].value = material.specular;
     material.uniforms["shininess"].value = Math.max(material.shininess, 1e-4);
     material.uniforms["opacity"].value = material.opacity;
     material.defines.WIDTH = WIDTH.toFixed(1);
     material.defines.BOUNDS = BOUNDS.toFixed(1);
-
     waterUniforms = material.uniforms;
     waterMesh = new THREE.Mesh(geometry, material);
     waterMesh.matrixAutoUpdate = false;
@@ -571,18 +581,14 @@ class Home extends Component {
     waterMesh.position.z = zPos;
     waterMesh.updateMatrix();
     glScene.add(waterMesh);
-    // THREE.Mesh just for mouse raycasting
     var geometryRay = new THREE.PlaneBufferGeometry(BOUNDS, BOUNDS, 1, 1);
     meshRay = new THREE.Mesh(
       geometryRay,
       new THREE.MeshBasicMaterial({ color: 0xffffff, visible: false })
     );
-    // meshRay.rotation.x = -Math.PI / 2;
-    // meshRay.position.z = zPos;
     meshRay.matrixAutoUpdate = false;
     meshRay.updateMatrix();
     glScene.add(meshRay);
-
     gpuCompute = new GPUComputationRenderer(WIDTH, WIDTH, glRenderer);
     var heightmap0 = gpuCompute.createTexture();
     this.fillTexture(heightmap0);
@@ -607,12 +613,10 @@ class Home extends Component {
     if (error !== null) {
       console.error(error);
     }
-    // Create compute shader to smooth the water surface and velocity
     smoothShader = gpuCompute.createShaderMaterial(
       document.getElementById("smoothFragmentShader").textContent,
       { smoothTexture: { value: null } }
     );
-    // Create compute shader to read water level
     readWaterLevelShader = gpuCompute.createShaderMaterial(
       document.getElementById("readWaterLevelFragmentShader").textContent,
       {
@@ -622,7 +626,6 @@ class Home extends Component {
     );
     readWaterLevelShader.defines.WIDTH = WIDTH.toFixed(1);
     readWaterLevelShader.defines.BOUNDS = BOUNDS.toFixed(1);
-    // Create a 4x1 pixel image and a render target (Uint8, 4 channels, 1 byte per channel) to read water height and orientation
     readWaterLevelImage = new Uint8Array(4 * 1 * 4);
     readWaterLevelRenderTarget = new THREE.WebGLRenderTarget(4, 1, {
       wrapS: THREE.ClampToEdgeWrapping,
@@ -670,83 +673,125 @@ class Home extends Component {
     }
   };
 
+  checkNavBarMove = () => {
+    if (this.state.navPosition === "middle") {
+      // Moving navbar up
+      if (this.state.moveNavBar === true) {
+        const scaleY = new THREE.Vector3(1, 0.5, 1);
+        const scaleLogo = new THREE.Vector3(1, 1, 1);
+        logo.scale.copy(scaleLogo);
+        logoType.scale.copy(scaleLogo);
+        contact.scale.copy(scaleY);
+        projects.scale.copy(scaleY);
+        client.scale.copy(scaleY);
+        about.scale.copy(scaleY);
+        if (logo.position.y <= 1.75) {
+          logo.position.y += 0.3;
+          about.position.y += 0.3;
+          contact.position.y += 0.3;
+          projects.position.y += 0.3;
+          client.position.y += 0.3;
+          logoType.position.y += 0.3;
+          aboutType.position.y += 0.3;
+          contactType.position.y += 0.3;
+          projectsType.position.y += 0.3;
+          clientType.position.y += 0.3;
+        } else {
+          this.setState({ moveNavBar: false, navPosition: "top" });
+        }
+      }
+    } else if (this.state.navPosition === "top") {
+      // Moving navbar down
+      if (this.state.moveNavBar === true) {
+        const scaleY = new THREE.Vector3(1, 1, 1);
+        const scaleLogo = new THREE.Vector3(1.3, 1.3, 1.3);
+        logo.scale.copy(scaleLogo);
+        logoType.scale.copy(scaleLogo);
+        contact.scale.copy(scaleY);
+        projects.scale.copy(scaleY);
+        client.scale.copy(scaleY);
+        about.scale.copy(scaleY);
+        if (logo.position.y >= 0) {
+          logo.position.y -= 0.3;
+          about.position.y -= 0.3;
+          contact.position.y -= 0.3;
+          projects.position.y -= 0.3;
+          client.position.y -= 0.3;
+          logoType.position.y -= 0.3;
+          aboutType.position.y -= 0.3;
+          contactType.position.y -= 0.3;
+          projectsType.position.y -= 0.3;
+          clientType.position.y -= 0.3;
+        } else {
+          this.setState({ moveNavBar: false, navPosition: "middle" });
+        }
+      }
+    }
+  };
+
   update = () => {
     requestAnimationFrame(this.update);
-    glRenderer.render(glScene, camera);
-    cssRenderer.render(cssScene, camera);
-    if (this.state.reactComponentsMounted === false) {
-      aboutElement = document.getElementById("about");
-      ReactDOM.render(<About />, aboutElement);
-      //reactComponentsObj['about'].position.z = 0;
-      this.setState({ reactComponentsMounted: true });
-    }
-    raycaster.setFromCamera(mouseCoords, camera);
-    if (mouseMoved && logo && about && contact && projects && client) {
-      var uniforms = heightmapVariable.material.uniforms;
-      var intersectWater = raycaster.intersectObject(meshRay);
-      // raycast water
-      if (intersectWater.length > 0) {
-        // console.log("intersected water");
-        var point = intersectWater[0].point;
-        uniforms["mousePos"].value.set(point.x, point.z);
-      } else {
-        uniforms["mousePos"].value.set(10000, 10000);
+    if (this.state.landingPage) {
+      landingScene.render();
+    } else {
+      glRenderer.render(glScene, camera);
+      cssRenderer.render(cssScene, camera);
+      if (this.state.reactComponentsMounted === false) {
+        const aboutElement = document.getElementById("about");
+        ReactDOM.render(<About />, aboutElement);
+        const clientElement = document.getElementById("client");
+        ReactDOM.render(<Client />, clientElement);
+        const contactElement = document.getElementById("contact");
+        ReactDOM.render(<Contact />, contactElement);
+        const projectsElement = document.getElementById("projects");
+        ReactDOM.render(<Projects />, projectsElement);
+        this.setState({ reactComponentsMounted: true });
       }
-      mouseMoved = false;
-      var intersectButtons = raycaster.intersectObjects([
-        logo,
-        about,
-        contact,
-        projects,
-        client
-      ]);
-      // raycast buttons
-      if (intersectButtons.length > 0) {
-        if (intersected !== intersectButtons[0].object) {
-          if (intersected) {
-            intersected.material.emissive.setHex(intersected.currentHex);
-          }
-          intersected = intersectButtons[0].object;
-          intersected.currentHex = intersected.material.emissive.getHex();
-          intersected.material.emissive.setHex(0xff0000);
-          // console.log("intersected button");
+      raycaster.setFromCamera(mouseCoords, camera);
+      if (mouseMoved && logo && about && contact && projects && client) {
+        var uniforms = heightmapVariable.material.uniforms;
+        var intersectWater = raycaster.intersectObject(meshRay);
+        // raycast water
+        if (intersectWater.length > 0) {
+          // console.log("intersected water");
+          var point = intersectWater[0].point;
+          uniforms["mousePos"].value.set(point.x, point.z);
+        } else {
+          uniforms["mousePos"].value.set(10000, 10000);
         }
-      } else {
-        if (intersected)
-          intersected.material.emissive.setHex(intersected.currentHex);
-        intersected = null;
+        mouseMoved = false;
+        var intersectButtons = raycaster.intersectObjects([
+          logo,
+          about,
+          contact,
+          projects,
+          client
+        ]);
+        // raycast buttons
+        if (intersectButtons.length > 0) {
+          if (intersected !== intersectButtons[0].object) {
+            if (intersected) {
+              intersected.material.emissive.setHex(intersected.currentHex);
+            }
+            intersected = intersectButtons[0].object;
+            intersected.currentHex = intersected.material.emissive.getHex();
+            intersected.material.emissive.setHex(0xff0000);
+            // console.log("intersected button");
+          }
+        } else {
+          if (intersected)
+            intersected.material.emissive.setHex(intersected.currentHex);
+          intersected = null;
+        }
       }
-    }
-    let aboutObj = reactComponentsObj["about"];
-    //animates the navBar onClick
-    if (!this.state.showWater) {
-      const scaleY = new THREE.Vector3(1, 0.5, 1);
-      const scaleLogo = new THREE.Vector3(1, 1, 1);
-
-      logo.scale.copy(scaleLogo);
-      logoType.scale.copy(scaleLogo);
-      contact.scale.copy(scaleY);
-      projects.scale.copy(scaleY);
-      client.scale.copy(scaleY);
-      about.scale.copy(scaleY);
-      if (logo.position.y <= 1.75) {
-        logo.position.y += 0.3;
-        about.position.y += 0.3;
-        contact.position.y += 0.3;
-        projects.position.y += 0.3;
-        client.position.y += 0.3;
-        logoType.position.y += 0.3;
-        aboutType.position.y += 0.3;
-        contactType.position.y += 0.3;
-        projectsType.position.y += 0.3;
-        clientType.position.y += 0.3;
+      // Checks the if update function needs to move the navbar based on click and component statefulness
+      this.checkNavBarMove();
+      if (this.state.showWater) {
+        waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
+          heightmapVariable
+        ).texture;
+        gpuCompute.compute();
       }
-    }
-    if (this.state.showWater) {
-      waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
-        heightmapVariable
-      ).texture;
-      gpuCompute.compute();
     }
   };
 
@@ -763,7 +808,6 @@ class Home extends Component {
     if (intersectButtonsMd.length > 0) {
       if (intersectButtonsMd[0].object.callback) {
         intersectButtonsMd[0].object.callback();
-        // console.log(intersectButtonsMd[0].object);
       }
     }
   };
@@ -779,8 +823,6 @@ class Home extends Component {
 
   setMouseCoords = (x, y) => {
     mouseCoords.set(
-      // (x / cssRenderer.domElement.clientWidth) * 2 - 1,
-      // -(y / cssRenderer.domElement.clientHeight) * 2 + 1
       (x / glRenderer.domElement.clientWidth) * 2 - 1,
       -(y / glRenderer.domElement.clientHeight) * 2 + 1
     );
@@ -795,7 +837,6 @@ class Home extends Component {
   };
 
   onDocumentMouseMove = event => {
-    // console.log("onDocumentMouseMove - event", event);
     this.setMouseCoords(event.clientX, event.clientY);
   };
 
