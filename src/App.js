@@ -14,7 +14,7 @@ let WIDTH = 256;
 // Water size in system units
 let BOUNDS = 1024;
 var BOUNDS_HALF = BOUNDS * 0.5;
-var container, stats;
+// var container, stats;
 var camera, scene, renderer;
 var mouseMoved = false;
 var mouseCoords = new THREE.Vector2();
