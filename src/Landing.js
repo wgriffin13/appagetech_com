@@ -184,6 +184,11 @@ class Landing extends Component {
     const stars = new THREE.PointCloud(starGeometry, starStuff);
     scene.add(stars);
   };
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleWindowResize);
+    window.cancelAnimationFrame(this.requestID);
+    this.controls.dispose();
+  }
 
   onWindowResize = () => {
     camera.aspect = window.innerWidth / window.innerHeight;

@@ -5,6 +5,9 @@ import "./index.css";
 import Home from "./Home";
 import About from "./2D/About";
 // import Landing from "./Landing";
+// import Test from "./Test.js";
+// import Test2 from "./Test2.js";
+// import Test3 from "./Test3.js";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.min.css";
 
