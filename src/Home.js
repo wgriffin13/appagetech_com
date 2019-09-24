@@ -68,64 +68,20 @@ class Home extends Component {
     this.initialize();
     this.loadAssets();
     this.update();
+    this.matchRenderToLocation();
     // this.lighting();
   }
 
-  initialize = () => {
-    console.log("initialize fired!");
-    camera = new THREE.PerspectiveCamera(
-      30,
-      window.innerWidth / window.innerHeight,
-      0.25,
-      4000
-    );
-    camera.position.set(0, 0, 224);
-    camera.lookAt(0, 0, 0);
-    glRenderer = this.createGlRenderer();
-    cssRenderer = this.createCssRenderer();
-    container = document.createElement("div");
-    document.body.appendChild(container);
-    container.appendChild(cssRenderer.domElement);
-    cssRenderer.domElement.appendChild(glRenderer.domElement);
-    glScene = new THREE.Scene();
-    cssScene = new THREE.Scene();
-    // controls = new OrbitControls(camera, glRenderer.domElement);
-    // controls.target.set(0, 0, 0);
-    // controls.update();
-
-    reactComponents.forEach(item => {
-      let element = document.createElement("div");
-      element.id = item;
-      let object = new CSS3DObject(element);
-      object.position.z = zPosition2D;
-      cssScene.add(object);
-      reactComponentsObj[item] = object;
-    });
-
-    window.addEventListener("resize", this.onWindowResize, false);
-    document.addEventListener("mousemove", this.onDocumentMouseMove, false);
-    document.addEventListener("touchstart", this.onDocumentTouchStart, false);
-    document.addEventListener("touchmove", this.onDocumentTouchMove, false);
-    document.addEventListener("mousedown", this.onDocumentMouseDown, false);
-    cssRenderer.domElement.addEventListener("click", this.raycastCss, false);
-    cssRenderer.domElement.addEventListener(
-      "mousemove",
-      this.onDocumentMouseMoveCss,
-      false
-    );
-
-    this.initWater();
-  };
-
-  raycastCss = () => {
-    raycaster.setFromCamera(mouseCoords, camera);
-    let aboutObj = reactComponentsObj["about"];
-    console.log("aboutObj", aboutObj);
-    let intersectCss = raycaster.intersectObject(aboutObj);
-    if (intersectCss.length > 0) {
-      console.log("intersected About!!");
+  matchRenderToLocation = () => {
+    const location = this.props.location.pathname.substring(1);
+    if (location !== '') {
+      this.setState({ landingPage: false });
+      landingScene.removeLandingMouseDown();
+      if (reactComponentsObj[location]) {
+        this.showReactComponent(location)
+      }
     }
-  };
+  }
 
   lighting = () => {
     const spotLight1 = new THREE.SpotLight(0xffffff, 1.2, 0, Math.PI / 3);
@@ -177,6 +133,7 @@ class Home extends Component {
   toggleTransition = () => {
     if (this.state.landingPage === true) {
       this.setState({ landingPage: false });
+      this.props.history.push('/home')
     } else {
       this.setState({ landingPage: true });
     }
@@ -236,6 +193,8 @@ class Home extends Component {
       Object.entries(reactComponentsObj).forEach(
         ([key, value]) => (value.position.z = offScreenZPosition2D)
       );
+      // Pushes location back to home
+      this.props.history.push(`/home`);
     }
   };
 
@@ -245,9 +204,14 @@ class Home extends Component {
     if (parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 && this.state.cssComponentDisplayed === reactComponentName) {
       this.hideAllReactComponents();
     } else if (parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 && this.state.cssComponentDisplayed !== reactComponentName) {
+      // Sets current css object to offscreen
       reactComponentsObj[this.state.cssComponentDisplayed].position.z = offScreenZPosition2D;
+      // Brings forward selected css object
       reactComponentsObj[reactComponentName].position.z = zPosition2D;
+      // Sets state with the name of the currently displayed object
       this.setState({ cssComponentDisplayed: reactComponentName });
+      // Pushes location to URL bar
+      this.props.history.push(`/${reactComponentName}`);
     } else {
       reactComponentsObj[reactComponentName].position.z = zPosition2D;
       this.setState({ moveNavBar: true, cssComponentDisplayed: reactComponentName, show2D: true, showWater: false });
@@ -259,6 +223,10 @@ class Home extends Component {
       );
       glScene.add(plane);
       cssRenderer.domElement.style.zIndex = 0;
+      // Pushes location to URL bar
+      if (this.props.location.pathname !== `/${reactComponentName}`) {
+        this.props.history.push(`/${reactComponentName}`);
+      }
     }
   };
 
@@ -591,6 +559,7 @@ class Home extends Component {
   };
 
   checkNavBarMove = () => {
+    if (logo && logoType && contact && projects && client && about) {
     if (this.state.navPosition === "middle") {
       // Moving navbar up
       if (this.state.moveNavBar === true) {
@@ -644,6 +613,7 @@ class Home extends Component {
         }
       }
     }
+  }
   };
 
   update = () => {
@@ -726,15 +696,6 @@ class Home extends Component {
       if (intersectButtonsMd[0].object.callback) {
         intersectButtonsMd[0].object.callback();
       }
-    }
-  };
-
-  onDocumentMouseDownCss = event => {
-    // event.preventDefault();
-    this.setMouseCoords(event.clientX, event.clientY);
-    const intersectCssChildren = raycaster.intersectObjects(cssScene.children);
-    if (intersectCssChildren.length > 0) {
-      console.log("intersected CssChildren in onDocumentMouseDownCss!!");
     }
   };
 
