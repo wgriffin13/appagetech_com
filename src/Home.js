@@ -139,8 +139,8 @@ class Home extends Component {
     cssRenderer = this.createCssRenderer();
     container = document.createElement("div");
     document.body.appendChild(container);
-    container.appendChild(cssRenderer.domElement);
     container.appendChild(glRenderer.domElement);
+    container.appendChild(cssRenderer.domElement);
     glScene = new THREE.Scene();
     cssScene = new THREE.Scene();
     cssScene.scale.set(0.1, 0.1, 0.1);
@@ -562,7 +562,7 @@ class Home extends Component {
   };
 
   checkNavBarMove = () => {
-    if (logo && logoType && contact && projects && client && about) {
+    if (logo && logoType && contact && projects && projectsType && client && about) {
       if (this.state.navPosition === "middle") {
         // Moving navbar up
         if (this.state.moveNavBar === true) {
