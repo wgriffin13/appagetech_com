@@ -11,9 +11,9 @@ class About extends Component {
 
   render() {
     return (
-      <Container>
+      <div className="container">
         <div className="col">
-          <h4>What We Do</h4>
+          <h3>What We Do</h3>
           <p style={{ textIndent: 25 }}>
             We design and produce applications that solve problems. Our
             solutions are based in process automation, data democracy, and web
@@ -22,13 +22,11 @@ class About extends Component {
             solutions. Our goal is to produce software solutions that are
             visually impressive and extremely usable.
           </p>
-          <h4>Who We Are</h4>
+          <h3>Who We Are</h3>
           <p>Preston Chaplin, Co-Founder…</p>
           <p>William Griffin, Co-Founder…</p>
-          <Button variant="danger">Button</Button>
-          <button>button</button>
         </div>
-      </Container>
+      </div>
     );
   }
 }

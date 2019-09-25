@@ -1,15 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-// import App from './App';
 import Home from "./Home";
 import About from "./2D/About";
+import Contact from "./2D/Contact";
 // import Landing from "./Landing";
-// import Test from "./Test.js";
-// import Test2 from "./Test2.js";
-// import Test3 from "./Test3.js";
-import * as serviceWorker from "./serviceWorker";
 import App from "./App";
+
+import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 ReactDOM.render(<App />, document.getElementById("root"));
