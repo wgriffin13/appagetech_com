@@ -58,7 +58,8 @@ class Home extends Component {
       landingPage: true,
       navPosition: "middle",
       moveNavBar: false,
-      cssComponentDisplayed: ""
+      cssComponentDisplayed: "",
+      iconOpacity: 0
     };
   }
 
@@ -236,6 +237,7 @@ class Home extends Component {
   };
 
   loadAssets = () => {
+    let iconOpacity = this.state.iconOpacity
     let showReactComponent = this.showReactComponent.bind(this);
     let hideAllReactComponents = this.hideAllReactComponents.bind(this);
 
@@ -266,7 +268,8 @@ class Home extends Component {
           envMapIntensity: 5,
           color: 0x694112,
           metalness: 1,
-          roughness: 0.05
+          roughness: 0.05,
+          opacity: iconOpacity
         };
         const yPos = 0;
         const zPos = 215;
