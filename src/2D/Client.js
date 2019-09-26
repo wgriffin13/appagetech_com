@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import Carousel from 'react-bootstrap/Carousel';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 class Client extends Component {
   render() {
     return (
-      <div class="container-fluid">
+      <div className="container-fluid">
         <Row>
           <Col>
             Row 1 - first column

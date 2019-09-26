@@ -43,9 +43,33 @@ let landingScene;
 
 let zPosition2D = 215;
 let offScreenZPosition2D = 10000;
+let placementDirection = 'horizontal';
 
 const reactComponents = ["about", "contact", "projects", "client"];
 let reactComponentsObj = {};
+
+const displayIcons = {
+  logo: {
+    horizontal: {x: -2.2, y: 0},
+    vertical: {x: 0, y: 1.80}
+  },
+  about: {
+    horizontal: {x: -0.97, y: 0},
+    vertical: {x: 0, y: 0.72}
+  },
+  contact: {
+    horizontal: {x: 0, y: 0},
+    vertical: {x: 0, y: -0.15}
+  },
+  projects: {
+    horizontal: {x: 0.97, y: 0},
+    vertical: {x: 0, y: -1.02}
+  },
+  client: {
+    horizontal: {x: 1.94, y: 0},
+    vertical: {x: 0, y: -1.89}
+  }
+}
 
 class Home extends Component {
   constructor(props) {
@@ -63,10 +87,22 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    this.setLoadLocations();
     this.initialize();
     this.loadAssets();
     this.update();
     this.matchRenderToLocation();
+  }
+
+  setLoadLocations = () => {
+    const windowHeight = window.innerHeight
+    const windowWidth = window.innerWidth
+    console.log(windowHeight + ' ' + windowWidth);
+    const windowAspect = window.innerWidth / window.innerHeight;
+    console.log(windowAspect)
+    if (windowAspect < 1) {
+      placementDirection = 'vertical';
+    }
   }
 
   matchRenderToLocation = () => {
@@ -282,8 +318,8 @@ class Home extends Component {
               logoType = child;
             }
           });
-          gltf.scene.position.x = -2.2;
-          gltf.scene.position.y = yPos;
+          gltf.scene.position.x = displayIcons.logo[placementDirection].x;
+          gltf.scene.position.y = displayIcons.logo[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
@@ -298,8 +334,8 @@ class Home extends Component {
               logo = child;
             }
           });
-          gltf.scene.position.x = -2.2;
-          gltf.scene.position.y = yPos;
+          gltf.scene.position.x = displayIcons.logo[placementDirection].x;
+          gltf.scene.position.y = displayIcons.logo[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
@@ -315,7 +351,8 @@ class Home extends Component {
             }
           });
           glScene.add(gltf.scene);
-          gltf.scene.position.y = yPos;
+          gltf.scene.position.x = displayIcons.contact[placementDirection].x;
+          gltf.scene.position.y = displayIcons.contact[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
         });
@@ -328,7 +365,8 @@ class Home extends Component {
               contact = child;
             }
           });
-          gltf.scene.position.y = yPos;
+          gltf.scene.position.x = displayIcons.contact[placementDirection].x;
+          gltf.scene.position.y = displayIcons.contact[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
@@ -343,8 +381,8 @@ class Home extends Component {
               aboutType = child;
             }
           });
-          gltf.scene.position.x = -0.97;
-          gltf.scene.position.y = yPos;
+          gltf.scene.position.x = displayIcons.about[placementDirection].x;
+          gltf.scene.position.y = displayIcons.about[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
@@ -358,8 +396,8 @@ class Home extends Component {
               about = child;
             }
           });
-          gltf.scene.position.x = -0.97;
-          gltf.scene.position.y = yPos;
+          gltf.scene.position.x = displayIcons.about[placementDirection].x;
+          gltf.scene.position.y = displayIcons.about[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
@@ -374,8 +412,8 @@ class Home extends Component {
               projectsType = child;
             }
           });
-          gltf.scene.position.x = 0.97;
-          gltf.scene.position.y = yPos;
+          gltf.scene.position.x = displayIcons.projects[placementDirection].x;
+          gltf.scene.position.y = displayIcons.projects[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
@@ -389,8 +427,8 @@ class Home extends Component {
               projects = child;
             }
           });
-          gltf.scene.position.x = 0.97;
-          gltf.scene.position.y = yPos;
+          gltf.scene.position.x = displayIcons.projects[placementDirection].x;
+          gltf.scene.position.y = displayIcons.projects[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
@@ -405,8 +443,8 @@ class Home extends Component {
               clientType = child;
             }
           });
-          gltf.scene.position.x = 1.94;
-          gltf.scene.position.y = yPos;
+          gltf.scene.position.x = displayIcons.client[placementDirection].x;
+          gltf.scene.position.y = displayIcons.client[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
@@ -420,8 +458,8 @@ class Home extends Component {
               client = child;
             }
           });
-          gltf.scene.position.x = 1.94;
-          gltf.scene.position.y = yPos;
+          gltf.scene.position.x = displayIcons.client[placementDirection].x;
+          gltf.scene.position.y = displayIcons.client[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
