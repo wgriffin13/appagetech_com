@@ -19,7 +19,7 @@ class About extends Component {
           </Row>
           <Row >
           <strong style={{ textIndent: 25, fontSize: 24}}>
-          We design applications to solve technological problems.  Solutions are based in process automation, data democracy, and web presence expansion.  From microsites to distributed mobile apps, we enjoy working with individuals looking for creative, unique solutions.  Our goal is to answer their problem in a way that surprises you.
+          We design software applications to breakthrough technological problems of our clients.  Our solutions overcome these problems as full-service products—technology pillars fully integrated in to the larger business.  From microsites to distributed mobile apps, we enjoy working on all types of problems.  Our clients come to us looking for creative, novel solutions.  And, our goal is to answer these problems in a way that surprises.
           </strong>
           </Row>
           {/* <h3>Who We Are</h3>
