@@ -255,8 +255,7 @@ class Home extends Component {
         showWater: false
       });
 
-      console.log("1st click show2D", this.state.show2D);
-      //turn off icons only
+      // Toggle Icons OFF
       glScene.traverse(function(child) {
         if (child.isMesh && child.material.transparent) {
           child.material.opacity = 0;
@@ -312,7 +311,6 @@ class Home extends Component {
           roughness: 0.05,
           transparent: true
         };
-        // const yPos = 0;
         const zPos = 215;
         const zRot = null;
         const scale = new THREE.Vector3(1.3, 1.3, 1.3);
@@ -697,11 +695,9 @@ class Home extends Component {
             if (intersected !== intersectButtons[0].object) {
               if (intersected) {
                 intersected.material.opacity = 0;
-                // console.log("intersected1", intersected);
               }
               intersected = intersectButtons[0].object;
             }
-            // console.log("intersected2", intersected);
             intersected.material.opacity = 1;
           } else {
             if (intersected) intersected.material.opacity = 0;
