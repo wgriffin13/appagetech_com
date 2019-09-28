@@ -83,7 +83,6 @@ class Home extends Component {
       reactComponentsMounted: false,
       landingPage: true,
       navPosition: "middle",
-      moveNavBar: false,
       cssComponentDisplayed: ""
     };
   }
@@ -97,11 +96,7 @@ class Home extends Component {
   }
 
   setLoadLocations = () => {
-    const windowHeight = window.innerHeight;
-    const windowWidth = window.innerWidth;
-    console.log(windowHeight + " " + windowWidth);
     const windowAspect = window.innerWidth / window.innerHeight;
-    console.log(windowAspect);
     if (windowAspect < 1) {
       placementDirection = "vertical";
     }
@@ -217,7 +212,6 @@ class Home extends Component {
       // run TWEEN to move navbar
       this.transform(1000);
       this.setState({
-        moveNavBar: true,
         cssComponentDisplayed: "",
         show2D: false,
         showWater: true
@@ -234,6 +228,10 @@ class Home extends Component {
           child.material.opacity = 1;
         }
       });
+    } else {
+      // this.toggleTransition();
+      // landingScene.addLandingMouseDown();
+      // this.props.history.push('');
     }
   };
 
@@ -265,7 +263,6 @@ class Home extends Component {
       this.transform(1000);
 
       this.setState({
-        moveNavBar: true,
         cssComponentDisplayed: reactComponentName,
         show2D: true,
         showWater: false
@@ -306,6 +303,7 @@ class Home extends Component {
         navPosition = 'side';
       }
     }
+    this.setState({ navPosition: navPosition});
 
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
@@ -649,10 +647,9 @@ class Home extends Component {
   };
 
   transform = ( duration ) => {
+
     TWEEN.removeAll();
-    // for ( var i = 0; i < objects.length; i ++ ) {
-    //   var object = objects[ i ];
-    //   var target = targets[ i ];
+
     if (
       logo &&
       logoType &&
@@ -662,8 +659,22 @@ class Home extends Component {
       client &&
       about
     ) {
+
+      // Deep copy of the navbarPlacement
+      const tempNavbarPlacement = JSON.parse(JSON.stringify(navbarPlacement));
+      // Corrects target locations on hard refresh
+      if (this.state.navPosition === "top") {
+        // Set new target placement locations
+        navbarPlacement[placementDirection].x = 0
+        navbarPlacement[placementDirection].y = 0
+        navbarPlacement[placementDirection].z = 0
+        // Set new scales for icons
+        navbarPlacement[placementDirection].logoScale = new THREE.Vector3(1.3, 1.3, 1.3);
+        navbarPlacement[placementDirection].iconScale = new THREE.Vector3(1, 1, 1);
+      }
+
       const moveEasingFunction = TWEEN.Easing.Elastic.Out;
-      const scaleEasingFunction = TWEEN.Easing.Cubic.Out;
+      const scaleEasingFunction = TWEEN.Easing.Quintic.Out;
 
       new TWEEN.Tween( about.scale )
       .to( navbarPlacement[placementDirection].iconScale, duration )
@@ -742,13 +753,22 @@ class Home extends Component {
         .onUpdate( () => glRenderer.render(glScene, camera) )
         .start();
 
-      // Set new target placement locations
-      navbarPlacement[placementDirection].x = about.position.x;
-      navbarPlacement[placementDirection].y = about.position.y;
-      navbarPlacement[placementDirection].z = about.position.z;
-      // Set new scales for icons
-      navbarPlacement[placementDirection].logoScale = logo.scale;
-      navbarPlacement[placementDirection].iconScale = about.scale;
+      if (this.state.navPosition === "top") {
+        navbarPlacement[placementDirection].x = tempNavbarPlacement[placementDirection].x;
+        navbarPlacement[placementDirection].y = tempNavbarPlacement[placementDirection].y;
+        navbarPlacement[placementDirection].z = tempNavbarPlacement[placementDirection].z;
+        navbarPlacement[placementDirection].logoScale = tempNavbarPlacement[placementDirection].logoScale;
+        navbarPlacement[placementDirection].iconScale = tempNavbarPlacement[placementDirection].iconScale;
+        this.setState({ navPosition: "middle" })
+      } else {
+        // Set new target placement locations
+        navbarPlacement[placementDirection].x = about.position.x;
+        navbarPlacement[placementDirection].y = about.position.y;
+        navbarPlacement[placementDirection].z = about.position.z;
+        // Set new scales for icons
+        navbarPlacement[placementDirection].logoScale = new THREE.Vector3(logo.scale.x, logo.scale.y, logo.scale.z);
+        navbarPlacement[placementDirection].iconScale = new THREE.Vector3(about.scale.x, about.scale.y, about.scale.z);
+      }
     }
   }
 
