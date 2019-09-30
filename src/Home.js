@@ -46,11 +46,17 @@ const navbarPlacement = {
       z: 0,
       scale: new THREE.Vector3(1, 0.5, 1),
     },
+    aboutType: {
+      scale: new THREE.Vector3(1, 1, 1),
+    },
     client: {
       x: 0,
       y: 1.75,
       z: 0,
       scale: new THREE.Vector3(1, 0.5, 1),
+    },
+    clientType: {
+      scale: new THREE.Vector3(1, 1, 1),
     },
     projects: {
       x: 0,
@@ -58,11 +64,17 @@ const navbarPlacement = {
       z: 0,
       scale: new THREE.Vector3(1, 0.5, 1),
     },
+    projectsType: {
+      scale: new THREE.Vector3(1, 1, 1),
+    },
     contact: {
       x: 0,
       y: 1.75,
       z: 0,
       scale: new THREE.Vector3(1, 0.5, 1),
+    },
+    contactType: {
+      scale: new THREE.Vector3(1, 1, 1),
     },
     logo: {
       x: 0,
@@ -70,13 +82,57 @@ const navbarPlacement = {
       z: 0,
       scale: new THREE.Vector3(1, 1, 1),
     },
+    logoType: {
+      scale: new THREE.Vector3(1, 1, 1),
+    },
   },
+  // Vertical orientation of screen when CSS3D component is active
   vertical: {
-    x: -0.8,
-    y: 0,
-    z: 0,
-    iconScale: new THREE.Vector3(1, 0.5, 1),
-    logoScale: new THREE.Vector3(0.75, 0.75, 0.75)
+    about: {
+      x: 0.58,
+      y: 2.71,
+      z: 0,
+      scale: new THREE.Vector3(0.65, 0.35, 0.65),
+    },
+    aboutType: {
+      scale: new THREE.Vector3(0.65, 0.65, 0.65),
+    },
+    client: {
+      x: 0.2,
+      y: 3.39,
+      z: 0,
+      scale: new THREE.Vector3(0.65, 0.35, 0.65),
+    },
+    clientType: {
+      scale: new THREE.Vector3(0.65, 0.65, 0.65),
+    },
+    projects: {
+      x: 0.2,
+      y: 2.71,
+      z: 0,
+      scale: new THREE.Vector3(0.65, 0.35, 0.65),
+    },
+    projectsType: {
+      scale: new THREE.Vector3(0.65, 0.65, 0.65),
+    },
+    contact: {
+      x: 0.58,
+      y: 3.39,
+      z: 0,
+      scale: new THREE.Vector3(0.65, 0.35, 0.65),
+    },
+    contactType: {
+      scale: new THREE.Vector3(0.65, 0.65, 0.65),
+    },
+    logo: {
+      x: -0.62,
+      y: 0.75,
+      z: 0,
+      scale: new THREE.Vector3(0.75, 0.75, 0.75),
+    },
+    logoType: {
+      scale: new THREE.Vector3(0.75, 0.75, 0.75),
+    },
   }
 };
 
@@ -333,11 +389,7 @@ class Home extends Component {
     const location = this.props.location.pathname.substring(1);
     let navPosition = this.state.navPosition;
     if (reactComponents.find(item => item === location)) {
-      if (placementDirection === "horizontal") {
         navPosition = "top";
-      } else {
-        navPosition = "side";
-      }
     }
     this.setState({ navPosition: navPosition });
 
@@ -405,8 +457,9 @@ class Home extends Component {
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
           if (navPosition === "top") {
+            logoType.position.x = navbarPlacement[placementDirection].logo.x;
             logoType.position.y = navbarPlacement[placementDirection].logo.y;
-            logoType.scale.copy(navbarPlacement[placementDirection].logo.scale);
+            logoType.scale.copy(navbarPlacement[placementDirection].logoType.scale);
           }
         });
 
@@ -426,6 +479,7 @@ class Home extends Component {
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
           if (navPosition === "top") {
+            logo.position.x = navbarPlacement[placementDirection].logo.x;
             logo.position.y = navbarPlacement[placementDirection].logo.y;
             logo.scale.copy(navbarPlacement[placementDirection].logo.scale);
           }
@@ -447,7 +501,9 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           if (navPosition === "top") {
+            contactType.position.x = navbarPlacement[placementDirection].contact.x;
             contactType.position.y = navbarPlacement[placementDirection].contact.y;
+            contactType.scale.copy(navbarPlacement[placementDirection].contactType.scale);
           }
         });
 
@@ -466,6 +522,7 @@ class Home extends Component {
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
           if (navPosition === "top") {
+            contact.position.x = navbarPlacement[placementDirection].contact.x;
             contact.position.y = navbarPlacement[placementDirection].contact.y;
             contact.scale.copy(navbarPlacement[placementDirection].contact.scale);
             contact.material.opacity = 0;
@@ -488,7 +545,9 @@ class Home extends Component {
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
           if (navPosition === "top") {
+            aboutType.position.x = navbarPlacement[placementDirection].about.x;
             aboutType.position.y = navbarPlacement[placementDirection].about.y;
+            aboutType.scale.copy(navbarPlacement[placementDirection].aboutType.scale);
           }
         });
 
@@ -507,6 +566,7 @@ class Home extends Component {
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
           if (navPosition === "top") {
+            about.position.x = navbarPlacement[placementDirection].about.x;
             about.position.y = navbarPlacement[placementDirection].about.y;
             about.scale.copy(navbarPlacement[placementDirection].about.scale);
             about.material.opacity = 0;
@@ -529,7 +589,9 @@ class Home extends Component {
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
           if (navPosition === "top") {
+            projectsType.position.x = navbarPlacement[placementDirection].projects.x;
             projectsType.position.y = navbarPlacement[placementDirection].projects.y;
+            projectsType.scale.copy(navbarPlacement[placementDirection].projectsType.scale);
           }
         });
 
@@ -548,6 +610,7 @@ class Home extends Component {
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
           if (navPosition === "top") {
+            projects.position.x = navbarPlacement[placementDirection].projects.x;
             projects.position.y = navbarPlacement[placementDirection].projects.y;
             projects.scale.copy(navbarPlacement[placementDirection].projects.scale);
             projects.material.opacity = 0;
@@ -570,7 +633,9 @@ class Home extends Component {
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
           if (navPosition === "top") {
+            clientType.position.x = navbarPlacement[placementDirection].client.x;
             clientType.position.y = navbarPlacement[placementDirection].client.y;
+            clientType.scale.copy(navbarPlacement[placementDirection].clientType.scale);
           }
         });
 
@@ -589,6 +654,7 @@ class Home extends Component {
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
           if (navPosition === "top") {
+            client.position.x = navbarPlacement[placementDirection].client.x;
             client.position.y = navbarPlacement[placementDirection].client.y;
             client.scale.copy(navbarPlacement[placementDirection].client.scale);
             client.material.opacity = 0;
@@ -729,10 +795,20 @@ class Home extends Component {
           1,
           1
         );
+        navbarPlacement[placementDirection].aboutType.scale = new THREE.Vector3(
+          1,
+          1,
+          1
+        );
         navbarPlacement[placementDirection].contact.x = 0;
         navbarPlacement[placementDirection].contact.y = 0;
         navbarPlacement[placementDirection].contact.z = 0;
         navbarPlacement[placementDirection].contact.scale = new THREE.Vector3(
+          1,
+          1,
+          1
+        );
+        navbarPlacement[placementDirection].contactType.scale = new THREE.Vector3(
           1,
           1,
           1
@@ -745,6 +821,11 @@ class Home extends Component {
           1,
           1
         );
+        navbarPlacement[placementDirection].projectsType.scale = new THREE.Vector3(
+          1,
+          1,
+          1
+        );
         navbarPlacement[placementDirection].client.x = 0;
         navbarPlacement[placementDirection].client.y = 0;
         navbarPlacement[placementDirection].client.z = 0;
@@ -753,10 +834,20 @@ class Home extends Component {
           1,
           1
         );
+        navbarPlacement[placementDirection].clientType.scale = new THREE.Vector3(
+          1,
+          1,
+          1
+        );
         navbarPlacement[placementDirection].logo.x = 0;
         navbarPlacement[placementDirection].logo.y = 0;
         navbarPlacement[placementDirection].logo.z = 0;
         navbarPlacement[placementDirection].logo.scale = new THREE.Vector3(
+          1.3,
+          1.3,
+          1.3
+        );
+        navbarPlacement[placementDirection].logoType.scale = new THREE.Vector3(
           1.3,
           1.3,
           1.3
@@ -882,16 +973,32 @@ class Home extends Component {
         .to(navbarPlacement[placementDirection].about.scale, duration)
         .easing(scaleEasingFunction)
         .start();
+      new TWEEN.Tween(aboutType.scale)
+        .to(navbarPlacement[placementDirection].aboutType.scale, duration)
+        .easing(scaleEasingFunction)
+        .start();
       new TWEEN.Tween(contact.scale)
         .to(navbarPlacement[placementDirection].contact.scale, duration)
+        .easing(scaleEasingFunction)
+        .start();
+        new TWEEN.Tween(contactType.scale)
+        .to(navbarPlacement[placementDirection].contactType.scale, duration)
         .easing(scaleEasingFunction)
         .start();
       new TWEEN.Tween(client.scale)
         .to(navbarPlacement[placementDirection].client.scale, duration)
         .easing(scaleEasingFunction)
         .start();
+      new TWEEN.Tween(clientType.scale)
+        .to(navbarPlacement[placementDirection].clientType.scale, duration)
+        .easing(scaleEasingFunction)
+        .start();
       new TWEEN.Tween(projects.scale)
         .to(navbarPlacement[placementDirection].projects.scale, duration)
+        .easing(scaleEasingFunction)
+        .start();
+      new TWEEN.Tween(projectsType.scale)
+        .to(navbarPlacement[placementDirection].projectsType.scale, duration)
         .easing(scaleEasingFunction)
         .start();
       new TWEEN.Tween(logo.scale)
@@ -899,7 +1006,7 @@ class Home extends Component {
         .easing(scaleEasingFunction)
         .start();
       new TWEEN.Tween(logoType.scale)
-        .to(navbarPlacement[placementDirection].logo.scale, duration)
+        .to(navbarPlacement[placementDirection].logoType.scale, duration)
         .easing(scaleEasingFunction)
         .start();
 
@@ -923,6 +1030,11 @@ class Home extends Component {
           about.scale.y,
           about.scale.z
         );
+        navbarPlacement[placementDirection].aboutType.scale = new THREE.Vector3(
+          aboutType.scale.x,
+          aboutType.scale.y,
+          aboutType.scale.z
+        );
         navbarPlacement[placementDirection].client.x = client.position.x;
         navbarPlacement[placementDirection].client.y = client.position.y;
         navbarPlacement[placementDirection].client.z = client.position.z;
@@ -931,6 +1043,11 @@ class Home extends Component {
           client.scale.x,
           client.scale.y,
           client.scale.z
+        );
+        navbarPlacement[placementDirection].clientType.scale = new THREE.Vector3(
+          clientType.scale.x,
+          clientType.scale.y,
+          clientType.scale.z
         );
         navbarPlacement[placementDirection].projects.x = projects.position.x;
         navbarPlacement[placementDirection].projects.y = projects.position.y;
@@ -941,6 +1058,11 @@ class Home extends Component {
           projects.scale.y,
           projects.scale.z
         );
+        navbarPlacement[placementDirection].projectsType.scale = new THREE.Vector3(
+          projectsType.scale.x,
+          projectsType.scale.y,
+          projectsType.scale.z
+        );
         navbarPlacement[placementDirection].contact.x = contact.position.x;
         navbarPlacement[placementDirection].contact.y = contact.position.y;
         navbarPlacement[placementDirection].contact.z = contact.position.z;
@@ -950,6 +1072,11 @@ class Home extends Component {
           contact.scale.y,
           contact.scale.z
         );
+        navbarPlacement[placementDirection].contactType.scale = new THREE.Vector3(
+          contactType.scale.x,
+          contactType.scale.y,
+          contactType.scale.z
+        );
         navbarPlacement[placementDirection].logo.x = logo.position.x;
         navbarPlacement[placementDirection].logo.y = logo.position.y;
         navbarPlacement[placementDirection].logo.z = logo.position.z;
@@ -958,6 +1085,11 @@ class Home extends Component {
           logo.scale.x,
           logo.scale.y,
           logo.scale.z
+        );
+        navbarPlacement[placementDirection].logoType.scale = new THREE.Vector3(
+          logoType.scale.x,
+          logoType.scale.y,
+          logoType.scale.z
         );
       }
     }
