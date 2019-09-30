@@ -46,6 +46,13 @@ const navbarPlacement = {
     z: 0,
     iconScale: new THREE.Vector3(1, 0.5, 1),
     logoScale: new THREE.Vector3(1, 1, 1)
+  },
+  vertical: {
+    x: -0.8,
+    y: 0,
+    z: 0,
+    iconScale: new THREE.Vector3(1, 0.5, 1),
+    logoScale: new THREE.Vector3(0.75, 0.75, 0.75)
   }
 }
 
