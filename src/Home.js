@@ -58,24 +58,23 @@ const navbarPlacement = {
 const displayIcons = {
   logo: {
     horizontal: { x: -2.2, y: 0 },
-    vertical: { x: 0, y: 1.8 }
+    vertical: { x: 0, y: 1.2 }
   },
   about: {
     horizontal: { x: -0.97, y: 0 },
-    vertical: { x: 0, y: 0.72 },
-    smallHorizontal: { x: 0, y: 1.75, z: 0 }
+    vertical: { x: -0.5, y: -0.6 },
   },
   contact: {
     horizontal: { x: 0, y: 0 },
-    vertical: { x: 0, y: -0.15 }
+    vertical: { x: -0.5, y: -1.6 }
   },
   projects: {
     horizontal: { x: 0.97, y: 0 },
-    vertical: { x: 0, y: -1.02 }
+    vertical: { x: 0.5, y: -0.6 }
   },
   client: {
     horizontal: { x: 1.94, y: 0 },
-    vertical: { x: 0, y: -1.89 }
+    vertical: { x: 0.5, y: -1.6 }
   }
 };
 
