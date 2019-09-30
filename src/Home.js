@@ -255,26 +255,15 @@ class Home extends Component {
       // Toggle Icons ON
       glScene.traverse(function(child) {
         if (
+          (child.isMesh && child.name === "logoIcon") ||
           (child.isMesh && child.name === "clientIcon") ||
           (child.isMesh && child.name === "projectsIcon") ||
           (child.isMesh && child.name === "contactIcon") ||
           (child.isMesh && child.name === "aboutIcon")
         ) {
           child.material.opacity = 1;
-        } else if (
-          (child.isMesh && child.name === "logoType") ||
-          (child.isMesh && child.name === "clientType") ||
-          (child.isMesh && child.name === "projectsType") ||
-          (child.isMesh && child.name === "contactType") ||
-          (child.isMesh && child.name === "aboutType")
-        ) {
-          child.material.emissiveIntensity = 1;
         }
       });
-    } else {
-      // this.toggleTransition();
-      // landingScene.addLandingMouseDown();
-      // this.props.history.push('');
     }
   };
 
@@ -320,14 +309,6 @@ class Home extends Component {
           (child.isMesh && child.name === "aboutIcon")
         ) {
           child.material.opacity = 0;
-        } else if (
-          (child.isMesh && child.name === "logoType") ||
-          (child.isMesh && child.name === "clientType") ||
-          (child.isMesh && child.name === "projectsType") ||
-          (child.isMesh && child.name === "contactType") ||
-          (child.isMesh && child.name === "aboutType")
-        ) {
-          child.material.emissiveIntensity = 0;
         }
       });
 
@@ -363,7 +344,7 @@ class Home extends Component {
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
       .setPath("textures/")
-      .load("diyHdri_04i.hdr", function(texture) {
+      .load("AbstractStudio03.hdr", function(texture) {
         cubeGenerator = new EquirectangularToCubeGenerator(texture, {
           resolution: 512
         });
@@ -387,22 +368,19 @@ class Home extends Component {
           color: 0x040404,
           metalness: 1,
           roughness: 0.2,
-          emissive: 0x00fffc, //teal
+          emissive: 0x000000,
           // emissive: 0xff0042, //red
           // emissive: 0x00ff42,//green
+          // emissive: 0x080808,
           emissiveIntensity: 1
         };
         const iconParams = {
           envMap: hdrEnvMap,
           envMapIntensity: 1,
           emissiveMap: emissiveMap,
-          emissive: 0x7a7fc8,
-          emissiveIntensity: 0.6,
-          // color: 0x191a21, //darkPurple
-          color: 0x32396e, //blue
-          // color: 0x454d91,
-          // color: 0x000e94,
-          // color: 0x694112,
+          emissiveIntensity: 0.5,
+          emissive: 0xb3dde9,
+          color: 0x3da3e3,
           metalness: 1,
           roughness: 0.5,
           transparent: true
@@ -1010,15 +988,16 @@ class Home extends Component {
 
         // raycast water
         if (intersectWater.length > 0) {
-          //** turn off emissive type
+          // ** turn off emissive type
           glScene.traverse(function(child) {
             if (
+              (child.isMesh && child.name === "logoType") ||
               (child.isMesh && child.name === "clientType") ||
               (child.isMesh && child.name === "projectsType") ||
               (child.isMesh && child.name === "contactType") ||
               (child.isMesh && child.name === "aboutType")
             ) {
-              child.material.emissive.setHex(0x00fffc);
+              child.material.emissive.setHex(0x000000);
             }
           });
           var point = intersectWater[0].point;
@@ -1053,13 +1032,13 @@ class Home extends Component {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "clientType") {
                   child.material.emissive.setHex(0xff0042);
-                  // intersected = null;
                 } else if (
                   (child.isMesh && child.name === "projectsType") ||
                   (child.isMesh && child.name === "contactType") ||
                   (child.isMesh && child.name === "aboutType")
                 ) {
-                  child.material.emissive.setHex(0x00fffc);
+                  child.material.emissive.intensity = 0;
+                  child.material.emissive.setHex(0x000000);
                 }
               });
             }
@@ -1070,13 +1049,12 @@ class Home extends Component {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "projectsType") {
                   child.material.emissive.setHex(0xff0042);
-                  // intersected = null;
                 } else if (
                   (child.isMesh && child.name === "clientType") ||
                   (child.isMesh && child.name === "contactType") ||
                   (child.isMesh && child.name === "aboutType")
                 ) {
-                  child.material.emissive.setHex(0x00fffc);
+                  child.material.emissive.setHex(0x000000);
                 }
               });
             }
@@ -1087,13 +1065,12 @@ class Home extends Component {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "contactType") {
                   child.material.emissive.setHex(0xff0042);
-                  // intersected = null;
                 } else if (
                   (child.isMesh && child.name === "clientType") ||
                   (child.isMesh && child.name === "projectsType") ||
                   (child.isMesh && child.name === "aboutType")
                 ) {
-                  child.material.emissive.setHex(0x00fffc);
+                  child.material.emissive.setHex(0x000000);
                 }
               });
             }
@@ -1104,13 +1081,29 @@ class Home extends Component {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "aboutType") {
                   child.material.emissive.setHex(0xff0042);
-                  // intersected = null;
                 } else if (
                   (child.isMesh && child.name === "clientType") ||
                   (child.isMesh && child.name === "projectsType") ||
                   (child.isMesh && child.name === "contactType")
                 ) {
-                  child.material.emissive.setHex(0x00fffc);
+                  child.material.emissive.setHex(0x000000);
+                }
+              });
+            }
+
+            // ** logoIcon
+
+            if (intersected.isMesh && intersected.name === "logoIcon") {
+              glScene.traverse(function(child) {
+                if (child.isMesh && child.name === "logoType") {
+                  child.material.emissive.setHex(0xff0042);
+                } else if (
+                  (child.isMesh && child.name === "clientType") ||
+                  (child.isMesh && child.name === "projectsType") ||
+                  (child.isMesh && child.name === "contactType") ||
+                  (child.isMesh && child.name === "aboutType")
+                ) {
+                  child.material.emissive.setHex(0x000000);
                 }
               });
             }
@@ -1123,21 +1116,20 @@ class Home extends Component {
         if (!this.state.show2D) {
           if (intersectButtons.length > 0) {
             intersected = intersectButtons[0].object;
-            intersected.currentHex = intersected.material.emissive.getHex();
-            intersected.material.emissive.setHex(0x7a7fc8);
 
             // ** clientIcon
 
             if (intersected.isMesh && intersected.name === "clientIcon") {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "clientType") {
-                  child.material.emissive.setHex(0xff0042);
+                  // child.material.emissive.setHex(0xff0042); //teal
+                  child.material.emissive.setHex(0xff0042); //teal
                 } else if (
                   (child.isMesh && child.name === "projectsType") ||
                   (child.isMesh && child.name === "contactType") ||
                   (child.isMesh && child.name === "aboutType")
                 ) {
-                  child.material.emissive.setHex(0x00fffc);
+                  child.material.emissive.setHex(0x000000);
                 }
               });
             }
@@ -1147,13 +1139,15 @@ class Home extends Component {
             if (intersected.isMesh && intersected.name === "projectsIcon") {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "projectsType") {
+                  // child.material.emissive.intensity = 1;
+                  // child.currentHex = child.material.emissive.getHex();
                   child.material.emissive.setHex(0xff0042);
                 } else if (
                   (child.isMesh && child.name === "clientType") ||
                   (child.isMesh && child.name === "contactType") ||
                   (child.isMesh && child.name === "aboutType")
                 ) {
-                  child.material.emissive.setHex(0x00fffc);
+                  child.material.emissive.setHex(0x000000);
                 }
               });
             }
@@ -1163,13 +1157,15 @@ class Home extends Component {
             if (intersected.isMesh && intersected.name === "contactIcon") {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "contactType") {
+                  // child.material.emissive.intensity = 1;
+                  // child.currentHex = child.material.emissive.getHex();
                   child.material.emissive.setHex(0xff0042);
                 } else if (
                   (child.isMesh && child.name === "clientType") ||
                   (child.isMesh && child.name === "projectsType") ||
                   (child.isMesh && child.name === "aboutType")
                 ) {
-                  child.material.emissive.setHex(0x00fffc);
+                  child.material.emissive.setHex(0x000000);
                 }
               });
             }
@@ -1179,13 +1175,15 @@ class Home extends Component {
             if (intersected.isMesh && intersected.name === "aboutIcon") {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "aboutType") {
+                  // child.material.emissive.intensity = 1;
+                  // child.currentHex = child.material.emissive.getHex();
                   child.material.emissive.setHex(0xff0042);
                 } else if (
                   (child.isMesh && child.name === "clientType") ||
                   (child.isMesh && child.name === "projectsType") ||
                   (child.isMesh && child.name === "contactType")
                 ) {
-                  child.material.emissive.setHex(0x00fffc);
+                  child.material.emissive.setHex(0x000000);
                 }
               });
             }
