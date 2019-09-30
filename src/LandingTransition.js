@@ -22,7 +22,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
 
     // Object callback function
     const startTransition = (objectName) => {
-        console.log('Objected has been clicked:' + objectName)
+        //console.log('Objected has been clicked:' + objectName)
         toggleTransitionFunc();
     }
 
@@ -57,7 +57,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
                 gltf.scene.traverse(function(child) {
                     if (child.isMesh) {
                     type = child;
-                    console.log("type ", type);
+                    //console.log("type ", type);
                     child.material = new THREE.MeshStandardMaterial({
                         envMap: envMap,
                         envMapIntensity: 2,
@@ -102,6 +102,10 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
         document.removeEventListener('mousedown', onDocumentMouseDown, false);
     }
 
+    this.addLandingMouseDown = () => {
+        document.addEventListener('mousedown', onDocumentMouseDown, false);
+    }
+
     // Document functions --> should be moved to parent component
     const onDocumentMouseDown = event => {
         event.preventDefault();
@@ -116,7 +120,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
             }
         }
     }
-    document.addEventListener('mousedown', onDocumentMouseDown, false);
+    this.addLandingMouseDown();
 
     const starForge = () => {
         var starQty = 800000;

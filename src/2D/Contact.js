@@ -7,7 +7,7 @@ import "./contact.css";
 class Contact extends Component {
   render() {
     return (
-      <div class="container">
+      <div className="container">
         <Row>
           <Col className="align-items-center">
             <Row className="mb-3">

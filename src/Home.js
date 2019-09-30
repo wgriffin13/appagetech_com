@@ -12,6 +12,7 @@ import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator.js";
 import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker.js";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 import { SimplexNoise } from "three/examples/jsm/math/SimplexNoise.js";
+import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 import About from "./2D/About";
 import Client from "./2D/Client";
 import Contact from "./2D/Contact";
@@ -36,7 +37,16 @@ let offScreenZPosition2D = 10000;
 let placementDirection = "horizontal";
 
 const reactComponents = ["about", "contact", "projects", "client"];
-let reactComponentsObj = {};
+const reactComponentsObj = {};
+const navbarPlacement = {
+  horizontal: {
+    x: 0,
+    y: 1.75,
+    z: 0,
+    iconScale: new THREE.Vector3(1, 0.5, 1),
+    logoScale: new THREE.Vector3(1, 1, 1)
+  }
+}
 
 const displayIcons = {
   logo: {
@@ -45,7 +55,8 @@ const displayIcons = {
   },
   about: {
     horizontal: { x: -0.97, y: 0 },
-    vertical: { x: 0, y: 0.72 }
+    vertical: { x: 0, y: 0.72 },
+    smallHorizontal: { x: 0, y: 1.75, z: 0 }
   },
   contact: {
     horizontal: { x: 0, y: 0 },
@@ -71,7 +82,6 @@ class Home extends Component {
       reactComponentsMounted: false,
       landingPage: true,
       navPosition: "middle",
-      moveNavBar: false,
       cssComponentDisplayed: ""
     };
   }
@@ -85,11 +95,7 @@ class Home extends Component {
   }
 
   setLoadLocations = () => {
-    const windowHeight = window.innerHeight;
-    const windowWidth = window.innerWidth;
-    console.log(windowHeight + " " + windowWidth);
     const windowAspect = window.innerWidth / window.innerHeight;
-    console.log(windowAspect);
     if (windowAspect < 1) {
       placementDirection = "vertical";
     }
@@ -202,8 +208,9 @@ class Home extends Component {
     if (this.state.show2D) {
       cssRenderer.domElement.style.zIndex = -1;
       glScene.remove(plane);
+      // run TWEEN to move navbar
+      this.transform(1000);
       this.setState({
-        moveNavBar: true,
         cssComponentDisplayed: "",
         show2D: false,
         showWater: true
@@ -233,6 +240,10 @@ class Home extends Component {
           child.material.emissiveIntensity = 1;
         }
       });
+    } else {
+      // this.toggleTransition();
+      // landingScene.addLandingMouseDown();
+      // this.props.history.push('');
     }
   };
 
@@ -260,8 +271,10 @@ class Home extends Component {
       this.props.history.push(`/${reactComponentName}`);
     } else {
       reactComponentsObj[reactComponentName].position.z = zPosition2D;
+      // Try TWEEN function
+      this.transform(1000);
+
       this.setState({
-        moveNavBar: true,
         cssComponentDisplayed: reactComponentName,
         show2D: true,
         showWater: false
@@ -305,6 +318,16 @@ class Home extends Component {
   loadAssets = () => {
     let showReactComponent = this.showReactComponent.bind(this);
     let hideAllReactComponents = this.hideAllReactComponents.bind(this);
+    const location = this.props.location.pathname.substring(1);
+    let navPosition = this.state.navPosition;
+    if (reactComponents.find(item => item === location)) {
+      if (placementDirection === 'horizontal') {
+        navPosition = 'top';
+      } else {
+        navPosition = 'side';
+      }
+    }
+    this.setState({ navPosition: navPosition});
 
     new RGBELoader()
       .setDataType(THREE.UnsignedByteType)
@@ -372,6 +395,10 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
+          if (navPosition === 'top') {
+            logoType.position.y = navbarPlacement[placementDirection].y;
+            logoType.scale.copy(navbarPlacement[placementDirection].logoScale);
+          }
         });
 
         const logoIconLoader = new GLTFLoader().setPath("/models/");
@@ -389,6 +416,11 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
+          if (navPosition === 'top') {
+            logo.position.y = navbarPlacement[placementDirection].y;
+            logo.scale.copy(navbarPlacement[placementDirection].logoScale);
+            logo.material.opacity = 0;
+          }
           logo.callback = () => hideAllReactComponents();
         });
 
@@ -406,6 +438,9 @@ class Home extends Component {
           gltf.scene.position.y = displayIcons.contact[placementDirection].y;
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
+          if (navPosition === 'top') {
+            contactType.position.y = navbarPlacement[placementDirection].y
+          }
         });
 
         const contactIconLoader = new GLTFLoader().setPath("/models/");
@@ -422,6 +457,11 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
+          if (navPosition === 'top') {
+            contact.position.y = navbarPlacement[placementDirection].y;
+            contact.scale.copy(navbarPlacement[placementDirection].iconScale);
+            contact.material.opacity = 0;
+          }
           contact.callback = () => showReactComponent("contact");
         });
 
@@ -439,6 +479,9 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
+          if (navPosition === 'top') {
+            aboutType.position.y = navbarPlacement[placementDirection].y;
+          }
         });
 
         const aboutIconLoader = new GLTFLoader().setPath("/models/");
@@ -455,6 +498,11 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
+          if (navPosition === 'top') {
+            about.position.y = navbarPlacement[placementDirection].y;
+            about.scale.copy(navbarPlacement[placementDirection].iconScale);
+            about.material.opacity = 0;
+          }
           about.callback = () => showReactComponent("about");
         });
 
@@ -472,6 +520,9 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
+          if (navPosition === 'top') {
+            projectsType.position.y = navbarPlacement[placementDirection].y;
+          }
         });
 
         const projectsIconLoader = new GLTFLoader().setPath("/models/");
@@ -488,6 +539,11 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
+          if (navPosition === 'top') {
+            projects.position.y = navbarPlacement[placementDirection].y;
+            projects.scale.copy(navbarPlacement[placementDirection].iconScale);
+            projects.material.opacity = 0;
+          }
           projects.callback = () => showReactComponent("projects");
         });
 
@@ -505,6 +561,9 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
+          if (navPosition === 'top') {
+            clientType.position.y = navbarPlacement[placementDirection].y;
+          }
         });
 
         const clientIconLoader = new GLTFLoader().setPath("/models/");
@@ -521,6 +580,11 @@ class Home extends Component {
           gltf.scene.position.z = zPos;
           gltf.scene.rotation.z = zRot;
           glScene.add(gltf.scene);
+          if (navPosition === 'top') {
+            client.position.y = navbarPlacement[placementDirection].y;
+            client.scale.copy(navbarPlacement[placementDirection].iconScale);
+            client.material.opacity = 0;
+          }
           client.callback = () => showReactComponent("client");
         });
         pmremGenerator.dispose();
@@ -632,7 +696,10 @@ class Home extends Component {
     }
   };
 
-  checkNavBarMove = () => {
+  transform = ( duration ) => {
+
+    TWEEN.removeAll();
+
     if (
       logo &&
       logoType &&
@@ -642,67 +709,119 @@ class Home extends Component {
       client &&
       about
     ) {
-      if (this.state.navPosition === "middle") {
-        // Moving navbar up
-        if (this.state.moveNavBar === true) {
-          const scaleY = new THREE.Vector3(1, 0.5, 1);
-          const scaleLogo = new THREE.Vector3(1, 1, 1);
-          logo.scale.copy(scaleLogo);
-          logoType.scale.copy(scaleLogo);
-          contact.scale.copy(scaleY);
-          projects.scale.copy(scaleY);
-          client.scale.copy(scaleY);
-          about.scale.copy(scaleY);
-          if (logo.position.y <= 1.75) {
-            logo.position.y += 0.3;
-            about.position.y += 0.3;
-            contact.position.y += 0.3;
-            projects.position.y += 0.3;
-            client.position.y += 0.3;
-            logoType.position.y += 0.3;
-            aboutType.position.y += 0.3;
-            contactType.position.y += 0.3;
-            projectsType.position.y += 0.3;
-            clientType.position.y += 0.3;
-          } else {
-            this.setState({
-              moveNavBar: false,
-              navPosition: "top"
-            });
-          }
-        }
-      } else if (this.state.navPosition === "top") {
-        // Moving navbar down
-        if (this.state.moveNavBar === true) {
-          const scaleY = new THREE.Vector3(1, 1, 1);
-          const scaleLogo = new THREE.Vector3(1.3, 1.3, 1.3);
-          logo.scale.copy(scaleLogo);
-          logoType.scale.copy(scaleLogo);
-          contact.scale.copy(scaleY);
-          projects.scale.copy(scaleY);
-          client.scale.copy(scaleY);
-          about.scale.copy(scaleY);
-          if (logo.position.y >= 0) {
-            logo.position.y -= 0.3;
-            about.position.y -= 0.3;
-            contact.position.y -= 0.3;
-            projects.position.y -= 0.3;
-            client.position.y -= 0.3;
-            logoType.position.y -= 0.3;
-            aboutType.position.y -= 0.3;
-            contactType.position.y -= 0.3;
-            projectsType.position.y -= 0.3;
-            clientType.position.y -= 0.3;
-          } else {
-            this.setState({
-              moveNavBar: false,
-              navPosition: "middle"
-            });
-          }
-        }
+
+      // Deep copy of the navbarPlacement
+      const tempNavbarPlacement = JSON.parse(JSON.stringify(navbarPlacement));
+      // Corrects target locations on hard refresh
+      if (this.state.navPosition === "top") {
+        // Set new target placement locations
+        navbarPlacement[placementDirection].x = 0
+        navbarPlacement[placementDirection].y = 0
+        navbarPlacement[placementDirection].z = 0
+        // Set new scales for icons
+        navbarPlacement[placementDirection].logoScale = new THREE.Vector3(1.3, 1.3, 1.3);
+        navbarPlacement[placementDirection].iconScale = new THREE.Vector3(1, 1, 1);
+      }
+
+      const moveEasingFunction = TWEEN.Easing.Elastic.Out;
+      const scaleEasingFunction = TWEEN.Easing.Quintic.Out;
+
+      new TWEEN.Tween( about.scale )
+      .to( navbarPlacement[placementDirection].iconScale, duration )
+      .easing( moveEasingFunction )
+      .start();
+
+      new TWEEN.Tween( about.position )
+        .to( { x: navbarPlacement[placementDirection].x, y: navbarPlacement[placementDirection].y, z: navbarPlacement[placementDirection].z }, duration )
+        .easing( moveEasingFunction )
+        .start();
+      new TWEEN.Tween( aboutType.position )
+        .to( { x: navbarPlacement[placementDirection].x, y: navbarPlacement[placementDirection].y, z: navbarPlacement[placementDirection].z }, duration )
+        .easing( moveEasingFunction )
+        .start();
+      new TWEEN.Tween( logo.position )
+        .to( { x: navbarPlacement[placementDirection].x, y: navbarPlacement[placementDirection].y, z: navbarPlacement[placementDirection].z }, duration )
+        .easing( moveEasingFunction )
+        .start();
+      new TWEEN.Tween( logoType.position )
+        .to( { x: navbarPlacement[placementDirection].x, y: navbarPlacement[placementDirection].y, z: navbarPlacement[placementDirection].z }, duration )
+        .easing( moveEasingFunction )
+        .start();
+      new TWEEN.Tween( contact.position )
+        .to( { x: navbarPlacement[placementDirection].x, y: navbarPlacement[placementDirection].y, z: navbarPlacement[placementDirection].z }, duration )
+        .easing( moveEasingFunction )
+        .start();
+      new TWEEN.Tween( contactType.position )
+        .to( { x: navbarPlacement[placementDirection].x, y: navbarPlacement[placementDirection].y, z: navbarPlacement[placementDirection].z }, duration )
+        .easing( moveEasingFunction )
+        .start();
+      new TWEEN.Tween( projects.position )
+        .to( { x: navbarPlacement[placementDirection].x, y: navbarPlacement[placementDirection].y, z: navbarPlacement[placementDirection].z }, duration )
+        .easing( moveEasingFunction )
+        .start();
+      new TWEEN.Tween( projectsType.position )
+        .to( { x: navbarPlacement[placementDirection].x, y: navbarPlacement[placementDirection].y, z: navbarPlacement[placementDirection].z }, duration )
+        .easing( moveEasingFunction )
+        .start();
+      new TWEEN.Tween( client.position )
+        .to( { x: navbarPlacement[placementDirection].x, y: navbarPlacement[placementDirection].y, z: navbarPlacement[placementDirection].z }, duration )
+        .easing( moveEasingFunction )
+        .start();
+      new TWEEN.Tween( clientType.position )
+        .to( { x: navbarPlacement[placementDirection].x, y: navbarPlacement[placementDirection].y, z: navbarPlacement[placementDirection].z }, duration )
+        .easing( moveEasingFunction )
+        .start();
+
+      // Icon scale functions
+      new TWEEN.Tween( about.scale )
+        .to( navbarPlacement[placementDirection].iconScale, duration )
+        .easing( scaleEasingFunction )
+        .start();
+      new TWEEN.Tween( contact.scale )
+        .to( navbarPlacement[placementDirection].iconScale, duration )
+        .easing( scaleEasingFunction )
+        .start();
+      new TWEEN.Tween( client.scale )
+        .to( navbarPlacement[placementDirection].iconScale, duration )
+        .easing( scaleEasingFunction )
+        .start();
+      new TWEEN.Tween( projects.scale )
+        .to( navbarPlacement[placementDirection].iconScale, duration )
+        .easing( scaleEasingFunction )
+        .start();
+      new TWEEN.Tween( logo.scale )
+        .to( navbarPlacement[placementDirection].logoScale, duration )
+        .easing( scaleEasingFunction )
+        .start();
+      new TWEEN.Tween( logoType.scale )
+        .to( navbarPlacement[placementDirection].logoScale, duration )
+        .easing( scaleEasingFunction )
+        .start();
+
+      new TWEEN.Tween( this )
+        .to( {}, duration )
+        .onUpdate( () => glRenderer.render(glScene, camera) )
+        .start();
+
+      if (this.state.navPosition === "top") {
+        navbarPlacement[placementDirection].x = tempNavbarPlacement[placementDirection].x;
+        navbarPlacement[placementDirection].y = tempNavbarPlacement[placementDirection].y;
+        navbarPlacement[placementDirection].z = tempNavbarPlacement[placementDirection].z;
+        navbarPlacement[placementDirection].logoScale = tempNavbarPlacement[placementDirection].logoScale;
+        navbarPlacement[placementDirection].iconScale = tempNavbarPlacement[placementDirection].iconScale;
+        this.setState({ navPosition: "middle" })
+      } else {
+        // Set new target placement locations
+        navbarPlacement[placementDirection].x = about.position.x;
+        navbarPlacement[placementDirection].y = about.position.y;
+        navbarPlacement[placementDirection].z = about.position.z;
+        // Set new scales for icons
+        navbarPlacement[placementDirection].logoScale = new THREE.Vector3(logo.scale.x, logo.scale.y, logo.scale.z);
+        navbarPlacement[placementDirection].iconScale = new THREE.Vector3(about.scale.x, about.scale.y, about.scale.z);
       }
     }
-  };
+  }
+
 
   update = () => {
     requestAnimationFrame(this.update);
@@ -918,7 +1037,8 @@ class Home extends Component {
         }
       }
       // Checks the if update function needs to move the navbar based on click and component statefulness
-      this.checkNavBarMove();
+      //this.checkNavBarMove();
+      TWEEN.update();
       if (this.state.showWater) {
         waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
           heightmapVariable
