@@ -20,7 +20,7 @@ class Projects extends Component {
     ];
     return (
       <div>
-        <Row>
+        <Row style={{ marginTop: 230 }}>
           <Col
             className="shadow"
             style={{ width: 450, border: "1px solid lightGrey" }}
@@ -38,6 +38,8 @@ class Projects extends Component {
               ))}
             </Carousel>
           </Col>
+        </Row>
+        <Row>
           <Col
             className="shadow"
             style={{ width: 450, border: "1px solid lightGrey" }}

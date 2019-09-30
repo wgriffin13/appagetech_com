@@ -31,7 +31,6 @@ let WIDTH = 512;
 let BOUNDS = 256;
 let plane;
 let landingScene;
-
 let zPosition2D = 215;
 let offScreenZPosition2D = 10000;
 let placementDirection = "horizontal";
@@ -217,8 +216,21 @@ class Home extends Component {
 
       // Toggle Icons ON
       glScene.traverse(function(child) {
-        if (child.isMesh && child.material.transparent) {
+        if (
+          (child.isMesh && child.name === "clientIcon") ||
+          (child.isMesh && child.name === "projectsIcon") ||
+          (child.isMesh && child.name === "contactIcon") ||
+          (child.isMesh && child.name === "aboutIcon")
+        ) {
           child.material.opacity = 1;
+        } else if (
+          (child.isMesh && child.name === "logoType") ||
+          (child.isMesh && child.name === "clientType") ||
+          (child.isMesh && child.name === "projectsType") ||
+          (child.isMesh && child.name === "contactType") ||
+          (child.isMesh && child.name === "aboutType")
+        ) {
+          child.material.emissiveIntensity = 1;
         }
       });
     }
@@ -257,8 +269,21 @@ class Home extends Component {
 
       // Toggle Icons OFF
       glScene.traverse(function(child) {
-        if (child.isMesh && child.material.transparent) {
+        if (
+          (child.isMesh && child.name === "clientIcon") ||
+          (child.isMesh && child.name === "projectsIcon") ||
+          (child.isMesh && child.name === "contactIcon") ||
+          (child.isMesh && child.name === "aboutIcon")
+        ) {
           child.material.opacity = 0;
+        } else if (
+          (child.isMesh && child.name === "logoType") ||
+          (child.isMesh && child.name === "clientType") ||
+          (child.isMesh && child.name === "projectsType") ||
+          (child.isMesh && child.name === "contactType") ||
+          (child.isMesh && child.name === "aboutType")
+        ) {
+          child.material.emissiveIntensity = 0;
         }
       });
 
@@ -295,26 +320,43 @@ class Home extends Component {
         pmremCubeUVPacker.update(glRenderer);
         const hdrEnvMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
 
+        const emissiveMapLoader = new THREE.TextureLoader();
+        const emissiveMap = emissiveMapLoader.load(
+          "textures/EmissiveMap_01.png"
+        );
+        emissiveMap.anisotropy = 16;
+
         // Models
         const typeParams = {
           envMap: hdrEnvMap,
-          envMapIntensity: 5,
-          color: 0x000000,
+          envMapIntensity: 1,
+          color: 0x040404,
           metalness: 1,
-          roughness: 0
+          roughness: 0.2,
+          emissive: 0x00fffc, //teal
+          // emissive: 0xff0042, //red
+          // emissive: 0x00ff42,//green
+          emissiveIntensity: 1
         };
         const iconParams = {
           envMap: hdrEnvMap,
-          envMapIntensity: 5,
-          color: 0x694112,
+          envMapIntensity: 1,
+          emissiveMap: emissiveMap,
+          emissive: 0x7a7fc8,
+          emissiveIntensity: 0.6,
+          // color: 0x191a21, //darkPurple
+          color: 0x32396e, //blue
+          // color: 0x454d91,
+          // color: 0x000e94,
+          // color: 0x694112,
           metalness: 1,
-          roughness: 0.05,
+          roughness: 0.5,
           transparent: true
         };
         const zPos = 215;
         const zRot = null;
         const scale = new THREE.Vector3(1.3, 1.3, 1.3);
-        // console.log("models loaded");
+
         const logoTypeLoader = new GLTFLoader().setPath("/models/");
         logoTypeLoader.load("Logo_Type.glb", function(gltf) {
           gltf.scene.traverse(function(child) {
@@ -322,6 +364,7 @@ class Home extends Component {
               child.material = new THREE.MeshStandardMaterial(typeParams);
               child.scale.copy(scale);
               logoType = child;
+              logoType.name = "logoType";
             }
           });
           gltf.scene.position.x = displayIcons.logo[placementDirection].x;
@@ -338,6 +381,7 @@ class Home extends Component {
               child.material = new THREE.MeshStandardMaterial(iconParams);
               child.scale.copy(scale);
               logo = child;
+              logo.name = "logoIcon";
             }
           });
           gltf.scene.position.x = displayIcons.logo[placementDirection].x;
@@ -354,6 +398,7 @@ class Home extends Component {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
               contactType = child;
+              contactType.name = "contactType";
             }
           });
           glScene.add(gltf.scene);
@@ -369,6 +414,7 @@ class Home extends Component {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
               contact = child;
+              contact.name = "contactIcon";
             }
           });
           gltf.scene.position.x = displayIcons.contact[placementDirection].x;
@@ -385,6 +431,7 @@ class Home extends Component {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
               aboutType = child;
+              aboutType.name = "aboutType";
             }
           });
           gltf.scene.position.x = displayIcons.about[placementDirection].x;
@@ -400,6 +447,7 @@ class Home extends Component {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
               about = child;
+              about.name = "aboutIcon";
             }
           });
           gltf.scene.position.x = displayIcons.about[placementDirection].x;
@@ -416,6 +464,7 @@ class Home extends Component {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
               projectsType = child;
+              projectsType.name = "projectsType";
             }
           });
           gltf.scene.position.x = displayIcons.projects[placementDirection].x;
@@ -431,6 +480,7 @@ class Home extends Component {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
               projects = child;
+              projects.name = "projectsIcon";
             }
           });
           gltf.scene.position.x = displayIcons.projects[placementDirection].x;
@@ -447,6 +497,7 @@ class Home extends Component {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(typeParams);
               clientType = child;
+              clientType.name = "clientType";
             }
           });
           gltf.scene.position.x = displayIcons.client[placementDirection].x;
@@ -462,6 +513,7 @@ class Home extends Component {
             if (child.isMesh) {
               child.material = new THREE.MeshStandardMaterial(iconParams);
               client = child;
+              client.name = "clientIcon";
             }
           });
           gltf.scene.position.x = displayIcons.client[placementDirection].x;
@@ -674,49 +726,193 @@ class Home extends Component {
       if (mouseMoved && logo && about && contact && projects && client) {
         var uniforms = heightmapVariable.material.uniforms;
         var intersectWater = raycaster.intersectObject(meshRay);
+
         // raycast water
         if (intersectWater.length > 0) {
+          //** turn off emissive type
+          glScene.traverse(function(child) {
+            if (
+              (child.isMesh && child.name === "clientType") ||
+              (child.isMesh && child.name === "projectsType") ||
+              (child.isMesh && child.name === "contactType") ||
+              (child.isMesh && child.name === "aboutType")
+            ) {
+              child.material.emissive.setHex(0x00fffc);
+            }
+          });
           var point = intersectWater[0].point;
           uniforms["mousePos"].value.set(point.x, point.z);
         } else {
           uniforms["mousePos"].value.set(10000, 10000);
         }
         mouseMoved = false;
-        var intersectButtons = raycaster.intersectObjects([
+
+        // raycast buttons
+        const intersectButtons = raycaster.intersectObjects([
           logo,
           about,
           contact,
           projects,
           client
         ]);
-        // raycast buttons
+        //2D
         if (this.state.show2D) {
           if (intersectButtons.length > 0) {
             if (intersected !== intersectButtons[0].object) {
               if (intersected) {
-                intersected.material.opacity = 0;
+                intersected.material.opacity = 0; //off
               }
               intersected = intersectButtons[0].object;
             }
-            intersected.material.opacity = 1;
+            intersected.material.opacity = 1; //on
+
+            // ** clientIcon
+
+            if (intersected.isMesh && intersected.name === "clientIcon") {
+              console.log("intersected clientIcon");
+              glScene.traverse(function(child) {
+                if (child.isMesh && child.name === "clientType") {
+                  console.log("found clientType");
+                  child.material.emissive.setHex(0xff0042);
+                  // intersected = null;
+                } else if (
+                  (child.isMesh && child.name === "projectsType") ||
+                  (child.isMesh && child.name === "contactType") ||
+                  (child.isMesh && child.name === "aboutType")
+                ) {
+                  child.material.emissive.setHex(0x00fffc);
+                }
+              });
+            }
+
+            // ** projectsIcon
+
+            if (intersected.isMesh && intersected.name === "projectsIcon") {
+              glScene.traverse(function(child) {
+                if (child.isMesh && child.name === "projectsType") {
+                  child.material.emissive.setHex(0xff0042);
+                  // intersected = null;
+                } else if (
+                  (child.isMesh && child.name === "clientType") ||
+                  (child.isMesh && child.name === "contactType") ||
+                  (child.isMesh && child.name === "aboutType")
+                ) {
+                  child.material.emissive.setHex(0x00fffc);
+                }
+              });
+            }
+
+            // ** contactIcon
+
+            if (intersected.isMesh && intersected.name === "contactIcon") {
+              glScene.traverse(function(child) {
+                if (child.isMesh && child.name === "contactType") {
+                  child.material.emissive.setHex(0xff0042);
+                  // intersected = null;
+                } else if (
+                  (child.isMesh && child.name === "clientType") ||
+                  (child.isMesh && child.name === "projectsType") ||
+                  (child.isMesh && child.name === "aboutType")
+                ) {
+                  child.material.emissive.setHex(0x00fffc);
+                }
+              });
+            }
+
+            // ** aboutIcon
+
+            if (intersected.isMesh && intersected.name === "aboutIcon") {
+              glScene.traverse(function(child) {
+                if (child.isMesh && child.name === "aboutType") {
+                  child.material.emissive.setHex(0xff0042);
+                  // intersected = null;
+                } else if (
+                  (child.isMesh && child.name === "clientType") ||
+                  (child.isMesh && child.name === "projectsType") ||
+                  (child.isMesh && child.name === "contactType")
+                ) {
+                  child.material.emissive.setHex(0x00fffc);
+                }
+              });
+            }
           } else {
             if (intersected) intersected.material.opacity = 0;
             intersected = null;
           }
         }
+        //3D
         if (!this.state.show2D) {
           if (intersectButtons.length > 0) {
-            if (intersected !== intersectButtons[0].object) {
-              if (intersected) {
-                intersected.material.emissive.setHex(intersected.currentHex);
-              }
-              intersected = intersectButtons[0].object;
-              intersected.currentHex = intersected.material.emissive.getHex();
-              intersected.material.emissive.setHex(0xff0000);
+            intersected = intersectButtons[0].object;
+            // intersected.currentHex = intersected.material.emissive.getHex();
+            // intersected.material.emissive.setHex(0x7a7fc8);
+
+            // ** clientIcon
+
+            if (intersected.isMesh && intersected.name === "clientIcon") {
+              console.log("intersected clientIcon");
+              glScene.traverse(function(child) {
+                if (child.isMesh && child.name === "clientType") {
+                  console.log("found clientType");
+                  child.material.emissive.setHex(0xff0042);
+                } else if (
+                  (child.isMesh && child.name === "projectsType") ||
+                  (child.isMesh && child.name === "contactType") ||
+                  (child.isMesh && child.name === "aboutType")
+                ) {
+                  child.material.emissive.setHex(0x00fffc);
+                }
+              });
+            }
+
+            // ** projectsIcon
+
+            if (intersected.isMesh && intersected.name === "projectsIcon") {
+              glScene.traverse(function(child) {
+                if (child.isMesh && child.name === "projectsType") {
+                  child.material.emissive.setHex(0xff0042);
+                } else if (
+                  (child.isMesh && child.name === "clientType") ||
+                  (child.isMesh && child.name === "contactType") ||
+                  (child.isMesh && child.name === "aboutType")
+                ) {
+                  child.material.emissive.setHex(0x00fffc);
+                }
+              });
+            }
+
+            // ** contactIcon
+
+            if (intersected.isMesh && intersected.name === "contactIcon") {
+              glScene.traverse(function(child) {
+                if (child.isMesh && child.name === "contactType") {
+                  child.material.emissive.setHex(0xff0042);
+                } else if (
+                  (child.isMesh && child.name === "clientType") ||
+                  (child.isMesh && child.name === "projectsType") ||
+                  (child.isMesh && child.name === "aboutType")
+                ) {
+                  child.material.emissive.setHex(0x00fffc);
+                }
+              });
+            }
+
+            // ** aboutIcon
+
+            if (intersected.isMesh && intersected.name === "aboutIcon") {
+              glScene.traverse(function(child) {
+                if (child.isMesh && child.name === "aboutType") {
+                  child.material.emissive.setHex(0xff0042);
+                } else if (
+                  (child.isMesh && child.name === "clientType") ||
+                  (child.isMesh && child.name === "projectsType") ||
+                  (child.isMesh && child.name === "contactType")
+                ) {
+                  child.material.emissive.setHex(0x00fffc);
+                }
+              });
             }
           } else {
-            if (intersected)
-              intersected.material.emissive.setHex(intersected.currentHex);
             intersected = null;
           }
         }
