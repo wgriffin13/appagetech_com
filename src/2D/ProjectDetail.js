@@ -12,7 +12,9 @@ export default function ProjectDetail(props) {
     <Modal {...props} size="xl" centered>
       <Modal.Header
         style={{
-          border: "1px solid #575757"
+          border: "1px solid #575757",
+          backgroundColor: "black",
+          color: "white"
         }}
         closeButton
       >
@@ -23,7 +25,7 @@ export default function ProjectDetail(props) {
               fontFamily: "co-headline, sans-serif",
               fontWeight: 400,
               fontStyle: "normal",
-              marginRight: 15
+              marginRight: 20
             }}
           >
             App Age Project:
@@ -46,7 +48,7 @@ export default function ProjectDetail(props) {
             <Row style={{ justifyContent: "center" }}>
               <h4>Challenge:</h4>
             </Row>
-            <Row>
+            <Row style={{ justifyContent: "center" }}>
               <p>
                 Build a clean, modern, mobile-friendly site to engage patients, listeners, and people interested in his
                 work.
@@ -84,7 +86,13 @@ export default function ProjectDetail(props) {
           </Col>
         </Container>
       </Modal.Body>
-      <Modal.Footer style={{ border: "1px solid #575757" }}>
+      <Modal.Footer
+        style={{
+          border: "1px solid #575757",
+          backgroundColor: "black",
+          color: "white"
+        }}
+      >
         <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
