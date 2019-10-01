@@ -4,7 +4,6 @@ import Col from "react-bootstrap/Col";
 import Carousel from "react-bootstrap/Carousel";
 import Button from "react-bootstrap/Button";
 import ProjectDetail from "./ProjectDetail";
-// import Modal from 'react-bootstrap/Modal';
 
 class Projects extends Component {
   constructor(props) {
@@ -14,6 +13,12 @@ class Projects extends Component {
       setShowDetail: false
     };
   }
+
+  onClick = e => {
+    e.preventDefault();
+    console.log("Clicked Onclicked!!!");
+    this.setState({ showDetail: true });
+  };
   render() {
     const berlandPics = [
       "images/Pages_Aligned-600x500-Home-Top.png",
@@ -31,9 +36,7 @@ class Projects extends Component {
     return (
       <div>
         <Row>
-          {/* <Row style={{ marginTop: 230 }}> */}
           <Col style={{ width: 360 }}>
-            {/* <Col className="shadow" style={{ width: 360, border: "1px solid lightGrey" }}> */}
             <Carousel
               as={Button}
               pauseOnHover={false}
@@ -43,6 +46,7 @@ class Projects extends Component {
               fade={true}
               style={{ position: "absolute", top: 0, padding: 0, margin: 0 }}
               className="shadow"
+              onClick={this.onClick}
             >
               {berlandPics.map(imgSrc => (
                 <Carousel.Item>
@@ -51,7 +55,7 @@ class Projects extends Component {
               ))}
             </Carousel>
           </Col>
-          <ProjectDetail show={this.state.showDetail} onHide={() => this.setState({ setShowDetail: false })} />
+          <ProjectDetail show={this.state.showDetail} onHide={() => this.setState({ showDetail: false })} />
 
           <Col className="shadow" style={{ width: 360, border: "1px solid lightGrey" }}>
             <Carousel interval={1000} controls={false} indicators={false} fade={true}>
