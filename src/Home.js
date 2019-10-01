@@ -1376,6 +1376,18 @@ class Home extends Component {
     if (event.touches.length === 1) {
       event.preventDefault();
       this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
+      const intersectButtonsMd = raycaster.intersectObjects([
+        logo,
+        about,
+        contact,
+        projects,
+        client
+      ]);
+      if (intersectButtonsMd.length > 0) {
+        if (intersectButtonsMd[0].object.callback) {
+          intersectButtonsMd[0].object.callback();
+        }
+      }
     }
   };
 

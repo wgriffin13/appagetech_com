@@ -9,6 +9,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
     // Initial variables
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
+    let mouseCoords = new THREE.Vector2();
     //this.clearColor = clearColor;
     // Scene & Camera
     this.camera = new THREE.PerspectiveCamera(
@@ -100,13 +101,21 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
 
     this.removeLandingMouseDown = () => {
         document.removeEventListener('mousedown', onDocumentMouseDown, false);
+        document.removeEventListener("touchstart", onDocumentTouchStart, false);
     }
 
     this.addLandingMouseDown = () => {
         document.addEventListener('mousedown', onDocumentMouseDown, false);
+        document.addEventListener("touchstart", onDocumentTouchStart, false);
     }
 
     // Document functions --> should be moved to parent component
+    const setMouseCoords = (x, y) => {
+        mouseCoords.set(
+          (x / renderer.domElement.clientWidth) * 2 - 1,
+          -(y / renderer.domElement.clientHeight) * 2 + 1
+        );
+    };
     const onDocumentMouseDown = event => {
         event.preventDefault();
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -117,6 +126,20 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
             if (intersects[0].object.callback) {
                 intersects[0].object.callback();
                 this.removeLandingMouseDown();
+            }
+        }
+    }
+    const onDocumentTouchStart = event => {
+        if (event.touches.length === 1) {
+            event.preventDefault();
+            setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
+            raycaster.setFromCamera(mouse, this.camera);
+            let intersects = raycaster.intersectObjects([icon], true);
+            if (intersects.length > 0) {
+                if (intersects[0].object.callback) {
+                    intersects[0].object.callback();
+                    this.removeLandingMouseDown();
+                }
             }
         }
     }
