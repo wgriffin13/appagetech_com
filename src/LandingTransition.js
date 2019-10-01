@@ -109,20 +109,20 @@ export default function LandingTransition(renderer, toggleTransitionFunc) {
       }
     }
   };
-  // const onDocumentTouchStart = event => {
-  //     if (event.touches.length === 1) {
-  //         event.preventDefault();
-  //         setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
-  //         raycaster.setFromCamera(mouse, this.camera);
-  //         let intersects = raycaster.intersectObjects([icon], true);
-  //         if (intersects.length > 0) {
-  //             if (intersects[0].object.callback) {
-  //                 intersects[0].object.callback();
-  //                 this.removeLandingMouseDown();
-  //             }
-  //         }
-  //     }
-  // }
+  const onDocumentTouchStart = event => {
+    if (event.touches.length === 1) {
+      event.preventDefault();
+      setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
+      raycaster.setFromCamera(mouse, this.camera);
+      let intersects = raycaster.intersectObjects([icon], true);
+      if (intersects.length > 0) {
+        if (intersects[0].object.callback) {
+          intersects[0].object.callback();
+          this.removeLandingMouseDown();
+        }
+      }
+    }
+  };
   this.addLandingMouseDown();
 
   const starForge = () => {
