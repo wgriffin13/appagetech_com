@@ -109,13 +109,6 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
         //document.addEventListener("touchstart", onDocumentTouchStart, false);
     }
 
-    // Document functions --> should be moved to parent component
-    const setMouseCoords = (x, y) => {
-        mouseCoords.set(
-          (x / renderer.domElement.clientWidth) * 2 - 1,
-          -(y / renderer.domElement.clientHeight) * 2 + 1
-        );
-    };
     const onDocumentMouseDown = event => {
         event.preventDefault();
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -129,20 +122,6 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
             }
         }
     }
-    // const onDocumentTouchStart = event => {
-    //     if (event.touches.length === 1) {
-    //         event.preventDefault();
-    //         setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
-    //         raycaster.setFromCamera(mouse, this.camera);
-    //         let intersects = raycaster.intersectObjects([icon], true);
-    //         if (intersects.length > 0) {
-    //             if (intersects[0].object.callback) {
-    //                 intersects[0].object.callback();
-    //                 this.removeLandingMouseDown();
-    //             }
-    //         }
-    //     }
-    // }
     this.addLandingMouseDown();
 
     const starForge = () => {
