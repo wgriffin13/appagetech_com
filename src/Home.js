@@ -1374,20 +1374,22 @@ class Home extends Component {
     if (event.touches.length === 1) {
       // Assumes that click and mouse down will both be called by the browser
       this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
-      raycaster.setFromCamera(mouseCoords, camera);
-      const intersectButtonsMd = raycaster.intersectObjects([
-        logo,
-        about,
-        contact,
-        projects,
-        client
-      ]);
-      if (intersectButtonsMd.length > 0) {
-        if (intersectButtonsMd[0].object.callback) {
-          intersectButtonsMd[0].object.callback();
+      if (logo, about, contact, projects, client) {
+        raycaster.setFromCamera(mouseCoords, camera);
+        const intersectButtonsMd = raycaster.intersectObjects([
+          logo,
+          about,
+          contact,
+          projects,
+          client
+        ]);
+        if (intersectButtonsMd.length > 0) {
+          if (intersectButtonsMd[0].object.callback) {
+            intersectButtonsMd[0].object.callback();
+          }
         }
+        touchEvent = true;
       }
-      touchEvent = true;
     }
   };
 
