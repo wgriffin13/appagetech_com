@@ -5,7 +5,7 @@ import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/Equir
 import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator.js";
 import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker.js";
 
-export default function LandingTransition(renderer, toggleTransitionFunc) {
+export default function LandingTransition(renderer, clearColor, toggleTransitionFunc) {
   // Initial variables
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
@@ -105,8 +105,6 @@ export default function LandingTransition(renderer, toggleTransitionFunc) {
       }
     }
   };
-  this.addLandingMouseDown();
-
   this.addLandingMouseDown();
 
   const starForge = () => {
