@@ -1374,7 +1374,7 @@ class Home extends Component {
     if (event.touches.length === 1) {
       // Assumes that click and mouse down will both be called by the browser
       this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
-      if (logo, about, contact, projects, client) {
+      if (logo && about && contact && projects && client) {
         raycaster.setFromCamera(mouseCoords, camera);
         const intersectButtonsMd = raycaster.intersectObjects([
           logo,
