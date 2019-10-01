@@ -9,7 +9,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
   // Initial variables
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
-  let mouseCoords = new THREE.Vector2();
+  let touchEvent = false;
   //this.clearColor = clearColor;
   // Scene & Camera
   this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.25, 20);
@@ -84,25 +84,45 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
 
   this.removeLandingMouseDown = () => {
     document.removeEventListener("mousedown", onDocumentMouseDown, false);
-    //document.removeEventListener("touchstart", onDocumentTouchStart, false);
+    document.removeEventListener("touchstart", onDocumentTouchStart, false);
   };
 
   this.addLandingMouseDown = () => {
     document.addEventListener("mousedown", onDocumentMouseDown, false);
-    //document.addEventListener("touchstart", onDocumentTouchStart, false);
+    document.addEventListener("touchstart", onDocumentTouchStart, false);
   };
 
   const onDocumentMouseDown = event => {
-    event.preventDefault();
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouse, this.camera);
-    let intersects = raycaster.intersectObjects([icon], true);
-    if (intersects.length > 0) {
-      if (intersects[0].object.callback) {
-        intersects[0].object.callback();
-        this.removeLandingMouseDown();
-      }
+    // Does not use event.preventDefault(), manually handles touch events
+    if (touchEvent === false) {
+        console.log('Mouse click called')
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, this.camera);
+        let intersects = raycaster.intersectObjects([icon], true);
+        if (intersects.length > 0) {
+            if (intersects[0].object.callback) {
+                intersects[0].object.callback();
+                this.removeLandingMouseDown();
+            }
+        }
+    }
+    touchEvent = false;
+  };
+  const onDocumentTouchStart = event => {
+    if (event.touches.length === 1) {
+        // Assumes that click and mouse down will both be called by the browser
+        mouse.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, this.camera);
+        let intersects = raycaster.intersectObjects([icon], true);
+        if (intersects.length > 0) {
+            if (intersects[0].object.callback) {
+            intersects[0].object.callback();
+            this.removeLandingMouseDown();
+            }
+        }
+        touchEvent = true;
     }
   };
   this.addLandingMouseDown();
