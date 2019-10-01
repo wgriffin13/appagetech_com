@@ -35,6 +35,7 @@ let landingScene;
 let zPosition2D = 215;
 let offScreenZPosition2D = 10000;
 let placementDirection = "horizontal";
+let touchEvent = false;
 
 const reactComponents = ["about", "contact", "projects", "client"];
 const reactComponentsObj = {};
@@ -325,6 +326,7 @@ class Home extends Component {
 
   // Show react component
   showReactComponent = reactComponentName => {
+    console.log(reactComponentName)
     // Checks a second click: is the CSS renderer is visible
     if (
       parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 &&
@@ -1328,20 +1330,24 @@ class Home extends Component {
   };
 
   onDocumentMouseDown = event => {
-    event.preventDefault();
-    this.setMouseCoords(event.clientX, event.clientY);
-    const intersectButtonsMd = raycaster.intersectObjects([
-      logo,
-      about,
-      contact,
-      projects,
-      client
-    ]);
-    if (intersectButtonsMd.length > 0) {
-      if (intersectButtonsMd[0].object.callback) {
-        intersectButtonsMd[0].object.callback();
+    // Does not use event.preventDefault(), manually handles touch events
+    if (touchEvent === false) {
+      this.setMouseCoords(event.clientX, event.clientY);
+      raycaster.setFromCamera(mouseCoords, camera);
+      const intersectButtonsMd = raycaster.intersectObjects([
+        logo,
+        about,
+        contact,
+        projects,
+        client
+      ]);
+      if (intersectButtonsMd.length > 0) {
+        if (intersectButtonsMd[0].object.callback) {
+          intersectButtonsMd[0].object.callback();
+        }
       }
     }
+    touchEvent = false;
   };
 
   setMouseCoords = (x, y) => {
@@ -1366,8 +1372,24 @@ class Home extends Component {
 
   onDocumentTouchStart = event => {
     if (event.touches.length === 1) {
-      event.preventDefault();
+      // Assumes that click and mouse down will both be called by the browser
       this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
+      if (logo && about && contact && projects && client) {
+        raycaster.setFromCamera(mouseCoords, camera);
+        const intersectButtonsMd = raycaster.intersectObjects([
+          logo,
+          about,
+          contact,
+          projects,
+          client
+        ]);
+        if (intersectButtonsMd.length > 0) {
+          if (intersectButtonsMd[0].object.callback) {
+            intersectButtonsMd[0].object.callback();
+          }
+        }
+        touchEvent = true;
+      }
     }
   };
 
