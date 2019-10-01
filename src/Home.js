@@ -421,9 +421,6 @@ class Home extends Component {
           metalness: 1,
           roughness: 0.2,
           emissive: 0x000000,
-          // emissive: 0xff0042, //red
-          // emissive: 0x00ff42,//green
-          // emissive: 0x080808,
           emissiveIntensity: 1
         };
         const iconParams = {
@@ -1289,8 +1286,6 @@ class Home extends Component {
             if (intersected.isMesh && intersected.name === "contactIcon") {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "contactType") {
-                  // child.material.emissive.intensity = 1;
-                  // child.currentHex = child.material.emissive.getHex();
                   child.material.emissive.setHex(0xff0042);
                 } else if (
                   (child.isMesh && child.name === "clientType") ||
@@ -1307,8 +1302,6 @@ class Home extends Component {
             if (intersected.isMesh && intersected.name === "aboutIcon") {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "aboutType") {
-                  // child.material.emissive.intensity = 1;
-                  // child.currentHex = child.material.emissive.getHex();
                   child.material.emissive.setHex(0xff0042);
                 } else if (
                   (child.isMesh && child.name === "clientType") ||
