@@ -198,7 +198,7 @@ class Home extends Component {
   };
 
   createGlRenderer = () => {
-    var glRenderer = new THREE.WebGLRenderer({ alpha: true });
+    var glRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     glRenderer.setClearColor(0xecf8ff, 1);
     glRenderer.setPixelRatio(window.devicePixelRatio);
     glRenderer.setSize(window.innerWidth, window.innerHeight);
@@ -312,7 +312,7 @@ class Home extends Component {
 
   // Show react component
   showReactComponent = reactComponentName => {
-    console.log(reactComponentName);
+    // console.log(reactComponentName);
     // Checks a second click: is the CSS renderer is visible
     if (
       parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 &&
@@ -1101,7 +1101,6 @@ class Home extends Component {
             if (intersected.isMesh && intersected.name === "clientIcon") {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "clientType") {
-                  // child.material.emissive.setHex(0xff0042); //teal
                   child.material.emissive.setHex(0xff0042); //teal
                 } else if (
                   (child.isMesh && child.name === "projectsType") ||
@@ -1118,8 +1117,6 @@ class Home extends Component {
             if (intersected.isMesh && intersected.name === "projectsIcon") {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "projectsType") {
-                  // child.material.emissive.intensity = 1;
-                  // child.currentHex = child.material.emissive.getHex();
                   child.material.emissive.setHex(0xff0042);
                 } else if (
                   (child.isMesh && child.name === "clientType") ||

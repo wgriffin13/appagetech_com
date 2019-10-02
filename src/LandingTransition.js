@@ -30,7 +30,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
     .setPath("textures/")
     .load("diyHdri_01o.hdr", function(texture) {
       cubeGenerator = new EquirectangularToCubeGenerator(texture, {
-        resolution: 512
+        resolution: 256
       });
 
       cubeGenerator.update(renderer);
@@ -139,7 +139,6 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
   const starForge = () => {
     var starQty = 800000;
     const starGeometry = new THREE.SphereGeometry(170, 10, 10);
-    starGeometry.translate.z = -300;
 
     const materialOptions = {
       size: 0.06,
