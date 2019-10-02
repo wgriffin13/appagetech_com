@@ -30,7 +30,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
     .setPath("textures/")
     .load("diyHdri_01o.hdr", function(texture) {
       cubeGenerator = new EquirectangularToCubeGenerator(texture, {
-        resolution: 5000
+        resolution: 512
       });
 
       cubeGenerator.update(renderer);
@@ -42,17 +42,22 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
 
       const envMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
 
+      const emissiveMapLoader = new THREE.TextureLoader();
+      const emissiveMap = emissiveMapLoader.load("textures/EmissiveMap_01.png");
+      // emissiveMap.anisotropy = 16;
+
       // Models
       new GLTFLoader().setPath("/models/").load("Logo_Type_Large_2.glb", function(gltf) {
         gltf.scene.traverse(function(child) {
           if (child.isMesh) {
             type = child;
-            child.material = new THREE.MeshStandardMaterial({
+            type.material = new THREE.MeshStandardMaterial({
               envMap: envMap,
               envMapIntensity: 2,
               color: 0x000000,
               metalness: 1,
               roughness: 0.2
+              // anisotropy: 16
             });
           }
         });
@@ -64,12 +69,16 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
         gltf.scene.traverse(function(child) {
           if (child.isMesh) {
             icon = child;
-            child.material = new THREE.MeshStandardMaterial({
+            icon.material = new THREE.MeshStandardMaterial({
               envMap: envMap,
-              envMapIntensity: 0.9,
-              color: 0xfddf73,
+              envMapIntensity: 1,
+              emissiveMap: emissiveMap,
+              emissiveIntensity: 0.5,
+              // color: 0xfddf73,
+              emissive: 0xb3dde9,
+              color: 0x3da3e3,
               metalness: 1,
-              roughness: 0.1
+              roughness: 0.5
             });
           }
         });
@@ -95,44 +104,45 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
   const onDocumentMouseDown = event => {
     // Does not use event.preventDefault(), manually handles touch events
     if (touchEvent === false) {
-        console.log('Mouse click called')
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        raycaster.setFromCamera(mouse, this.camera);
-        let intersects = raycaster.intersectObjects([icon], true);
-        if (intersects.length > 0) {
-            if (intersects[0].object.callback) {
-                intersects[0].object.callback();
-                this.removeLandingMouseDown();
-            }
+      console.log("Mouse click called");
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, this.camera);
+      let intersects = raycaster.intersectObjects([icon], true);
+      if (intersects.length > 0) {
+        if (intersects[0].object.callback) {
+          intersects[0].object.callback();
+          this.removeLandingMouseDown();
         }
+      }
     }
     touchEvent = false;
   };
   const onDocumentTouchStart = event => {
     if (event.touches.length === 1) {
-        // Assumes that click and mouse down will both be called by the browser
-        mouse.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
-        raycaster.setFromCamera(mouse, this.camera);
-        let intersects = raycaster.intersectObjects([icon], true);
-        if (intersects.length > 0) {
-            if (intersects[0].object.callback) {
-            intersects[0].object.callback();
-            this.removeLandingMouseDown();
-            }
+      // Assumes that click and mouse down will both be called by the browser
+      mouse.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, this.camera);
+      let intersects = raycaster.intersectObjects([icon], true);
+      if (intersects.length > 0) {
+        if (intersects[0].object.callback) {
+          intersects[0].object.callback();
+          this.removeLandingMouseDown();
         }
-        touchEvent = true;
+      }
+      touchEvent = true;
     }
   };
   this.addLandingMouseDown();
 
   const starForge = () => {
     var starQty = 800000;
-    const starGeometry = new THREE.SphereGeometry(200, 10, 10);
+    const starGeometry = new THREE.SphereGeometry(170, 10, 10);
+    starGeometry.translate.z = -300;
 
     const materialOptions = {
-      size: 0.06, //I know this is the default, it's for you.  Play with it if you want.
+      size: 0.06,
       transparency: true,
       opacity: 0.7
     };

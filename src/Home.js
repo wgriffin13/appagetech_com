@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import * as THREE from "three";
-import {
-  CSS3DRenderer,
-  CSS3DObject
-} from "three/examples/jsm/renderers/CSS3DRenderer.js";
+import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/EquirectangularToCubeGenerator.js";
@@ -45,47 +42,47 @@ const navbarPlacement = {
       x: 0,
       y: 1.75,
       z: 0,
-      scale: new THREE.Vector3(1, 0.5, 1),
+      scale: new THREE.Vector3(1, 0.5, 1)
     },
     aboutType: {
-      scale: new THREE.Vector3(1, 1, 1),
+      scale: new THREE.Vector3(1, 1, 1)
     },
     client: {
       x: 0,
       y: 1.75,
       z: 0,
-      scale: new THREE.Vector3(1, 0.5, 1),
+      scale: new THREE.Vector3(1, 0.5, 1)
     },
     clientType: {
-      scale: new THREE.Vector3(1, 1, 1),
+      scale: new THREE.Vector3(1, 1, 1)
     },
     projects: {
       x: 0,
       y: 1.75,
       z: 0,
-      scale: new THREE.Vector3(1, 0.5, 1),
+      scale: new THREE.Vector3(1, 0.5, 1)
     },
     projectsType: {
-      scale: new THREE.Vector3(1, 1, 1),
+      scale: new THREE.Vector3(1, 1, 1)
     },
     contact: {
       x: 0,
       y: 1.75,
       z: 0,
-      scale: new THREE.Vector3(1, 0.5, 1),
+      scale: new THREE.Vector3(1, 0.5, 1)
     },
     contactType: {
-      scale: new THREE.Vector3(1, 1, 1),
+      scale: new THREE.Vector3(1, 1, 1)
     },
     logo: {
       x: 0,
       y: 1.75,
       z: 0,
-      scale: new THREE.Vector3(1, 1, 1),
+      scale: new THREE.Vector3(1, 1, 1)
     },
     logoType: {
-      scale: new THREE.Vector3(1, 1, 1),
-    },
+      scale: new THREE.Vector3(1, 1, 1)
+    }
   },
   // Vertical orientation of screen when CSS3D component is active
   vertical: {
@@ -93,47 +90,47 @@ const navbarPlacement = {
       x: 0.58,
       y: 2.71,
       z: 0,
-      scale: new THREE.Vector3(0.65, 0.35, 0.65),
+      scale: new THREE.Vector3(0.65, 0.35, 0.65)
     },
     aboutType: {
-      scale: new THREE.Vector3(0.65, 0.65, 0.65),
+      scale: new THREE.Vector3(0.65, 0.65, 0.65)
     },
     client: {
       x: 0.2,
       y: 3.39,
       z: 0,
-      scale: new THREE.Vector3(0.65, 0.35, 0.65),
+      scale: new THREE.Vector3(0.65, 0.35, 0.65)
     },
     clientType: {
-      scale: new THREE.Vector3(0.65, 0.65, 0.65),
+      scale: new THREE.Vector3(0.65, 0.65, 0.65)
     },
     projects: {
       x: 0.2,
       y: 2.71,
       z: 0,
-      scale: new THREE.Vector3(0.65, 0.35, 0.65),
+      scale: new THREE.Vector3(0.65, 0.35, 0.65)
     },
     projectsType: {
-      scale: new THREE.Vector3(0.65, 0.65, 0.65),
+      scale: new THREE.Vector3(0.65, 0.65, 0.65)
     },
     contact: {
       x: 0.58,
       y: 3.39,
       z: 0,
-      scale: new THREE.Vector3(0.65, 0.35, 0.65),
+      scale: new THREE.Vector3(0.65, 0.35, 0.65)
     },
     contactType: {
-      scale: new THREE.Vector3(0.65, 0.65, 0.65),
+      scale: new THREE.Vector3(0.65, 0.65, 0.65)
     },
     logo: {
       x: -0.62,
       y: 0.75,
       z: 0,
-      scale: new THREE.Vector3(0.75, 0.75, 0.75),
+      scale: new THREE.Vector3(0.75, 0.75, 0.75)
     },
     logoType: {
-      scale: new THREE.Vector3(0.75, 0.75, 0.75),
-    },
+      scale: new THREE.Vector3(0.75, 0.75, 0.75)
+    }
   }
 };
 
@@ -144,7 +141,7 @@ const displayIcons = {
   },
   about: {
     horizontal: { x: -0.97, y: 0 },
-    vertical: { x: -0.5, y: -0.6 },
+    vertical: { x: -0.5, y: -0.6 }
   },
   contact: {
     horizontal: { x: 0, y: 0 },
@@ -247,12 +244,7 @@ class Home extends Component {
   };
 
   initialize = () => {
-    camera = new THREE.PerspectiveCamera(
-      30,
-      window.innerWidth / window.innerHeight,
-      0.25,
-      4000
-    );
+    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.25, 4000);
     camera.position.set(0, 0, 224);
     camera.lookAt(0, 0, 0);
     glRenderer = this.createGlRenderer();
@@ -266,11 +258,7 @@ class Home extends Component {
     cssScene.scale.set(0.1, 0.1, 0.1);
 
     // Landing scene
-    landingScene = new LandingTransition(
-      glRenderer,
-      0xffffff,
-      this.toggleTransition
-    );
+    landingScene = new LandingTransition(glRenderer, 0xffffff, this.toggleTransition);
 
     reactComponents.forEach(item => {
       let element = document.createElement("div");
@@ -303,9 +291,7 @@ class Home extends Component {
         show2D: false,
         showWater: true
       });
-      Object.entries(reactComponentsObj).forEach(
-        ([key, value]) => (value.position.z = offScreenZPosition2D)
-      );
+      Object.entries(reactComponentsObj).forEach(([key, value]) => (value.position.z = offScreenZPosition2D));
       // Pushes location back to home
       this.props.history.push(`/home`);
 
@@ -326,7 +312,7 @@ class Home extends Component {
 
   // Show react component
   showReactComponent = reactComponentName => {
-    console.log(reactComponentName)
+    console.log(reactComponentName);
     // Checks a second click: is the CSS renderer is visible
     if (
       parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 &&
@@ -338,9 +324,7 @@ class Home extends Component {
       this.state.cssComponentDisplayed !== reactComponentName
     ) {
       // Sets current css object to offscreen
-      reactComponentsObj[
-        this.state.cssComponentDisplayed
-      ].position.z = offScreenZPosition2D;
+      reactComponentsObj[this.state.cssComponentDisplayed].position.z = offScreenZPosition2D;
       // Brings forward selected css object
       reactComponentsObj[reactComponentName].position.z = zPosition2D;
       // Sets state with the name of the currently displayed object
@@ -391,7 +375,7 @@ class Home extends Component {
     const location = this.props.location.pathname.substring(1);
     let navPosition = this.state.navPosition;
     if (reactComponents.find(item => item === location)) {
-        navPosition = "top";
+      navPosition = "top";
     }
     this.setState({ navPosition: navPosition });
 
@@ -410,9 +394,7 @@ class Home extends Component {
         const hdrEnvMap = pmremCubeUVPacker.CubeUVRenderTarget.texture;
 
         const emissiveMapLoader = new THREE.TextureLoader();
-        const emissiveMap = emissiveMapLoader.load(
-          "textures/EmissiveMap_01.png"
-        );
+        const emissiveMap = emissiveMapLoader.load("textures/EmissiveMap_01.png");
         emissiveMap.anisotropy = 16;
 
         // Models
@@ -668,12 +650,7 @@ class Home extends Component {
   initWater = () => {
     const zPos = this.state.showWater ? 0 : -5000;
     const materialColor = 0x000000;
-    var geometry = new THREE.PlaneBufferGeometry(
-      BOUNDS,
-      BOUNDS,
-      WIDTH - 1,
-      WIDTH - 1
-    );
+    var geometry = new THREE.PlaneBufferGeometry(BOUNDS, BOUNDS, WIDTH - 1, WIDTH - 1);
     var material = new THREE.ShaderMaterial({
       uniforms: THREE.UniformsUtils.merge([
         THREE.ShaderLib["phong"].uniforms,
@@ -702,10 +679,7 @@ class Home extends Component {
     waterMesh.updateMatrix();
     glScene.add(waterMesh);
     var geometryRay = new THREE.PlaneBufferGeometry(BOUNDS, BOUNDS, 1, 1);
-    meshRay = new THREE.Mesh(
-      geometryRay,
-      new THREE.MeshBasicMaterial({ color: 0xffffff, visible: false })
-    );
+    meshRay = new THREE.Mesh(geometryRay, new THREE.MeshBasicMaterial({ color: 0xffffff, visible: false }));
     meshRay.matrixAutoUpdate = false;
     meshRay.updateMatrix();
     glScene.add(meshRay);
@@ -735,9 +709,7 @@ class Home extends Component {
     }
 
     gpuCompute.compute();
-    waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
-      heightmapVariable
-    ).texture;
+    waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(heightmapVariable).texture;
   };
 
   fillTexture = texture => {
@@ -772,15 +744,7 @@ class Home extends Component {
   transform = duration => {
     TWEEN.removeAll();
 
-    if (
-      logo &&
-      logoType &&
-      contact &&
-      projects &&
-      projectsType &&
-      client &&
-      about
-    ) {
+    if (logo && logoType && contact && projects && projectsType && client && about) {
       // Deep copy of the navbarPlacement
       const tempNavbarPlacement = JSON.parse(JSON.stringify(navbarPlacement));
       // Corrects target locations on hard refresh
@@ -789,68 +753,28 @@ class Home extends Component {
         navbarPlacement[placementDirection].about.x = 0;
         navbarPlacement[placementDirection].about.y = 0;
         navbarPlacement[placementDirection].about.z = 0;
-        navbarPlacement[placementDirection].about.scale = new THREE.Vector3(
-          1,
-          1,
-          1
-        );
-        navbarPlacement[placementDirection].aboutType.scale = new THREE.Vector3(
-          1,
-          1,
-          1
-        );
+        navbarPlacement[placementDirection].about.scale = new THREE.Vector3(1, 1, 1);
+        navbarPlacement[placementDirection].aboutType.scale = new THREE.Vector3(1, 1, 1);
         navbarPlacement[placementDirection].contact.x = 0;
         navbarPlacement[placementDirection].contact.y = 0;
         navbarPlacement[placementDirection].contact.z = 0;
-        navbarPlacement[placementDirection].contact.scale = new THREE.Vector3(
-          1,
-          1,
-          1
-        );
-        navbarPlacement[placementDirection].contactType.scale = new THREE.Vector3(
-          1,
-          1,
-          1
-        );
+        navbarPlacement[placementDirection].contact.scale = new THREE.Vector3(1, 1, 1);
+        navbarPlacement[placementDirection].contactType.scale = new THREE.Vector3(1, 1, 1);
         navbarPlacement[placementDirection].projects.x = 0;
         navbarPlacement[placementDirection].projects.y = 0;
         navbarPlacement[placementDirection].projects.z = 0;
-        navbarPlacement[placementDirection].projects.scale = new THREE.Vector3(
-          1,
-          1,
-          1
-        );
-        navbarPlacement[placementDirection].projectsType.scale = new THREE.Vector3(
-          1,
-          1,
-          1
-        );
+        navbarPlacement[placementDirection].projects.scale = new THREE.Vector3(1, 1, 1);
+        navbarPlacement[placementDirection].projectsType.scale = new THREE.Vector3(1, 1, 1);
         navbarPlacement[placementDirection].client.x = 0;
         navbarPlacement[placementDirection].client.y = 0;
         navbarPlacement[placementDirection].client.z = 0;
-        navbarPlacement[placementDirection].client.scale = new THREE.Vector3(
-          1,
-          1,
-          1
-        );
-        navbarPlacement[placementDirection].clientType.scale = new THREE.Vector3(
-          1,
-          1,
-          1
-        );
+        navbarPlacement[placementDirection].client.scale = new THREE.Vector3(1, 1, 1);
+        navbarPlacement[placementDirection].clientType.scale = new THREE.Vector3(1, 1, 1);
         navbarPlacement[placementDirection].logo.x = 0;
         navbarPlacement[placementDirection].logo.y = 0;
         navbarPlacement[placementDirection].logo.z = 0;
-        navbarPlacement[placementDirection].logo.scale = new THREE.Vector3(
-          1.3,
-          1.3,
-          1.3
-        );
-        navbarPlacement[placementDirection].logoType.scale = new THREE.Vector3(
-          1.3,
-          1.3,
-          1.3
-        );
+        navbarPlacement[placementDirection].logo.scale = new THREE.Vector3(1.3, 1.3, 1.3);
+        navbarPlacement[placementDirection].logoType.scale = new THREE.Vector3(1.3, 1.3, 1.3);
       }
 
       const moveEasingFunction = TWEEN.Easing.Elastic.Out;
@@ -980,7 +904,7 @@ class Home extends Component {
         .to(navbarPlacement[placementDirection].contact.scale, duration)
         .easing(scaleEasingFunction)
         .start();
-        new TWEEN.Tween(contactType.scale)
+      new TWEEN.Tween(contactType.scale)
         .to(navbarPlacement[placementDirection].contactType.scale, duration)
         .easing(scaleEasingFunction)
         .start();
@@ -1015,7 +939,7 @@ class Home extends Component {
         .start();
 
       if (this.state.navPosition === "top") {
-        navbarPlacement[placementDirection] = {...tempNavbarPlacement[placementDirection]};
+        navbarPlacement[placementDirection] = { ...tempNavbarPlacement[placementDirection] };
         this.setState({ navPosition: "middle" });
       } else {
         // Individual icon settings
@@ -1080,11 +1004,7 @@ class Home extends Component {
         navbarPlacement[placementDirection].logo.y = logo.position.y;
         navbarPlacement[placementDirection].logo.z = logo.position.z;
         // Set new scales for icons
-        navbarPlacement[placementDirection].logo.scale = new THREE.Vector3(
-          logo.scale.x,
-          logo.scale.y,
-          logo.scale.z
-        );
+        navbarPlacement[placementDirection].logo.scale = new THREE.Vector3(logo.scale.x, logo.scale.y, logo.scale.z);
         navbarPlacement[placementDirection].logoType.scale = new THREE.Vector3(
           logoType.scale.x,
           logoType.scale.y,
@@ -1139,14 +1059,8 @@ class Home extends Component {
         mouseMoved = false;
 
         // raycast buttons
-        const intersectButtons = raycaster.intersectObjects([
-          logo,
-          about,
-          contact,
-          projects,
-          client
-        ]);
-        //2D
+        const intersectButtons = raycaster.intersectObjects([logo, about, contact, projects, client]);
+        // 2D
         if (this.state.show2D) {
           if (intersectButtons.length > 0) {
             if (intersected !== intersectButtons[0].object) {
@@ -1156,71 +1070,6 @@ class Home extends Component {
               intersected = intersectButtons[0].object;
             }
             intersected.material.opacity = 1; //on
-
-            // ** clientIcon
-
-            if (intersected.isMesh && intersected.name === "clientIcon") {
-              glScene.traverse(function(child) {
-                if (child.isMesh && child.name === "clientType") {
-                  child.material.emissive.setHex(0xff0042);
-                } else if (
-                  (child.isMesh && child.name === "projectsType") ||
-                  (child.isMesh && child.name === "contactType") ||
-                  (child.isMesh && child.name === "aboutType")
-                ) {
-                  child.material.emissive.intensity = 0;
-                  child.material.emissive.setHex(0x000000);
-                }
-              });
-            }
-
-            // ** projectsIcon
-
-            if (intersected.isMesh && intersected.name === "projectsIcon") {
-              glScene.traverse(function(child) {
-                if (child.isMesh && child.name === "projectsType") {
-                  child.material.emissive.setHex(0xff0042);
-                } else if (
-                  (child.isMesh && child.name === "clientType") ||
-                  (child.isMesh && child.name === "contactType") ||
-                  (child.isMesh && child.name === "aboutType")
-                ) {
-                  child.material.emissive.setHex(0x000000);
-                }
-              });
-            }
-
-            // ** contactIcon
-
-            if (intersected.isMesh && intersected.name === "contactIcon") {
-              glScene.traverse(function(child) {
-                if (child.isMesh && child.name === "contactType") {
-                  child.material.emissive.setHex(0xff0042);
-                } else if (
-                  (child.isMesh && child.name === "clientType") ||
-                  (child.isMesh && child.name === "projectsType") ||
-                  (child.isMesh && child.name === "aboutType")
-                ) {
-                  child.material.emissive.setHex(0x000000);
-                }
-              });
-            }
-
-            // ** aboutIcon
-
-            if (intersected.isMesh && intersected.name === "aboutIcon") {
-              glScene.traverse(function(child) {
-                if (child.isMesh && child.name === "aboutType") {
-                  child.material.emissive.setHex(0xff0042);
-                } else if (
-                  (child.isMesh && child.name === "clientType") ||
-                  (child.isMesh && child.name === "projectsType") ||
-                  (child.isMesh && child.name === "contactType")
-                ) {
-                  child.material.emissive.setHex(0x000000);
-                }
-              });
-            }
 
             // ** logoIcon
 
@@ -1321,9 +1170,7 @@ class Home extends Component {
       // Checks the if update function needs to move the navbar based on click and component statefulness
       TWEEN.update();
       if (this.state.showWater) {
-        waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(
-          heightmapVariable
-        ).texture;
+        waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(heightmapVariable).texture;
         gpuCompute.compute();
       }
     }
@@ -1334,13 +1181,7 @@ class Home extends Component {
     if (touchEvent === false) {
       this.setMouseCoords(event.clientX, event.clientY);
       raycaster.setFromCamera(mouseCoords, camera);
-      const intersectButtonsMd = raycaster.intersectObjects([
-        logo,
-        about,
-        contact,
-        projects,
-        client
-      ]);
+      const intersectButtonsMd = raycaster.intersectObjects([logo, about, contact, projects, client]);
       if (intersectButtonsMd.length > 0) {
         if (intersectButtonsMd[0].object.callback) {
           intersectButtonsMd[0].object.callback();
@@ -1351,10 +1192,7 @@ class Home extends Component {
   };
 
   setMouseCoords = (x, y) => {
-    mouseCoords.set(
-      (x / glRenderer.domElement.clientWidth) * 2 - 1,
-      -(y / glRenderer.domElement.clientHeight) * 2 + 1
-    );
+    mouseCoords.set((x / glRenderer.domElement.clientWidth) * 2 - 1, -(y / glRenderer.domElement.clientHeight) * 2 + 1);
     mouseMoved = true;
   };
 
@@ -1376,13 +1214,7 @@ class Home extends Component {
       this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
       if (logo && about && contact && projects && client) {
         raycaster.setFromCamera(mouseCoords, camera);
-        const intersectButtonsMd = raycaster.intersectObjects([
-          logo,
-          about,
-          contact,
-          projects,
-          client
-        ]);
+        const intersectButtonsMd = raycaster.intersectObjects([logo, about, contact, projects, client]);
         if (intersectButtonsMd.length > 0) {
           if (intersectButtonsMd[0].object.callback) {
             intersectButtonsMd[0].object.callback();
