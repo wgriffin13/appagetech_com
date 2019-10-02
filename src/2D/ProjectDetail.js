@@ -5,9 +5,19 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Image from "react-bootstrap/Image";
 import Container from "react-bootstrap/Container";
-import "./modalStyle.css";
+import Carousel from "react-bootstrap/Carousel";
+// import "./modalStyle.css";
 
 export default function ProjectDetail(props) {
+  const screenShotAnimation = [
+    "images/screenShotAnimation/ScreenShots_Smart-width-700-1.png",
+    "images/screenShotAnimation/ScreenShots_Smart-width-700-2.png",
+    "images/screenShotAnimation/ScreenShots_Smart-width-700-3.png",
+    "images/screenShotAnimation/ScreenShots_Smart-width-700-4.png",
+    "images/screenShotAnimation/ScreenShots_Smart-width-700-5.png",
+    "images/screenShotAnimation/ScreenShots_Smart-width-700-6.png",
+    "images/screenShotAnimation/ScreenShots_Smart-width-700-7.png"
+  ];
   return (
     <Modal {...props} size="xl" centered closeButton>
       <Modal.Header
@@ -89,8 +99,26 @@ export default function ProjectDetail(props) {
               </Col>
             </Row>
             <Row style={{ justifyContent: "center", marginBottom: 25 }}>
-              <Col sm={12} md={8}>
-                <Image src={"images/HomePage.png"} fluid />
+              <Col xs={10} lg={8}>
+                {/* <Image src={"images/HomePage.png"} fluid /> */}
+
+                <Carousel
+                  as={"container"}
+                  pauseOnHover={false}
+                  interval={1500}
+                  controls={true}
+                  indicators={true}
+                  fade={true}
+                  className="shadow"
+                  // onClick={this.onClick}
+                  fluid
+                >
+                  {screenShotAnimation.map(imgSrc => (
+                    <Carousel.Item>
+                      <img src={imgSrc} alt="" />
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
               </Col>
             </Row>
             <Row style={{ justifyContent: "center", marginBottom: 12 }}>
