@@ -15,7 +15,6 @@ export default function TodaysIpos(props) {
     "images/todaysIposAnimation/ScreenShots_TodaysIpos_700px-5.png"
   ];
   const iphoneAnimation = [
-    "images/todaysIposAnimation/IphoneTodaysIpos-1.png",
     "images/todaysIposAnimation/IphoneTodaysIpos-2.png",
     "images/todaysIposAnimation/IphoneTodaysIpos-3.png",
     "images/todaysIposAnimation/IphoneTodaysIpos-4.png",
@@ -55,9 +54,9 @@ export default function TodaysIpos(props) {
             </Col>
             <Col style={{ padding: 0, marginBottom: 0, marginTop: 0 }}>
               <Modal.Title
-                as={"h5"}
+                as={"h4"}
                 style={{
-                  fontFamily: "co-headline, sans-serif",
+                  fontFamily: "mrs-eaves-xl-serif, serif",
                   fontWeight: 400,
                   fontStyle: "normal",
                   marginTop: 12,
@@ -129,23 +128,33 @@ export default function TodaysIpos(props) {
                   {screenShotAnimation.map(imgSrc => (
                     <Carousel.Item key={imgSrc}>
                       {windowAspect > 1 ? (
-                        <img src={imgSrc} alt="" style={{ width: 700 }} />
+                        <img src={imgSrc} alt="" style={{ width: 700 }} /> //web
                       ) : (
-                        <img src={imgSrc} alt="" style={{ width: 300 }} />
+                        <img src={imgSrc} alt="" style={{ width: 300 }} /> //mobile
                       )}
                     </Carousel.Item>
                   ))}
                 </Carousel>
               </Col>
             </Row>
-            <Row style={{ justifyContent: "center", marginBottom: 12 }}>
+            <Row
+              style={{
+                justifyContent: "center",
+                marginBottom: 12
+              }}
+            >
               <h4>Challenge</h4>
             </Row>
             <Row style={{ justifyContent: "center", marginBottom: 20 }}>
               <p>Provide a user friendly tool to view and explore in depth financial data of companies going public.</p>
             </Row>
 
-            <Row style={{ justifyContent: "center", marginBottom: 12 }}>
+            <Row
+              style={{
+                justifyContent: "center",
+                marginBottom: 12
+              }}
+            >
               <h4>Solution</h4>
             </Row>
             <Row style={{ marginBottom: 20, justifyContent: "center" }}>

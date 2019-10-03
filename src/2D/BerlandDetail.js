@@ -3,19 +3,40 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import Image from "react-bootstrap/Image";
 import Container from "react-bootstrap/Container";
 import Carousel from "react-bootstrap/Carousel";
 
 export default function BerlandDetail(props) {
   const screenShotAnimation = [
-    "images/screenShotAnimation/ScreenShots_Smart-width-700-1.png",
-    "images/screenShotAnimation/ScreenShots_Smart-width-700-2.png",
-    "images/screenShotAnimation/ScreenShots_Smart-width-700-3.png",
-    "images/screenShotAnimation/ScreenShots_Smart-width-700-4.png",
-    "images/screenShotAnimation/ScreenShots_Smart-width-700-5.png",
-    "images/screenShotAnimation/ScreenShots_Smart-width-700-6.png",
-    "images/screenShotAnimation/ScreenShots_Smart-width-700-7.png"
+    "images/berlandAnimations/ScreenShots_Smart-width-700-1.png",
+    "images/berlandAnimations/ScreenShots_Smart-width-700-2.png",
+    "images/berlandAnimations/ScreenShots_Smart-width-700-3.png",
+    "images/berlandAnimations/ScreenShots_Smart-width-700-4.png",
+    "images/berlandAnimations/ScreenShots_Smart-width-700-5.png",
+    "images/berlandAnimations/ScreenShots_Smart-width-700-6.png",
+    "images/berlandAnimations/ScreenShots_Smart-width-700-7.png"
+  ];
+  const iphoneAnimation = [
+    "images/berlandAnimations/IphoneBerland_smart-w300-20.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-19.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-18.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-17.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-16.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-15.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-14.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-13.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-12.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-11.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-10.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-9.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-8.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-7.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-6.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-5.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-4.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-3.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-2.png",
+    "images/berlandAnimations/IphoneBerland_smart-w300-1.png"
   ];
   return (
     <Modal {...props} size="xl" centered closeButton>
@@ -48,9 +69,9 @@ export default function BerlandDetail(props) {
             </Col>
             <Col style={{ padding: 0, marginBottom: 0, marginTop: 0 }}>
               <Modal.Title
-                as={"h5"}
+                as={"h4"}
                 style={{
-                  fontFamily: "co-headline, sans-serif",
+                  fontFamily: "mrs-eaves-xl-serif, serif",
                   fontWeight: 400,
                   fontStyle: "normal",
                   marginTop: 12,
@@ -91,16 +112,28 @@ export default function BerlandDetail(props) {
             paddingBottom: 0
           }}
         >
-          <Col style={{ margin: 0, padding: 0 }}>
-            <Row style={{ justifyContent: "center" }}>
-              <Col sm={10} md={5}>
-                <Image src={"images/iphoneShow.png"} fluid />
+          <Col>
+            <Row className="justify-content-center mb-5">
+              <Col sm={8} md={4}>
+                <Carousel
+                  as={"container"}
+                  pauseOnHover={false}
+                  interval={1500}
+                  controls={true}
+                  indicators={true}
+                  fade={true}
+                >
+                  {iphoneAnimation.map(imgSrc => (
+                    <Carousel.Item key={imgSrc}>
+                      <img src={imgSrc} alt="" style={{ width: 300 }} />
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
               </Col>
             </Row>
+
             <Row style={{ justifyContent: "center", marginBottom: 25 }}>
               <Col xs={10} lg={8}>
-                {/* <Image src={"images/HomePage.png"} fluid /> */}
-
                 <Carousel
                   as={"container"}
                   pauseOnHover={false}
