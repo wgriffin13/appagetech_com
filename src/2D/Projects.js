@@ -11,24 +11,29 @@ class Projects extends Component {
     super(props);
     this.state = {
       showBerlandDetail: false,
-      showTodaysIposDetail: false
+      showTodaysIposDetail: false,
+      isHovered: false
     };
   }
 
   onClickBerland = e => {
     e.preventDefault();
-    console.log("Clicked Onclicked!!!", e);
     this.setState({ showBerlandDetail: true });
   };
   onClickTodaysIpos = e => {
     e.preventDefault();
-    console.log("Clicked Onclicked!!!", e);
     this.setState({ showTodaysIposDetail: true });
   };
 
-  onSelect = e => {};
+  handleHover = () => {
+    this.setState(prevState => ({
+      isHovered: !prevState.isHovered
+    }));
+  };
+
   render() {
     const berlandPics = [
+      "images/berlandAnimations/ScreenShots_Berland-width-525-8-Overlay.png",
       "images/berlandAnimations/ScreenShots_Berland-width-525-1.png",
       "images/berlandAnimations/ScreenShots_Berland-width-525-2.png",
       "images/berlandAnimations/ScreenShots_Berland-width-525-3.png",
@@ -39,18 +44,21 @@ class Projects extends Component {
     ];
 
     const todaysPics = [
-      "images/Today'sIPOs_Aligned-600x500-Todays.png",
-      "images/Today'sIPOs_Aligned-600x500-TodaysZoom.png",
-      "images/Today'sIPOs_Aligned-600x500-Upcoming.png",
-      "images/Today'sIPOs_Aligned-600x500-About.png",
-      "images/Today'sIPOs_Aligned-600x500-AboutZoom.png"
+      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-7-overlay.png",
+      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-1.png",
+      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-2.png",
+      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-3.png",
+      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-4.png",
+      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-5.png"
     ];
 
     const windowAspect = window.innerWidth / window.innerHeight;
 
-    const variableWidth = windowAspect > 1 ? 525 : 420;
+    const variableWidth = windowAspect > 1 ? 535 : 420;
 
     const variableMarginTop = windowAspect > 1 ? 100 : 240;
+
+    const overlayIndex = !this.state.isHovered ? undefined : 0;
 
     return (
       <div>
@@ -61,7 +69,7 @@ class Projects extends Component {
         />
         <Container style={{ marginTop: variableMarginTop }}>
           <Row className="justify-content-center">
-            <Col md={6} style={{ width: variableWidth }}>
+            <Col md={6} style={{ width: variableWidth, marginBottom: 25 }}>
               <Carousel
                 pauseOnHover={false}
                 interval={1500}
@@ -70,6 +78,9 @@ class Projects extends Component {
                 fade={true}
                 className="shadow"
                 onClick={this.onClickBerland}
+                activeIndex={overlayIndex}
+                onMouseEnter={this.handleHover}
+                onMouseLeave={this.handleHover}
               >
                 {berlandPics.map(imgSrc => (
                   <Carousel.Item key={imgSrc}>
@@ -87,6 +98,9 @@ class Projects extends Component {
                 fade={true}
                 className="shadow"
                 onClick={this.onClickTodaysIpos}
+                activeIndex={overlayIndex}
+                onMouseEnter={this.handleHover}
+                onMouseLeave={this.handleHover}
               >
                 {todaysPics.map(imgSrc => (
                   <Carousel.Item key={imgSrc}>
