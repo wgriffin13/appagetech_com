@@ -2,21 +2,27 @@ import React, { Component } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Carousel from "react-bootstrap/Carousel";
-import ProjectDetail from "./ProjectDetail";
+import BerlandDetail from "./BerlandDetail";
+import TodaysIposDetail from "./TodaysIposDetail";
 
 class Projects extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showDetail: false,
-      setShowDetail: false
+      showBerlandDetail: false,
+      showTodaysIposDetail: false
     };
   }
 
-  onClick = e => {
+  onClickBerland = e => {
     e.preventDefault();
-    console.log("Clicked Onclicked!!!");
-    this.setState({ showDetail: true });
+    console.log("Clicked Onclicked!!!", e);
+    this.setState({ showBerlandDetail: true });
+  };
+  onClickTodaysIpos = e => {
+    e.preventDefault();
+    console.log("Clicked Onclicked!!!", e);
+    this.setState({ showTodaysIposDetail: true });
   };
 
   onSelect = e => {};
@@ -36,6 +42,11 @@ class Projects extends Component {
     ];
     return (
       <div>
+        <BerlandDetail show={this.state.showBerlandDetail} onHide={() => this.setState({ showBerlandDetail: false })} />
+        <TodaysIposDetail
+          show={this.state.showTodaysIposDetail}
+          onHide={() => this.setState({ showTodaysIposDetail: false })}
+        />
         <Row noGutters>
           <Col style={{ width: 480 }}>
             <Carousel
@@ -45,21 +56,28 @@ class Projects extends Component {
               indicators={false}
               fade={true}
               className="shadow"
-              onClick={this.onClick}
+              onClick={this.onClickBerland}
             >
               {berlandPics.map(imgSrc => (
-                <Carousel.Item>
+                <Carousel.Item key={imgSrc}>
                   <img src={imgSrc} alt="" style={{ height: 400 }} />
                 </Carousel.Item>
               ))}
             </Carousel>
           </Col>
-          <ProjectDetail show={this.state.showDetail} onHide={() => this.setState({ showDetail: false })} />
 
           <Col className="shadow" style={{ width: 480, border: "1px solid lightGrey" }}>
-            <Carousel interval={1000} controls={false} indicators={false} fade={true}>
+            <Carousel
+              pauseOnHover={false}
+              interval={1500}
+              controls={false}
+              indicators={false}
+              fade={true}
+              className="shadow"
+              onClick={this.onClickTodaysIpos}
+            >
               {todaysPics.map(imgSrc => (
-                <Carousel.Item>
+                <Carousel.Item key={imgSrc}>
                   <img src={imgSrc} alt="" style={{ height: 400 }} />
                 </Carousel.Item>
               ))}

@@ -6,9 +6,8 @@ import Modal from "react-bootstrap/Modal";
 import Image from "react-bootstrap/Image";
 import Container from "react-bootstrap/Container";
 import Carousel from "react-bootstrap/Carousel";
-// import "./modalStyle.css";
 
-export default function ProjectDetail(props) {
+export default function BerlandDetail(props) {
   const screenShotAnimation = [
     "images/screenShotAnimation/ScreenShots_Smart-width-700-1.png",
     "images/screenShotAnimation/ScreenShots_Smart-width-700-2.png",
@@ -23,8 +22,8 @@ export default function ProjectDetail(props) {
       <Modal.Header
         style={{
           border: "1px solid #575757",
-          // backgroundColor: "black",
-          // color: "white",
+          backgroundColor: "black",
+          color: "white",
           padding: 0,
           margin: 0
         }}
@@ -110,11 +109,10 @@ export default function ProjectDetail(props) {
                   indicators={true}
                   fade={true}
                   className="shadow"
-                  // onClick={this.onClick}
                   fluid
                 >
                   {screenShotAnimation.map(imgSrc => (
-                    <Carousel.Item>
+                    <Carousel.Item key={imgSrc}>
                       <img src={imgSrc} alt="" />
                     </Carousel.Item>
                   ))}
@@ -160,9 +158,9 @@ export default function ProjectDetail(props) {
       <Modal.Footer
         style={{
           border: "1px solid #575757",
-          justifyContent: "center"
-          // backgroundColor: "black",
-          // color: "white"
+          justifyContent: "center",
+          backgroundColor: "black",
+          color: "white"
         }}
       >
         <Button variant="outline-secondary" onClick={props.onHide}>
