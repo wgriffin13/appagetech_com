@@ -106,6 +106,7 @@ export default function TodaysIpos(props) {
                   controls={true}
                   indicators={true}
                   fade={true}
+                  className="shadow"
                 >
                   {iphoneAnimation.map(imgSrc => (
                     <Carousel.Item key={imgSrc}>
@@ -115,16 +116,9 @@ export default function TodaysIpos(props) {
                 </Carousel>
               </Col>
             </Row>
-            <Row className="justify-content-center mb-5">
+            <Row style={{ justifyContent: "center", marginBottom: 25 }}>
               <Col xs={12} md={8}>
-                <Carousel
-                  // as={"container"}
-                  pauseOnHover={false}
-                  interval={1500}
-                  controls={true}
-                  indicators={true}
-                  fade={true}
-                >
+                <Carousel pauseOnHover={false} interval={1500} controls={true} indicators={true} fade={true}>
                   {screenShotAnimation.map(imgSrc => (
                     <Carousel.Item key={imgSrc}>
                       {windowAspect > 1 ? (
