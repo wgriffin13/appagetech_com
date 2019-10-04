@@ -8,13 +8,13 @@ import Carousel from "react-bootstrap/Carousel";
 
 export default function BerlandDetail(props) {
   const screenShotAnimation = [
-    "images/berlandAnimations/ScreenShots_Smart-width-700-1.png",
-    "images/berlandAnimations/ScreenShots_Smart-width-700-2.png",
-    "images/berlandAnimations/ScreenShots_Smart-width-700-3.png",
-    "images/berlandAnimations/ScreenShots_Smart-width-700-4.png",
-    "images/berlandAnimations/ScreenShots_Smart-width-700-5.png",
-    "images/berlandAnimations/ScreenShots_Smart-width-700-6.png",
-    "images/berlandAnimations/ScreenShots_Smart-width-700-7.png"
+    "images/berlandAnimations/ScreenShots_Berland_700-1.png",
+    "images/berlandAnimations/ScreenShots_Berland_700-2.png",
+    "images/berlandAnimations/ScreenShots_Berland_700-3.png",
+    "images/berlandAnimations/ScreenShots_Berland_700-4.png",
+    "images/berlandAnimations/ScreenShots_Berland_700-5.png",
+    "images/berlandAnimations/ScreenShots_Berland_700-6.png",
+    "images/berlandAnimations/ScreenShots_Berland_700-7.png"
   ];
   const iphoneAnimation = [
     "images/berlandAnimations/IphoneBerland_smart-w300-20.png",
@@ -38,6 +38,9 @@ export default function BerlandDetail(props) {
     "images/berlandAnimations/IphoneBerland_smart-w300-2.png",
     "images/berlandAnimations/IphoneBerland_smart-w300-1.png"
   ];
+
+  const windowAspect = window.innerWidth / window.innerHeight;
+
   return (
     <Modal {...props} size="xl" centered closeButton>
       <Modal.Header
@@ -108,8 +111,8 @@ export default function BerlandDetail(props) {
             fontSize: 16,
             marginTop: 12,
             justifyContent: "center",
-            paddingTop: 0,
-            paddingBottom: 0
+            padding: 0,
+            margin: 0
           }}
         >
           <Col>
@@ -133,9 +136,8 @@ export default function BerlandDetail(props) {
             </Row>
 
             <Row style={{ justifyContent: "center", marginBottom: 25 }}>
-              <Col xs={10} lg={8}>
+              <Col xs={12} lg={8}>
                 <Carousel
-                  as={"container"}
                   pauseOnHover={false}
                   interval={1500}
                   controls={true}
@@ -146,7 +148,11 @@ export default function BerlandDetail(props) {
                 >
                   {screenShotAnimation.map(imgSrc => (
                     <Carousel.Item key={imgSrc}>
-                      <img src={imgSrc} alt="" />
+                      {windowAspect > 1 ? (
+                        <img src={imgSrc} alt="" style={{ width: 700 }} /> //web
+                      ) : (
+                        <img src={imgSrc} alt="" style={{ width: 300 }} /> //mobile
+                      )}
                     </Carousel.Item>
                   ))}
                 </Carousel>
