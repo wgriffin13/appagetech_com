@@ -23,7 +23,7 @@ class Contact extends Component {
               <i>Los Angeles, California</i>
             </Row>
             <Row>
-              <a href={`mailto: william@appagetech.com`}>
+              <a href={`mailto:william@appagetech.com`}>
                 william@appagetech.com
               </a>
             </Row>
@@ -46,7 +46,7 @@ class Contact extends Component {
               <i>New York, New York</i>
             </Row>
             <Row>
-              <a href={`mailto: preston@appagetech.com`}>
+              <a href={`mailto:preston@appagetech.com`}>
                 preston@appagetech.com
               </a>
             </Row>

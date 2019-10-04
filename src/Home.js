@@ -1176,12 +1176,14 @@ class Home extends Component {
   onDocumentMouseDown = event => {
     // Does not use event.preventDefault(), manually handles touch events
     if (touchEvent === false) {
-      this.setMouseCoords(event.clientX, event.clientY);
-      raycaster.setFromCamera(mouseCoords, camera);
-      const intersectButtonsMd = raycaster.intersectObjects([logo, about, contact, projects, client]);
-      if (intersectButtonsMd.length > 0) {
-        if (intersectButtonsMd[0].object.callback) {
-          intersectButtonsMd[0].object.callback();
+      if (logo && about && contact && projects && client) {
+        this.setMouseCoords(event.clientX, event.clientY);
+        raycaster.setFromCamera(mouseCoords, camera);
+        const intersectButtonsMd = raycaster.intersectObjects([logo, about, contact, projects, client]);
+        if (intersectButtonsMd.length > 0) {
+          if (intersectButtonsMd[0].object.callback) {
+            intersectButtonsMd[0].object.callback();
+          }
         }
       }
     }
