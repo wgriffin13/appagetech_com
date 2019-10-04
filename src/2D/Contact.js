@@ -22,7 +22,7 @@ class Contact extends Component {
               <i>Los Angeles, California</i>
             </Row>
             <Row>
-              <a href={`mailto: william@appagetech.com`}>william@appagetech.com</a>
+              <a href={`mailto:william@appagetech.com`}>william@appagetech.com</a>
             </Row>
             <Row>
               <a href={`tel:949-632-3021`}>(949) 632-3021 </a>
@@ -40,7 +40,7 @@ class Contact extends Component {
               <i>New York, New York</i>
             </Row>
             <Row>
-              <a href={`mailto: preston@appagetech.com`}>preston@appagetech.com</a>
+              <a href={`mailto:preston@appagetech.com`}>preston@appagetech.com</a>
             </Row>
             <Row>
               <a href={`tel:646-271-3127`}>(646) 271-3127 </a>
