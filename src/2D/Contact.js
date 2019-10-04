@@ -6,15 +6,14 @@ import "./contact.css";
 
 class Contact extends Component {
   render() {
+    const windowAspect = window.innerWidth / window.innerHeight;
+    const marginTop = windowAspect > 1 ? 0 : 150;
     return (
-      <div className="container">
+      <div className="container" style={{ marginTop: marginTop }}>
         <Row>
-          <Col className="align-items-center">
-            <Row className="mb-3">
-              <Image
-                src="images/Will_SlackProfilePic.jpg"
-                roundedCircle
-              ></Image>
+          <Col className="align-items-center" style={{ marginX: 0, marginBottom: 10 }}>
+            <Row className="mb-1">
+              <Image src="images/Will_SlackProfilePic.jpg" roundedCircle></Image>
             </Row>
             <Row>
               <h4>William Griffin</h4>
@@ -23,21 +22,16 @@ class Contact extends Component {
               <i>Los Angeles, California</i>
             </Row>
             <Row>
-              <a href={`mailto: william@appagetech.com`}>
-                william@appagetech.com
-              </a>
+              <a href={`mailto: william@appagetech.com`}>william@appagetech.com</a>
             </Row>
             <Row>
               <a href={`tel:949-632-3021`}>(949) 632-3021 </a>
             </Row>
           </Col>
 
-          <Col className="align-items-center">
-            <Row className="mb-3">
-              <Image
-                src="images/Preston_BW_profilePic.jpg"
-                roundedCircle
-              ></Image>
+          <Col className="align-items-center" style={{ marginX: 0, marginBottom: 10 }}>
+            <Row className="mb-1">
+              <Image src="images/Preston_BW_profilePic.jpg" roundedCircle></Image>
             </Row>
             <Row>
               <h4>Preston Chaplin</h4>
@@ -46,9 +40,7 @@ class Contact extends Component {
               <i>New York, New York</i>
             </Row>
             <Row>
-              <a href={`mailto: preston@appagetech.com`}>
-                preston@appagetech.com
-              </a>
+              <a href={`mailto: preston@appagetech.com`}>preston@appagetech.com</a>
             </Row>
             <Row>
               <a href={`tel:646-271-3127`}>(646) 271-3127 </a>
