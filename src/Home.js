@@ -88,64 +88,51 @@ const navbarPlacement = {
   vertical: {
     about: {
       x: 1.3,
-      // x: 0.58,
       y: 2.71,
       z: 0,
-      // scale: new THREE.Vector3(0.65, 0.35, 0.65)
+
       scale: new THREE.Vector3(1, 0.35, 1)
     },
     aboutType: {
       scale: new THREE.Vector3(1, 1, 1)
-      // scale: new THREE.Vector3(0.65, 0.65, 0.65)
     },
     client: {
-      // x: -1.2,
       x: -1.3,
-      // x: 0.2,
+
       y: 3.39,
       z: 0,
       scale: new THREE.Vector3(1, 0.35, 1)
-      // scale: new THREE.Vector3(0.65, 0.35, 0.65)
     },
     clientType: {
       scale: new THREE.Vector3(1, 1, 1)
-      // scale: new THREE.Vector3(0.65, 0.65, 0.65)
     },
     projects: {
       x: -1.3,
-      // x: 0.2,
       y: 2.71,
       z: 0,
       scale: new THREE.Vector3(1, 0.35, 1)
-      // scale: new THREE.Vector3(0.65, 0.35, 0.65)
     },
     projectsType: {
       scale: new THREE.Vector3(1, 1, 1)
-      // scale: new THREE.Vector3(0.65, 0.65, 0.65)
     },
     contact: {
       x: 1.3,
-      // x: 0.58,
+
       y: 3.39,
       z: 0,
       scale: new THREE.Vector3(1, 0.35, 1)
-      // scale: new THREE.Vector3(0.65, 0.35, 0.65)
     },
     contactType: {
       scale: new THREE.Vector3(1, 1, 1)
-      // scale: new THREE.Vector3(0.65, 0.65, 0.65)
     },
     logo: {
       x: 0,
-      // x: -0.62,
       y: 0.75,
       z: 0,
       scale: new THREE.Vector3(0.85, 0.85, 0.85)
-      // scale: new THREE.Vector3(0.75, 0.75, 0.75)
     },
     logoType: {
       scale: new THREE.Vector3(0.85, 0.85, 0.85)
-      // scale: new THREE.Vector3(0.75, 0.75, 0.75)
     }
   }
 };
