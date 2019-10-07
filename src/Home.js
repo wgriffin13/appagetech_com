@@ -87,49 +87,52 @@ const navbarPlacement = {
   // Vertical orientation of screen when CSS3D component is active
   vertical: {
     about: {
-      x: 0.58,
+      x: 1.3,
       y: 2.71,
       z: 0,
-      scale: new THREE.Vector3(0.65, 0.35, 0.65)
+
+      scale: new THREE.Vector3(1, 0.35, 1)
     },
     aboutType: {
-      scale: new THREE.Vector3(0.65, 0.65, 0.65)
+      scale: new THREE.Vector3(1, 1, 1)
     },
     client: {
-      x: 0.2,
+      x: -1.3,
+
       y: 3.39,
       z: 0,
-      scale: new THREE.Vector3(0.65, 0.35, 0.65)
+      scale: new THREE.Vector3(1, 0.35, 1)
     },
     clientType: {
-      scale: new THREE.Vector3(0.65, 0.65, 0.65)
+      scale: new THREE.Vector3(1, 1, 1)
     },
     projects: {
-      x: 0.2,
+      x: -1.3,
       y: 2.71,
       z: 0,
-      scale: new THREE.Vector3(0.65, 0.35, 0.65)
+      scale: new THREE.Vector3(1, 0.35, 1)
     },
     projectsType: {
-      scale: new THREE.Vector3(0.65, 0.65, 0.65)
+      scale: new THREE.Vector3(1, 1, 1)
     },
     contact: {
-      x: 0.58,
+      x: 1.3,
+
       y: 3.39,
       z: 0,
-      scale: new THREE.Vector3(0.65, 0.35, 0.65)
+      scale: new THREE.Vector3(1, 0.35, 1)
     },
     contactType: {
-      scale: new THREE.Vector3(0.65, 0.65, 0.65)
+      scale: new THREE.Vector3(1, 1, 1)
     },
     logo: {
-      x: -0.62,
+      x: 0,
       y: 0.75,
       z: 0,
-      scale: new THREE.Vector3(0.75, 0.75, 0.75)
+      scale: new THREE.Vector3(0.85, 0.85, 0.85)
     },
     logoType: {
-      scale: new THREE.Vector3(0.75, 0.75, 0.75)
+      scale: new THREE.Vector3(0.85, 0.85, 0.85)
     }
   }
 };
