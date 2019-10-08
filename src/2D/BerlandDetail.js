@@ -82,7 +82,14 @@ export default function BerlandDetail(props) {
                   marginRight: "auto"
                 }}
               >
-                toddberland.com
+                <a href="https://toddberland.com" target="_blank" rel='noreferrer noopener'
+                  style={{
+                    textDecoration: "none",
+                    color: "white"
+                  }}
+                >
+                  toddberland.com
+                </a>
               </Modal.Title>
             </Col>
             <Col style={{ padding: 0, marginBottom: 0, marginTop: 0 }}>

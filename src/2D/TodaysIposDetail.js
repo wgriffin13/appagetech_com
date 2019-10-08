@@ -64,7 +64,14 @@ export default function TodaysIpos(props) {
                   marginRight: "auto"
                 }}
               >
-                todaysipos.com
+                <a href="https://todaysipos.com" target="_blank" rel='noreferrer noopener'
+                  style={{
+                    textDecoration: "none",
+                    color: "white"
+                  }}
+                >
+                  todaysipos.com
+                </a>
               </Modal.Title>
             </Col>
             <Col style={{ padding: 0, marginBottom: 0, marginTop: 0 }}>

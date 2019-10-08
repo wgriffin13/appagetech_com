@@ -170,7 +170,8 @@ class Home extends Component {
       reactComponentsMounted: false,
       landingPage: true,
       navPosition: "middle",
-      cssComponentDisplayed: ""
+      cssComponentDisplayed: "",
+      location: ""
     };
   }
 
@@ -180,6 +181,15 @@ class Home extends Component {
     this.loadAssets();
     this.update();
     this.matchRenderToLocation();
+  }
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props !== prevProps) {
+      if (this.props.location.pathname !== `/${this.state.location}`) {
+        this.matchRenderToLocation()
+      }
+    }
   }
 
   setLoadLocations = () => {
@@ -196,6 +206,8 @@ class Home extends Component {
       landingScene.removeLandingMouseDown();
       if (reactComponentsObj[location]) {
         this.showReactComponent(location);
+      } else {
+        this.hideAllReactComponents();
       }
     }
   };
@@ -239,7 +251,7 @@ class Home extends Component {
 
   toggleTransition = () => {
     if (this.state.landingPage === true) {
-      this.setState({ landingPage: false });
+      this.setState({ landingPage: false, location: 'home' });
       this.props.history.push("/home");
     } else {
       this.setState({ landingPage: true });
@@ -292,12 +304,14 @@ class Home extends Component {
       this.setState({
         cssComponentDisplayed: "",
         show2D: false,
-        showWater: true
+        showWater: true,
+        location: 'home'
       });
       Object.entries(reactComponentsObj).forEach(([key, value]) => (value.position.z = offScreenZPosition2D));
       // Pushes location back to home
-      this.props.history.push(`/home`);
-
+      if (this.props.location.pathname !== `/home`) {
+        this.props.history.push(`/home`);
+      };
       // Toggle Icons ON
       glScene.traverse(function(child) {
         if (
@@ -331,9 +345,11 @@ class Home extends Component {
       // Brings forward selected css object
       reactComponentsObj[reactComponentName].position.z = zPosition2D;
       // Sets state with the name of the currently displayed object
-      this.setState({ cssComponentDisplayed: reactComponentName });
+      this.setState({ cssComponentDisplayed: reactComponentName, location: reactComponentName });
       // Pushes location to URL bar
-      this.props.history.push(`/${reactComponentName}`);
+      if (this.props.location.pathname !== `/${reactComponentName}`) {
+        this.props.history.push(`/${reactComponentName}`);
+      }
     } else {
       reactComponentsObj[reactComponentName].position.z = zPosition2D;
       // Try TWEEN function
@@ -342,7 +358,8 @@ class Home extends Component {
       this.setState({
         cssComponentDisplayed: reactComponentName,
         show2D: true,
-        showWater: false
+        showWater: false,
+        location: reactComponentName
       });
 
       // Toggle Icons OFF
