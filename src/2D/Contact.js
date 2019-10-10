@@ -24,9 +24,9 @@ class Contact extends Component {
             <Row>
               <a href={`mailto:william@appagetech.com`}>william@appagetech.com</a>
             </Row>
-            <Row>
+            {/* <Row>
               <a href={`tel:949-632-3021`}>(949) 632-3021 </a>
-            </Row>
+            </Row> */}
           </Col>
 
           <Col className="align-items-center" style={{ marginX: 0, marginBottom: 10 }}>
@@ -42,9 +42,9 @@ class Contact extends Component {
             <Row>
               <a href={`mailto:preston@appagetech.com`}>preston@appagetech.com</a>
             </Row>
-            <Row>
+            {/* <Row>
               <a href={`tel:646-271-3127`}>(646) 271-3127 </a>
-            </Row>
+            </Row> */}
           </Col>
         </Row>
       </div>
