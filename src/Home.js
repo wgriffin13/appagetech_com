@@ -15,8 +15,9 @@ import Client from "./2D/Client";
 import Contact from "./2D/Contact";
 import Projects from "./2D/Projects";
 import LandingTransition from "./LandingTransition";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-let camera, glScene, cssScene, glRenderer, cssRenderer, container;
+let camera, glScene, cssScene, glRenderer, cssRenderer, container, controls;
 let cubeGenerator, pmremGenerator, pmremCubeUVPacker;
 let logo, about, contact, projects, client;
 let logoType, aboutType, contactType, projectsType, clientType;
@@ -262,7 +263,21 @@ class Home extends Component {
     camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.25, 4000);
     camera.position.set(0, 0, 224);
     camera.lookAt(0, 0, 0);
+   
     glRenderer = this.createGlRenderer();
+    controls = new OrbitControls(camera, glRenderer.domElement);
+    controls.enableZoom = false;
+   
+    // How far you can orbit vertically, upper and lower limits.
+// Range is 0 to Math.PI radians.
+controls.minPolarAngle = 0; // radians
+controls.maxPolarAngle = 0; // radians
+
+// How far you can orbit horizontally, upper and lower limits.
+// If set, must be a sub-interval of the interval [ - Math.PI, Math.PI ].
+controls.minAzimuthAngle = - Math.PI / 2 ; // radians
+controls.maxAzimuthAngle = Math.PI / 2; // radians
+
     cssRenderer = this.createCssRenderer();
     container = document.createElement("div");
     document.body.appendChild(container);
@@ -1041,6 +1056,13 @@ class Home extends Component {
     } else {
       glRenderer.render(glScene, camera);
       cssRenderer.render(cssScene, camera);
+
+      if ( !this.state.show2D){
+      camera.position.x += ( mouseCoords.x - camera.position.x ) * .05;
+      camera.position.y += ( - mouseCoords.y - camera.position.y ) * .05;
+      camera.lookAt( glScene.position );
+      }
+
       if (this.state.reactComponentsMounted === false) {
         const aboutElement = document.getElementById("about");
         ReactDOM.render(<About />, aboutElement);
