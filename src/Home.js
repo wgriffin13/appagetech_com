@@ -265,18 +265,19 @@ class Home extends Component {
     camera.lookAt(0, 0, 0);
 
     glRenderer = this.createGlRenderer();
-    controls = new OrbitControls(camera, glRenderer.domElement);
-    controls.enableZoom = false;
-
+    // controls = new OrbitControls(camera, glRenderer.domElement);
+    // controls.enableZoom = false;
+    // console.log("math.pi", Math.PI);
+    // console.log("math.pi / 4", Math.PI / 4);
     // How far you can orbit vertically, upper and lower limits.
     // Range is 0 to Math.PI radians.
-    controls.minPolarAngle = 0; // radians
-    controls.maxPolarAngle = 0; // radians
+    // controls.minPolarAngle = 0; // radians
+    // controls.maxPolarAngle = 0; // radians
 
     // How far you can orbit horizontally, upper and lower limits.
     // If set, must be a sub-interval of the interval [ - Math.PI, Math.PI ].
-    controls.minAzimuthAngle = -Math.PI / 2; // radians
-    controls.maxAzimuthAngle = Math.PI / 2; // radians
+    // controls.minAzimuthAngle = -Math.PI / 2; // radians
+    // controls.maxAzimuthAngle = Math.PI / 2; // radians
 
     cssRenderer = this.createCssRenderer();
     container = document.createElement("div");
@@ -1059,7 +1060,7 @@ class Home extends Component {
 
       if (!this.state.show2D) {
         camera.position.x += (mouseCoords.x - camera.position.x) * 0.05;
-        camera.position.y += (-mouseCoords.y - camera.position.y) * 0.05;
+        // camera.position.y += (-mouseCoords.y - camera.position.y) * 0.05;
         camera.lookAt(glScene.position);
       }
 
