@@ -1060,7 +1060,8 @@ class Home extends Component {
 
       if (!this.state.show2D) {
         camera.position.x += (mouseCoords.x - camera.position.x) * 0.05;
-        // camera.position.y += (-mouseCoords.y - camera.position.y) * 0.05;
+        //camera.position.y += (-mouseCoords.y - camera.position.y) * 0.05;
+        console.log(camera.position.y)
         camera.lookAt(glScene.position);
       }
 
@@ -1225,6 +1226,7 @@ class Home extends Component {
         const intersectButtonsMd = raycaster.intersectObjects([logo, about, contact, projects, client]);
         if (intersectButtonsMd.length > 0) {
           if (intersectButtonsMd[0].object.callback) {
+            camera.position.x = 0;
             intersectButtonsMd[0].object.callback();
           }
         }
@@ -1259,6 +1261,7 @@ class Home extends Component {
         const intersectButtonsMd = raycaster.intersectObjects([logo, about, contact, projects, client]);
         if (intersectButtonsMd.length > 0) {
           if (intersectButtonsMd[0].object.callback) {
+            camera.position.x = 0;
             intersectButtonsMd[0].object.callback();
           }
         }
