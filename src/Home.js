@@ -187,7 +187,7 @@ class Home extends Component {
     // Typical usage (don't forget to compare props):
     if (this.props !== prevProps) {
       if (this.props.location.pathname !== `/${this.state.location}`) {
-        this.matchRenderToLocation()
+        this.matchRenderToLocation();
       }
     }
   }
@@ -251,7 +251,7 @@ class Home extends Component {
 
   toggleTransition = () => {
     if (this.state.landingPage === true) {
-      this.setState({ landingPage: false, location: 'home' });
+      this.setState({ landingPage: false, location: "home" });
       this.props.history.push("/home");
     } else {
       this.setState({ landingPage: true });
@@ -305,13 +305,13 @@ class Home extends Component {
         cssComponentDisplayed: "",
         show2D: false,
         showWater: true,
-        location: 'home'
+        location: "home"
       });
       Object.entries(reactComponentsObj).forEach(([key, value]) => (value.position.z = offScreenZPosition2D));
       // Pushes location back to home
       if (this.props.location.pathname !== `/home`) {
         this.props.history.push(`/home`);
-      };
+      }
       // Toggle Icons ON
       glScene.traverse(function(child) {
         if (
@@ -329,7 +329,6 @@ class Home extends Component {
 
   // Show react component
   showReactComponent = reactComponentName => {
-    // console.log(reactComponentName);
     // Checks a second click: is the CSS renderer is visible
     if (
       parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 &&
@@ -1041,6 +1040,13 @@ class Home extends Component {
     } else {
       glRenderer.render(glScene, camera);
       cssRenderer.render(cssScene, camera);
+
+      if (!this.state.show2D) {
+        camera.position.x += (mouseCoords.x - camera.position.x) * 0.05;
+        // camera.position.y += (-mouseCoords.y - camera.position.y) * 0.05;
+        camera.lookAt(glScene.position);
+      }
+
       if (this.state.reactComponentsMounted === false) {
         const aboutElement = document.getElementById("about");
         ReactDOM.render(<About />, aboutElement);
@@ -1096,7 +1102,7 @@ class Home extends Component {
             if (intersected.isMesh && intersected.name === "logoIcon") {
               glScene.traverse(function(child) {
                 if (child.isMesh && child.name === "logoType") {
-                  child.material.emissive.setHex(0xff0042);
+                  // child.material.emissive.setHex(0xff0042);
                 } else if (
                   (child.isMesh && child.name === "clientType") ||
                   (child.isMesh && child.name === "projectsType") ||
@@ -1201,6 +1207,7 @@ class Home extends Component {
         raycaster.setFromCamera(mouseCoords, camera);
         const intersectButtonsMd = raycaster.intersectObjects([logo, about, contact, projects, client]);
         if (intersectButtonsMd.length > 0) {
+          camera.position.x = 0;
           if (intersectButtonsMd[0].object.callback) {
             intersectButtonsMd[0].object.callback();
           }
@@ -1236,6 +1243,8 @@ class Home extends Component {
         const intersectButtonsMd = raycaster.intersectObjects([logo, about, contact, projects, client]);
         if (intersectButtonsMd.length > 0) {
           if (intersectButtonsMd[0].object.callback) {
+            camera.position.x = 0;
+            mouseCoords.set(0, 0);
             intersectButtonsMd[0].object.callback();
           }
         }
