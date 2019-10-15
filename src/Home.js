@@ -172,7 +172,8 @@ class Home extends Component {
       landingPage: true,
       navPosition: "middle",
       cssComponentDisplayed: "",
-      location: ""
+      location: "",
+      lockNavigation: false
     };
   }
 
@@ -199,6 +200,10 @@ class Home extends Component {
       placementDirection = "vertical";
     }
   };
+
+  toggleLockNavigation = () => {
+    this.state.lockNavigation === false ? this.setState({ lockNavigation: true }) : this.setState({ lockNavigation: false })
+  }
 
   matchRenderToLocation = () => {
     const location = this.props.location.pathname.substring(1);
@@ -312,7 +317,7 @@ class Home extends Component {
 
   // Attached to logo to hide everything
   hideAllReactComponents = () => {
-    if (this.state.show2D) {
+    if (this.state.show2D && this.state.lockNavigation === false) {
       cssRenderer.domElement.style.zIndex = -1;
       glScene.remove(plane);
       // run TWEEN to move navbar
@@ -345,62 +350,64 @@ class Home extends Component {
 
   // Show react component
   showReactComponent = reactComponentName => {
-    // console.log(reactComponentName);
-    // Checks a second click: is the CSS renderer is visible
-    if (
-      parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 &&
-      this.state.cssComponentDisplayed === reactComponentName
-    ) {
-      this.hideAllReactComponents();
-    } else if (
-      parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 &&
-      this.state.cssComponentDisplayed !== reactComponentName
-    ) {
-      // Sets current css object to offscreen
-      reactComponentsObj[this.state.cssComponentDisplayed].position.z = offScreenZPosition2D;
-      // Brings forward selected css object
-      reactComponentsObj[reactComponentName].position.z = zPosition2D;
-      // Sets state with the name of the currently displayed object
-      this.setState({ cssComponentDisplayed: reactComponentName, location: reactComponentName });
-      // Pushes location to URL bar
-      if (this.props.location.pathname !== `/${reactComponentName}`) {
-        this.props.history.push(`/${reactComponentName}`);
-      }
-    } else {
-      reactComponentsObj[reactComponentName].position.z = zPosition2D;
-      // Try TWEEN function
-      this.transform(1000);
-
-      this.setState({
-        cssComponentDisplayed: reactComponentName,
-        show2D: true,
-        showWater: false,
-        location: reactComponentName
-      });
-
-      // Toggle Icons OFF
-      glScene.traverse(function(child) {
-        if (
-          (child.isMesh && child.name === "clientIcon") ||
-          (child.isMesh && child.name === "projectsIcon") ||
-          (child.isMesh && child.name === "contactIcon") ||
-          (child.isMesh && child.name === "aboutIcon")
-        ) {
-          child.material.opacity = 0;
+    // Checking for navigation lock as a result of 2D component rendering
+    if (this.state.lockNavigation === false) {
+      // Checks a second click: is the CSS renderer is visible
+      if (
+        parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 &&
+        this.state.cssComponentDisplayed === reactComponentName
+      ) {
+        this.hideAllReactComponents();
+      } else if (
+        parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 &&
+        this.state.cssComponentDisplayed !== reactComponentName
+      ) {
+        // Sets current css object to offscreen
+        reactComponentsObj[this.state.cssComponentDisplayed].position.z = offScreenZPosition2D;
+        // Brings forward selected css object
+        reactComponentsObj[reactComponentName].position.z = zPosition2D;
+        // Sets state with the name of the currently displayed object
+        this.setState({ cssComponentDisplayed: reactComponentName, location: reactComponentName });
+        // Pushes location to URL bar
+        if (this.props.location.pathname !== `/${reactComponentName}`) {
+          this.props.history.push(`/${reactComponentName}`);
         }
-      });
+      } else {
+        reactComponentsObj[reactComponentName].position.z = zPosition2D;
+        // Try TWEEN function
+        this.transform(1000);
 
-      plane = this.createPlane(
-        window.innerWidth,
-        window.innerHeight,
-        new THREE.Vector3(0, 0, 210),
-        new THREE.Vector3(0, 0, 0)
-      );
-      glScene.add(plane);
-      cssRenderer.domElement.style.zIndex = 0;
-      // Pushes location to URL bar
-      if (this.props.location.pathname !== `/${reactComponentName}`) {
-        this.props.history.push(`/${reactComponentName}`);
+        this.setState({
+          cssComponentDisplayed: reactComponentName,
+          show2D: true,
+          showWater: false,
+          location: reactComponentName
+        });
+
+        // Toggle Icons OFF
+        glScene.traverse(function(child) {
+          if (
+            (child.isMesh && child.name === "clientIcon") ||
+            (child.isMesh && child.name === "projectsIcon") ||
+            (child.isMesh && child.name === "contactIcon") ||
+            (child.isMesh && child.name === "aboutIcon")
+          ) {
+            child.material.opacity = 0;
+          }
+        });
+
+        plane = this.createPlane(
+          window.innerWidth,
+          window.innerHeight,
+          new THREE.Vector3(0, 0, 210),
+          new THREE.Vector3(0, 0, 0)
+        );
+        glScene.add(plane);
+        cssRenderer.domElement.style.zIndex = 0;
+        // Pushes location to URL bar
+        if (this.props.location.pathname !== `/${reactComponentName}`) {
+          this.props.history.push(`/${reactComponentName}`);
+        }
       }
     }
   };
@@ -1061,7 +1068,6 @@ class Home extends Component {
       if (!this.state.show2D) {
         camera.position.x += (mouseCoords.x - camera.position.x) * 0.05;
         //camera.position.y += (-mouseCoords.y - camera.position.y) * 0.05;
-        console.log(camera.position.y)
         camera.lookAt(glScene.position);
       }
 
@@ -1071,7 +1077,7 @@ class Home extends Component {
         const clientElement = document.getElementById("client");
         ReactDOM.render(<Client />, clientElement);
         const contactElement = document.getElementById("contact");
-        ReactDOM.render(<Contact />, contactElement);
+        ReactDOM.render(<Contact toggleLockNavigation={this.toggleLockNavigation} />, contactElement);
         const projectsElement = document.getElementById("projects");
         ReactDOM.render(<Projects />, projectsElement);
         this.setState({ reactComponentsMounted: true });

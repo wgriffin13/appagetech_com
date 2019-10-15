@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import "./contact.css";
+import ContactForm from './ContactForm';
 
 class Contact extends Component {
   render() {
@@ -24,9 +25,6 @@ class Contact extends Component {
             <Row>
               <a href={`mailto:william@appagetech.com`}>william@appagetech.com</a>
             </Row>
-            {/* <Row>
-              <a href={`tel:949-632-3021`}>(949) 632-3021 </a>
-            </Row> */}
           </Col>
 
           <Col className="align-items-center" style={{ marginX: 0, marginBottom: 10 }}>
@@ -42,9 +40,10 @@ class Contact extends Component {
             <Row>
               <a href={`mailto:preston@appagetech.com`}>preston@appagetech.com</a>
             </Row>
-            {/* <Row>
-              <a href={`tel:646-271-3127`}>(646) 271-3127 </a>
-            </Row> */}
+          </Col>
+          <div className="w-100"></div>
+          <Col className="d-flex flex-row">
+            <ContactForm toggleLockNavigation={this.props.toggleLockNavigation} />
           </Col>
         </Row>
       </div>
