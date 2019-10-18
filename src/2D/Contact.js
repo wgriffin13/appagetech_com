@@ -31,7 +31,7 @@ class Contact extends Component {
 
           <Col className="align-items-center" style={{ marginX: 0, marginBottom: 10 }}>
             <Row className="mb-1">
-              <Image src="images/Preston_BW_profilePic.jpg" roundedCircle></Image>
+              <Image src="images/Preston_BW_profilePic2.jpg" roundedCircle></Image>
             </Row>
             <Row>
               <h4>Preston Chaplin</h4>
