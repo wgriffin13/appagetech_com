@@ -10,7 +10,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   let touchEvent = false;
-  //this.clearColor = clearColor;
+
   // Scene & Camera
   this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.25, 20);
   this.camera.position.z = 7.5;
@@ -18,13 +18,13 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
 
   // Object callback function
   const startTransition = objectName => {
-    //console.log('Objected has been clicked:' + objectName)
     toggleTransitionFunc();
   };
 
   // Objects
   let cubeGenerator, type, icon;
-  // load HDR, then Models
+
+  // load HDRI then models
   new RGBELoader()
     .setDataType(THREE.UnsignedByteType)
     .setPath("textures/")
@@ -44,7 +44,6 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
 
       const emissiveMapLoader = new THREE.TextureLoader();
       const emissiveMap = emissiveMapLoader.load("textures/EmissiveMap_01.png");
-      // emissiveMap.anisotropy = 16;
 
       // Models
       new GLTFLoader().setPath("/models/").load("Landing-Logo-Type.glb", function(gltf) {
@@ -165,8 +164,8 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
     if (icon && type) {
       icon.rotation.y += 0.01;
       type.rotation.y += 0.01;
-      this.camera.position.x += (mouse.x - this.camera.position.x) * 0.01;
-      this.camera.position.y += (-mouse.y - this.camera.position.y) * 0.01;
+      this.camera.position.x += (mouse.x - this.camera.position.x) * 0.05;
+      this.camera.position.y += (-mouse.y - this.camera.position.y) * 0.05;
       this.camera.lookAt(icon.position);
     }
     renderer.render(scene, this.camera);
