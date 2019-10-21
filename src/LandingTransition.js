@@ -165,6 +165,9 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
     if (icon && type) {
       icon.rotation.y += 0.01;
       type.rotation.y += 0.01;
+      this.camera.position.x += (mouse.x - this.camera.position.x) * 0.01;
+      this.camera.position.y += (-mouse.y - this.camera.position.y) * 0.01;
+      this.camera.lookAt(icon.position);
     }
     renderer.render(scene, this.camera);
   };
