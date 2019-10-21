@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-// import Row from "react-bootstrap/Row";
-// import Container from "react-bootstrap/Container";
-// import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
 import Carousel from "react-bootstrap/Carousel";
 import BerlandDetail from "./BerlandDetail";
 import TodaysIposDetail from "./TodaysIposDetail";
@@ -67,9 +67,9 @@ class Projects extends Component {
           show={this.state.showTodaysIposDetail}
           onHide={() => this.setState({ showTodaysIposDetail: false })}
         />
-        <div xlassName="container" style={{ marginTop: variableMarginTop }}>
-          <div className="row justify-content-center">
-            <div className="column-md-6" style={{ width: variableWidth, marginBottom: 25, marginRight: 25 }}>
+        <Container style={{ marginTop: variableMarginTop }}>
+          <Row className="justify-content-center">
+            <Col md={6} style={{ width: variableWidth, marginBottom: 25 }}>
               <Carousel
                 pauseOnHover={false}
                 interval={1500}
@@ -88,8 +88,8 @@ class Projects extends Component {
                   </Carousel.Item>
                 ))}
               </Carousel>
-            </div>
-            <div className="column-md-6" style={{ width: variableWidth }}>
+            </Col>
+            <Col md={6} style={{ width: variableWidth }}>
               <Carousel
                 pauseOnHover={false}
                 interval={1500}
@@ -108,9 +108,9 @@ class Projects extends Component {
                   </Carousel.Item>
                 ))}
               </Carousel>
-            </div>
-          </div>
-        </div>
+            </Col>
+          </Row>
+        </Container>
       </div>
     );
   }
