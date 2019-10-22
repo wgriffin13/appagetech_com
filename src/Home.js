@@ -1207,7 +1207,7 @@ class Home extends Component {
       // event.preventDefault();
       cssScene.position.y -= event.deltaY * 0.1;
       // prevent scrolling beyond a min/max value
-      cssScene.position.clampScalar(-10, 100);
+      cssScene.position.clampScalar(-5, 100);
     }
   };
 

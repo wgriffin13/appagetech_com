@@ -3,7 +3,7 @@ import React, { Component, Fragment } from "react";
 class About extends Component {
   render() {
     const windowAspect = window.innerWidth / window.innerHeight;
-    const marginTop = windowAspect > 1 ? 500 : 650;
+    const marginTop = windowAspect > 1 ? 350 : 650;
     const textSize = windowAspect > 1 ? 20 : 24;
     const lineSpace = windowAspect > 1 ? 2 : 1.8;
     const paddingX = windowAspect > 1 ? 150 : 0;
