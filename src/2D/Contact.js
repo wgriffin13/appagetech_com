@@ -7,7 +7,7 @@ import "./contact.css";
 class Contact extends Component {
   render() {
     const windowAspect = window.innerWidth / window.innerHeight;
-    const marginTop = windowAspect > 1 ? 0 : 150;
+    const marginTop = windowAspect > 1 ? -350 : 150;
     return (
       <div className="container" style={{ marginTop: marginTop }}>
         <Row>

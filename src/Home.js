@@ -225,9 +225,9 @@ class Home extends Component {
   createCssRenderer = () => {
     var cssRenderer = new CSS3DRenderer();
     cssRenderer.setSize(window.innerWidth, window.innerHeight);
-    cssRenderer.domElement.style.position = "absolute";
+    cssRenderer.domElement.style.position = "fixed";
     cssRenderer.domElement.style.zIndex = -1;
-    cssRenderer.domElement.style.top = 0;
+    cssRenderer.domElement.style.top = "150px";
     return cssRenderer;
   };
 
@@ -343,6 +343,7 @@ class Home extends Component {
       // Sets current css object to offscreen
       reactComponentsObj[this.state.cssComponentDisplayed].position.z = offScreenZPosition2D;
       // Brings forward selected css object
+      cssScene.position.y = 0;
       reactComponentsObj[reactComponentName].position.z = zPosition2D;
       // Sets state with the name of the currently displayed object
       this.setState({ cssComponentDisplayed: reactComponentName, location: reactComponentName });
@@ -351,6 +352,7 @@ class Home extends Component {
         this.props.history.push(`/${reactComponentName}`);
       }
     } else {
+      cssScene.position.y = 0;
       reactComponentsObj[reactComponentName].position.z = zPosition2D;
       // Try TWEEN function
       this.transform(1000);
@@ -1201,11 +1203,11 @@ class Home extends Component {
   };
 
   onMouseWheel = event => {
-    if (this.state.show2D) {
-      event.preventDefault();
+    if (this.state.location === "about") {
+      // event.preventDefault();
       cssScene.position.y -= event.deltaY * 0.1;
       // prevent scrolling beyond a min/max value
-      cssScene.position.clampScalar(-100, 100);
+      cssScene.position.clampScalar(-10, 100);
     }
   };
 

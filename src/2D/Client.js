@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-// import Row from "react-bootstrap/Row";
-// import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-// import Button from "react-bootstrap/Button";
+
+const windowAspect = window.innerWidth / window.innerHeight;
+const variableMarginTop = windowAspect > 1 ? -300 : 240;
 
 class Client extends Component {
   render() {
     return (
-      <div className="container-fluid">
+      <div className="container" style={{ marginTop: variableMarginTop }}>
         <Form>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>User ID</Form.Label>

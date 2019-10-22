@@ -56,7 +56,7 @@ class Projects extends Component {
 
     const variableWidth = windowAspect > 1 ? 450 : 420;
 
-    const variableMarginTop = windowAspect > 1 ? 100 : 240;
+    const variableMarginTop = windowAspect > 1 ? -300 : 240;
 
     const overlayIndex = !this.state.isHovered ? undefined : 0;
 
@@ -67,7 +67,7 @@ class Projects extends Component {
           show={this.state.showTodaysIposDetail}
           onHide={() => this.setState({ showTodaysIposDetail: false })}
         />
-        <div xlassName="container" style={{ marginTop: variableMarginTop }}>
+        <div className="container" style={{ marginTop: variableMarginTop }}>
           <div className="row justify-content-center">
             <div className="column-md-6" style={{ width: variableWidth, marginBottom: 25, marginRight: 25 }}>
               <Carousel
