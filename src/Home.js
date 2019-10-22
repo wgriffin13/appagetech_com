@@ -39,8 +39,8 @@ const reactComponentsObj = {};
 const navbarPlacement = {
   horizontal: {
     about: {
-      x: 0,
-      y: 1.75,
+      x: -0.3,
+      y: 2,
       z: 0,
       scale: new THREE.Vector3(1, 0.5, 1)
     },
@@ -48,8 +48,8 @@ const navbarPlacement = {
       scale: new THREE.Vector3(1, 1, 1)
     },
     client: {
-      x: 0,
-      y: 1.75,
+      x: -0.3,
+      y: 2,
       z: 0,
       scale: new THREE.Vector3(1, 0.5, 1)
     },
@@ -57,8 +57,8 @@ const navbarPlacement = {
       scale: new THREE.Vector3(1, 1, 1)
     },
     projects: {
-      x: 0,
-      y: 1.75,
+      x: -0.3,
+      y: 2,
       z: 0,
       scale: new THREE.Vector3(1, 0.5, 1)
     },
@@ -66,8 +66,8 @@ const navbarPlacement = {
       scale: new THREE.Vector3(1, 1, 1)
     },
     contact: {
-      x: 0,
-      y: 1.75,
+      x: -0.3,
+      y: 2,
       z: 0,
       scale: new THREE.Vector3(1, 0.5, 1)
     },
@@ -75,13 +75,13 @@ const navbarPlacement = {
       scale: new THREE.Vector3(1, 1, 1)
     },
     logo: {
-      x: 0,
-      y: 1.75,
+      x: -0.3,
+      y: 2,
       z: 0,
-      scale: new THREE.Vector3(1, 1, 1)
+      scale: new THREE.Vector3(0.8, 0.8, 0.8)
     },
     logoType: {
-      scale: new THREE.Vector3(1, 1, 1)
+      scale: new THREE.Vector3(0.8, 0.8, 0.8)
     }
   },
   // Vertical orientation of screen when CSS3D component is active
@@ -290,6 +290,7 @@ class Home extends Component {
     document.addEventListener("touchstart", this.onDocumentTouchStart, false);
     document.addEventListener("touchmove", this.onDocumentTouchMove, false);
     document.addEventListener("mousedown", this.onDocumentMouseDown, false);
+    window.addEventListener("wheel", this.onMouseWheel, false);
 
     this.initWater();
   };
@@ -1196,6 +1197,15 @@ class Home extends Component {
         waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(heightmapVariable).texture;
         gpuCompute.compute();
       }
+    }
+  };
+
+  onMouseWheel = event => {
+    if (this.state.show2D) {
+      event.preventDefault();
+      cssScene.position.y -= event.deltaY * 0.1;
+      // prevent scrolling beyond a min/max value
+      cssScene.position.clampScalar(-100, 100);
     }
   };
 
