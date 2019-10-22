@@ -36,7 +36,6 @@ class About extends Component {
                 <p
                   class="lead"
                   style={{
-                    textIndent: 25,
                     fontSize: textSize,
                     lineHeight: lineSpace,
                     textAlign: "justify",
