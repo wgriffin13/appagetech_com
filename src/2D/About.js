@@ -17,7 +17,9 @@ class About extends Component {
             style={{
               marginTop: marginTop,
               paddingLeft: paddingX,
-              paddingRight: paddingX
+              paddingRight: paddingX,
+              marginLeft: 0,
+              marginRight: 0
             }}
           >
             <div class="row justify-content-center">
@@ -28,7 +30,8 @@ class About extends Component {
                     fontSize: textSize,
                     lineHeight: lineSpace,
                     textAlign: "justify",
-                    marginBottom: 50
+                    marginBottom: 50,
+                    padding: 0
                   }}
                 >
                   <strong style={{ fontSize: strongTextSize }}>App Age Technologies </strong> produces software that
