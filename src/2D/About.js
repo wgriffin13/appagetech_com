@@ -3,7 +3,7 @@ import React, { Component, Fragment } from "react";
 class About extends Component {
   render() {
     const windowAspect = window.innerWidth / window.innerHeight;
-    const marginTop = windowAspect > 1 ? 350 : 1320;
+    const marginTop = windowAspect > 1 ? 350 : 1200;
     const textSize = windowAspect > 1 ? 20 : 24;
     const lineSpace = windowAspect > 1 ? 2 : 1.8;
     const paddingX = windowAspect > 1 ? 150 : 0;
@@ -31,7 +31,9 @@ class About extends Component {
                     lineHeight: lineSpace,
                     textAlign: "justify",
                     marginBottom: 50,
-                    padding: 0
+                    padding: 0,
+                    marginLeft: -15,
+                    marginRight: -15
                   }}
                 >
                   <strong style={{ fontSize: strongTextSize }}>App Age Technologies </strong> produces software that
@@ -53,7 +55,6 @@ class About extends Component {
                   <div class="column">
                     <div class="row justify-content-center">
                       <strong style={{ fontSize: strongTextSize }}>App Age Services </strong>
-                      {/* <h2 class="display-4 my-3">App Age Services</h2> */}
                     </div>
                     <div class="dropdown-divider mb-4"></div>
                     <div
@@ -90,7 +91,6 @@ class About extends Component {
                 <div class="row justify-content-center lead">
                   <div class="column">
                     <strong style={{ fontSize: strongTextSize }}>Engagement Models </strong>
-                    {/* <p class="display-4 my-3">Engagement Models</p> */}
                     <div class="dropdown-divider mb-4"></div>
                     <p>Fixed Price Contract</p>
                     <p>Hourly Development Work</p>

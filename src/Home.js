@@ -33,7 +33,6 @@ let zPosition2D = 215;
 let offScreenZPosition2D = 10000;
 let placementDirection = "horizontal";
 let touchEvent = false;
-var xDown = null;
 var yDown = null;
 
 const reactComponents = ["about", "contact", "projects", "client"];
@@ -292,8 +291,6 @@ class Home extends Component {
     window.addEventListener("resize", this.onWindowResize, false);
     document.addEventListener("mousemove", this.onDocumentMouseMove, false);
     document.addEventListener("touchstart", this.onTouchStartScrollable, false);
-    // document.addEventListener("touchmove", this.onDocumentTouchMove, false);
-    // document.addEventListener("touchMove", this.onTouchMoveScrollable, false);
     document.addEventListener("mousedown", this.onDocumentMouseDown, false);
     window.addEventListener("wheel", this.onMouseWheel, false);
 
@@ -1210,7 +1207,6 @@ class Home extends Component {
 
   onMouseWheel = event => {
     if (this.state.location === "about") {
-      // event.preventDefault();
       cssScene.position.y -= event.deltaY * 0.1;
       // prevent scrolling beyond a min/max value
       cssScene.position.clampScalar(-5, 100);
@@ -1252,11 +1248,9 @@ class Home extends Component {
     this.setMouseCoords(event.clientX, event.clientY);
   };
 
-  // set up touchStart event handler
   onTouchStartScrollable = event => {
-    // listen to when the user moves finger
     document.addEventListener("touchmove", this.onTouchMoveScrollable, false);
-    // add listener to when touch end occurs
+
     document.addEventListener("touchend", this.onTouchEndScrollable, false);
 
     if (this.state.location === "about") {
@@ -1282,9 +1276,9 @@ class Home extends Component {
       }
     }
   };
-  // when the user swipes, update element positions to swipe
+
   onTouchMoveScrollable = event => {
-    // ... do your scrolling heventre
+    // ... scrolling logic here
     if (this.state.location === "about") {
       var yUp = event.touches[0].clientY;
       var yDiff = yDown - yUp;
@@ -1292,92 +1286,12 @@ class Home extends Component {
       cssScene.position.clampScalar(-5, 200);
     }
   };
-  // this is what is executed when the user stops the movement
+
   onTouchEndScrollable = e => {
-    // clean up event listeners
     document.removeEventListener("touchmove", this.onTouchMoveScrollable);
     document.removeEventListener("touchend", this.onTouchEndScrollable);
   };
 
-  // scrollable.addEventListener("touchStart", onTouchStartScrollable);
-
-  // onDocumentTouchStart = (event, onDocumentTouchMove, onDocumentTouchEnd) => {
-  //   if (this.state.location === "about") {
-  //     // xDown = event.touches[0].clientX;
-  //     yDown = event.touches[0].clientY;
-
-  //     onDocumentTouchMove = event => {
-  //       // var xUp = event.touches[0].clientX;
-  //       var yUp = event.touches[0].clientY;
-  //       // var xDiff = xDown - xUp;
-  //       var yDiff = yDown - yUp;
-  //       cssScene.position.y += yDiff * 0.3;
-  //       cssScene.position.clampScalar(-5, 100);
-  //     };
-  //     onDocumentTouchEnd = event => {};
-  //   }
-
-  //   if (event.touches.length === 1) {
-  //     // Assumes that click and mouse down will both be called by the browser
-  //     this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
-
-  //     if (logo && about && contact && projects && client) {
-  //       raycaster.setFromCamera(mouseCoords, camera);
-  //       const intersectButtonsMd = raycaster.intersectObjects([logo, about, contact, projects, client]);
-  //       if (intersectButtonsMd.length > 0) {
-  //         if (intersectButtonsMd[0].object.callback) {
-  //           camera.position.x = 0;
-  //           mouseCoords.set(0, 0);
-  //           intersectButtonsMd[0].object.callback();
-  //         }
-  //       }
-  //       touchEvent = true;
-  //     }
-  //   }
-  // };
-
-  // onDocumentTouchMove = event => {
-  //   event.preventDefault();
-
-  //   if (this.state.location === "about") {
-  //     // if (!yDown || !xDown) {
-  //     //   return;
-  //     // }
-  //     // var xUp = event.touches[0].clientX;
-  //     var yUp = event.touches[0].clientY;
-  //     // var xDiff = xDown - xUp;
-  //     var yDiff = yDown - yUp;
-  //     cssScene.position.y += yDiff * 0.3;
-  //     cssScene.position.clampScalar(-5, 100);
-
-  //     // if (Math.abs(xDiff) > Math.abs(yDiff)) {
-  //     //   /*most significant*/
-  //     //   if (xDiff > 0) {
-  //     //     /* left swipe */
-  //     //   } else {
-  //     //     /* right swipe */
-  //     //   }
-  //     // } else {
-  //     //   if (yDiff > 0) {
-  //     //     /* up swipe */
-  //     //     cssScene.position.y -= yDiff * 0.01;
-  //     //     // prevent scrolling beyond a min/max value
-  //     //     // cssScene.position.clampScalar(-500, 500);
-  //     //   } else {
-  //     //     /* down swipe */
-  //     //     cssScene.position.y += yDiff * 0.01;
-  //     //     // cssScene.position.clampScalar(-5, 50);
-  //     //   }
-  //     // }
-  //     /* reset values */
-  //     // xDown = null;
-  //     // yDown = null;
-  //   }
-
-  //   if (event.touches.length === 1) {
-  //     this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
-  //   }
-  // };
   componentWillUnmount() {
     window.removeEventListener("resize", this.onWindowResize);
   }

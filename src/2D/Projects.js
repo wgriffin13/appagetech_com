@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-// import Row from "react-bootstrap/Row";
-// import Container from "react-bootstrap/Container";
-// import Col from "react-bootstrap/Col";
 import Carousel from "react-bootstrap/Carousel";
 import BerlandDetail from "./BerlandDetail";
 import TodaysIposDetail from "./TodaysIposDetail";
