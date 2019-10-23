@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Form from "react-bootstrap/Form";
 
 const windowAspect = window.innerWidth / window.innerHeight;
-const variableMarginTop = windowAspect > 1 ? -300 : 240;
+const variableMarginTop = windowAspect > 1 ? -300 : -350;
 
 class Client extends Component {
   render() {

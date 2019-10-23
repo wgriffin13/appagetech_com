@@ -56,7 +56,7 @@ class Projects extends Component {
 
     const variableWidth = windowAspect > 1 ? 450 : 420;
 
-    const variableMarginTop = windowAspect > 1 ? -300 : 240;
+    const variableMarginTop = windowAspect > 1 ? -300 : 0;
 
     const overlayIndex = !this.state.isHovered ? undefined : 0;
 

@@ -3,25 +3,14 @@ import React, { Component, Fragment } from "react";
 class About extends Component {
   render() {
     const windowAspect = window.innerWidth / window.innerHeight;
-    const marginTop = windowAspect > 1 ? 350 : 650;
+    const marginTop = windowAspect > 1 ? 350 : 1320;
     const textSize = windowAspect > 1 ? 20 : 24;
     const lineSpace = windowAspect > 1 ? 2 : 1.8;
     const paddingX = windowAspect > 1 ? 150 : 0;
+    const strongTextSize = windowAspect > 1 ? 42 : 36;
 
     return (
       <Fragment>
-        {/* <div
-          style={{
-            height: "500px",
-            width: "100%",
-            background: "red",
-            // background: "linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0))",
-            position: "sticky",
-            top: 0,
-            zIndex: 100
-          }}
-        ></div> */}
-
         <div class="container d-flex">
           <div
             class="column"
@@ -42,29 +31,30 @@ class About extends Component {
                     marginBottom: 50
                   }}
                 >
-                  <strong style={{ fontSize: 42 }}>App Age Technologies </strong> produces software that informs,
-                  entertains, solves problems and enriches lives. Co-founders William Griffin and Preston Chaplin bring
-                  unique and impressive professional experiences to this vanguard software development company. Decades
-                  of experience in digital imaging and high-profile advertising production provides assurance that your
-                  brand will be presented in the best possible light via App Age software. Extensive experience
-                  manipulating highly technical data for the financial industry and providing financial consulting for
-                  businesses big and small ensures that App Age can tackle complex technical challenges and advise
-                  clients of any size on the best paths to success. From microsites to distributed mobile apps, we’re
-                  software developers devoted to delivering success in surprising ways.
+                  <strong style={{ fontSize: strongTextSize }}>App Age Technologies </strong> produces software that
+                  informs, entertains, solves problems and enriches lives. Co-founders William Griffin and Preston
+                  Chaplin bring unique and impressive professional experiences to this vanguard software development
+                  company. Decades of experience in digital imaging and high-profile advertising production provides
+                  assurance that your brand will be presented in the best possible light via App Age software. Extensive
+                  experience manipulating highly technical data for the financial industry and providing financial
+                  consulting for businesses big and small ensures that App Age can tackle complex technical challenges
+                  and advise clients of any size on the best paths to success. From microsites to distributed mobile
+                  apps, we’re software developers devoted to delivering success in surprising ways.
                 </p>
               </div>
             </div>
 
             <div class="row justify-content-center" style={{ textSize: textSize, marginBottom: 50 }}>
               <div class="jumbotron-fluid">
-                <div class="row justify-content-center">
+                <div class="row justify-content-center lead">
                   <div class="column">
                     <div class="row justify-content-center">
-                      <h2 class="display-4 my-3">App Age Services</h2>
+                      <strong style={{ fontSize: strongTextSize }}>App Age Services </strong>
+                      {/* <h2 class="display-4 my-3">App Age Services</h2> */}
                     </div>
                     <div class="dropdown-divider mb-4"></div>
                     <div
-                      class="row lead"
+                      class="row "
                       style={{
                         fontSize: textSize
                       }}
@@ -96,7 +86,8 @@ class About extends Component {
               <div class="jumbotron-fluid">
                 <div class="row justify-content-center lead">
                   <div class="column">
-                    <p class="display-4 my-3">Engagement Models</p>
+                    <strong style={{ fontSize: strongTextSize }}>Engagement Models </strong>
+                    {/* <p class="display-4 my-3">Engagement Models</p> */}
                     <div class="dropdown-divider mb-4"></div>
                     <p>Fixed Price Contract</p>
                     <p>Hourly Development Work</p>

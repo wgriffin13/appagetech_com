@@ -33,6 +33,8 @@ let zPosition2D = 215;
 let offScreenZPosition2D = 10000;
 let placementDirection = "horizontal";
 let touchEvent = false;
+var xDown = null;
+var yDown = null;
 
 const reactComponents = ["about", "contact", "projects", "client"];
 const reactComponentsObj = {};
@@ -222,19 +224,19 @@ class Home extends Component {
     return glRenderer;
   };
 
-  createCssRenderer = () => {
+  createCssRenderer = offsetTop => {
     var cssRenderer = new CSS3DRenderer();
     cssRenderer.setSize(window.innerWidth, window.innerHeight);
     cssRenderer.domElement.style.position = "fixed";
     cssRenderer.domElement.style.zIndex = -1;
-    cssRenderer.domElement.style.top = "150px";
+    cssRenderer.domElement.style.top = offsetTop;
     return cssRenderer;
   };
 
   createPlane = (w, h, position, rotation) => {
     var material = new THREE.MeshBasicMaterial({
       color: 0x000000,
-      opacity: 0.0,
+      opacity: 0,
       side: THREE.DoubleSide
     });
 
@@ -263,7 +265,9 @@ class Home extends Component {
     camera.position.set(0, 0, 224);
     camera.lookAt(0, 0, 0);
     glRenderer = this.createGlRenderer();
-    cssRenderer = this.createCssRenderer();
+    const windowAspect = window.innerWidth / window.innerHeight;
+    const offsetTopCssPosition = windowAspect > 1 ? "150px" : "115px";
+    cssRenderer = this.createCssRenderer(offsetTopCssPosition);
     container = document.createElement("div");
     document.body.appendChild(container);
     container.appendChild(glRenderer.domElement);
@@ -382,6 +386,7 @@ class Home extends Component {
         new THREE.Vector3(0, 0, 210),
         new THREE.Vector3(0, 0, 0)
       );
+
       glScene.add(plane);
       cssRenderer.domElement.style.zIndex = 0;
       // Pushes location to URL bar
@@ -1247,6 +1252,10 @@ class Home extends Component {
   };
 
   onDocumentTouchStart = event => {
+    if (this.state.location === "about") {
+      // xDown = event.touches[0].clientX;
+      yDown = event.touches[0].clientY;
+    }
     if (event.touches.length === 1) {
       // Assumes that click and mouse down will both be called by the browser
       this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
@@ -1266,8 +1275,44 @@ class Home extends Component {
   };
 
   onDocumentTouchMove = event => {
+    event.preventDefault();
+
+    if (this.state.location === "about") {
+      // if (!yDown || !xDown) {
+      //   return;
+      // }
+      // var xUp = event.touches[0].clientX;
+      var yUp = event.touches[0].clientY;
+      // var xDiff = xDown - xUp;
+      var yDiff = yDown - yUp;
+      cssScene.position.y += yDiff * 0.3;
+      cssScene.position.clampScalar(-5, 100);
+
+      // if (Math.abs(xDiff) > Math.abs(yDiff)) {
+      //   /*most significant*/
+      //   if (xDiff > 0) {
+      //     /* left swipe */
+      //   } else {
+      //     /* right swipe */
+      //   }
+      // } else {
+      //   if (yDiff > 0) {
+      //     /* up swipe */
+      //     cssScene.position.y -= yDiff * 0.01;
+      //     // prevent scrolling beyond a min/max value
+      //     // cssScene.position.clampScalar(-500, 500);
+      //   } else {
+      //     /* down swipe */
+      //     cssScene.position.y += yDiff * 0.01;
+      //     // cssScene.position.clampScalar(-5, 50);
+      //   }
+      // }
+      /* reset values */
+      // xDown = null;
+      // yDown = null;
+    }
+
     if (event.touches.length === 1) {
-      event.preventDefault();
       this.setMouseCoords(event.touches[0].pageX, event.touches[0].pageY);
     }
   };
