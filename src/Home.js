@@ -34,6 +34,7 @@ let offScreenZPosition2D = 10000;
 let placementDirection = "horizontal";
 let touchEvent = false;
 var yDown = null;
+const windowAspect = window.innerWidth / window.innerHeight;
 
 const reactComponents = ["about", "contact", "projects", "client"];
 const reactComponentsObj = {};
@@ -264,7 +265,6 @@ class Home extends Component {
     camera.position.set(0, 0, 224);
     camera.lookAt(0, 0, 0);
     glRenderer = this.createGlRenderer();
-    const windowAspect = window.innerWidth / window.innerHeight;
     const offsetTopCssPosition = windowAspect > 1 ? "150px" : "115px";
     cssRenderer = this.createCssRenderer(offsetTopCssPosition);
     container = document.createElement("div");
@@ -1047,7 +1047,7 @@ class Home extends Component {
       glRenderer.render(glScene, camera);
       cssRenderer.render(cssScene, camera);
 
-      if (!this.state.show2D) {
+      if (!this.state.show2D && windowAspect > 1) {
         camera.position.x += (mouseCoords.x - camera.position.x) * 0.05;
         // camera.position.y += (-mouseCoords.y - camera.position.y) * 0.05;
         camera.lookAt(glScene.position);
