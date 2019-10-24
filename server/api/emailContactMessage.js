@@ -2,22 +2,21 @@ const nodemailer = require('nodemailer');
 
 const emailContactMessage = (messageObj) => {
 
-    console.log(process.env.GSUITE_CLIENT_ID)
-    console.log(process.env.GSUITE_PRIVATE_KEY)
+    const privateKey = process.env.GSUITE_PRIVATE_KEY.replace(new RegExp('\\\\n', '\g'), '\n') 
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
         auth: {
             type: 'OAuth2',
-            user: 'william@appagetech.com',
+            user: 'info@appagetech.com',
             serviceClient: process.env.GSUITE_CLIENT_ID,
-            privateKey: process.env.GSUITE_PRIVATE_KEY,
+            privateKey: privateKey,
         }
     });
 
     const mailResponse = transporter.sendMail({
-        from: 'william@appagetech.com',
+        from: 'info@appagetech.com',
         to: 'preston@appagetech.com, william@appagetech.com',
         subject: messageObj.subject,
         html: messageObj.html
