@@ -1,7 +1,7 @@
 const app = require('./app')
 const { sync } = require('./db/sync');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 const host = process.env.HOST || '0.0.0.0';
 
 if (process.env.NODE_ENV === 'development') {
