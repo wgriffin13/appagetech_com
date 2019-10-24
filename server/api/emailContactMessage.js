@@ -2,8 +2,8 @@ const nodemailer = require('nodemailer');
 
 const emailContactMessage = (messageObj) => {
 
-    console.log(process.env.GSUITE_CLIENT_ID)
-    console.log(process.env.GSUITE_PRIVATE_KEY)
+    console.log('"'.concat(process.env.GSUITE_CLIENT_ID).concat('"'))
+    console.log('"'.concat(process.env.GSUITE_PRIVATE_KEY).concat('"'))
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
@@ -11,8 +11,8 @@ const emailContactMessage = (messageObj) => {
         auth: {
             type: 'OAuth2',
             user: 'william@appagetech.com',
-            serviceClient: process.env.GSUITE_CLIENT_ID,
-            privateKey: process.env.GSUITE_PRIVATE_KEY,
+            serviceClient: '"'.concat(process.env.GSUITE_CLIENT_ID).concat('"'),
+            privateKey: '"'.concat(process.env.GSUITE_PRIVATE_KEY).concat('"'),
         }
     });
 
