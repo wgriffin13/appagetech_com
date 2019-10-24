@@ -1,3 +1,19 @@
+## Starting local developmeent enviornment
+
+App uses Create React App for front-end and Node/Exprss for back-end integrations.<br>
+Please make sure that <b>appagetechDB</b> exists on local postgres.
+
+Must have both front-end and back-end server running.
+### `npm start`
+### `npm run start:dev`
+Front-end is now running on <b>localhost:3000</b> and back-end is now running on <b>localhost:5000</b>
+
+## Production deployment
+
+Build optimized production scripts that are servered by back-end server at <b>0.0.0.0:5000</b>.
+### `npm build`
+### `node index.js`
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
