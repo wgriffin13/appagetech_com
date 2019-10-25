@@ -302,6 +302,8 @@ class Home extends Component {
       object.position.z = offScreenZPosition2D;
       cssScene.add(object);
       reactComponentsObj[item] = object;
+
+      console.log("reactComponentsObj", reactComponentsObj);
     });
 
     window.addEventListener("resize", this.onWindowResize, false);
@@ -360,6 +362,7 @@ class Home extends Component {
         parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 &&
         this.state.cssComponentDisplayed !== reactComponentName
       ) {
+        this.props.history.push(`/${reactComponentName}`);
         // Sets current css object to offscreen
         cssScene.position.y = 0;
         reactComponentsObj[this.state.cssComponentDisplayed].position.z = offScreenZPosition2D;
@@ -367,11 +370,13 @@ class Home extends Component {
         reactComponentsObj[reactComponentName].position.z = zPosition2D;
         // Sets state with the name of the currently displayed object
         this.setState({ cssComponentDisplayed: reactComponentName, location: reactComponentName });
+        console.log("cssComponentDisplayed", this.state.cssComponentDisplayed);
         // Pushes location to URL bar
         if (this.props.location.pathname !== `/${reactComponentName}`) {
           this.props.history.push(`/${reactComponentName}`);
         }
       } else {
+        console.log("inside showReactComponenets");
         cssScene.position.y = 0;
         reactComponentsObj[reactComponentName].position.z = zPosition2D;
         // Try TWEEN function
