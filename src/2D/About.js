@@ -8,7 +8,6 @@ class About extends Component {
     const lineSpace = windowAspect > 1 ? 2 : 1.8;
     const paddingX = windowAspect > 1 ? 150 : 0;
     const strongTextSize = windowAspect > 1 ? 42 : 36;
-
     return (
       <Fragment>
         <div class="container d-flex">
@@ -23,7 +22,7 @@ class About extends Component {
             }}
           >
             <div class="row justify-content-center">
-              <div class="jumbotron-fluid" style={{ backgroundColor: "white" }}>
+              <div class="jumbotron-fluid">
                 <p
                   class="lead"
                   style={{
