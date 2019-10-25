@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+// import desktopImage from "./AboutBG01.svg";
 
 class About extends Component {
   render() {
@@ -8,10 +9,19 @@ class About extends Component {
     const lineSpace = windowAspect > 1 ? 2 : 1.8;
     const paddingX = windowAspect > 1 ? 150 : 0;
     const strongTextSize = windowAspect > 1 ? 42 : 36;
-
+    // const imageUrl = window.innerWidth >= 650 ? desktopImage : mobileImage;
     return (
       <Fragment>
-        <div class="container d-flex">
+        <div
+          class="container d-flex"
+          // style={{
+          //   backgroundImage: `url(${desktopImage})`,
+          //   height: "100vh",
+          //   backgroundSize: "cover",
+          //   backgroundRepeat: "no-repeat",
+          //   backgroundPosition: "top center"
+          // }}
+        >
           <div
             class="column"
             style={{
@@ -23,7 +33,8 @@ class About extends Component {
             }}
           >
             <div class="row justify-content-center">
-              <div class="jumbotron-fluid" style={{ backgroundColor: "white" }}>
+              <div class="jumbotron-fluid">
+                {/* <div class="jumbotron-fluid" style={{ backgroundColor: "white" }}> */}
                 <p
                   class="lead"
                   style={{

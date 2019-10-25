@@ -219,6 +219,7 @@ class Home extends Component {
     glRenderer.setClearColor(0xecf8ff, 1);
     glRenderer.setPixelRatio(window.devicePixelRatio);
     glRenderer.setSize(window.innerWidth, window.innerHeight);
+    // glRenderer.antialias = true;
     glRenderer.domElement.style.position = "absolute";
     glRenderer.domElement.style.top = 0;
     return glRenderer;
@@ -227,20 +228,28 @@ class Home extends Component {
   createCssRenderer = offsetTop => {
     var cssRenderer = new CSS3DRenderer();
     cssRenderer.setSize(window.innerWidth, window.innerHeight);
+    // cssRenderer.antialias = true;
     cssRenderer.domElement.style.position = "fixed";
     cssRenderer.domElement.style.zIndex = -1;
     cssRenderer.domElement.style.top = offsetTop;
+    // console.log("cssRenderer Size: ", cssRenderer.getSize());
     return cssRenderer;
   };
 
   createPlane = (w, h, position, rotation) => {
+    // ** add background image texture ** //
+    const bgTexture = new THREE.TextureLoader().load("/images/AboutBG7.png");
+    bgTexture.wrapT = bgTexture.wrapS = THREE.MirroredRepeatWrapping;
+    bgTexture.repeat.set(windowAspect > 1 ? 198 : 80, windowAspect > 1 ? 198 : 80);
+    bgTexture.offset.x = 0.5;
+    bgTexture.offset.y = 0.5;
+
     var material = new THREE.MeshBasicMaterial({
-      color: 0x000000,
-      opacity: 0,
-      side: THREE.DoubleSide
+      map: bgTexture
     });
 
     var geometry = new THREE.PlaneGeometry(w, h);
+
     var mesh = new THREE.Mesh(geometry, material);
     mesh.position.x = position.x;
     mesh.position.y = position.y;
@@ -381,7 +390,7 @@ class Home extends Component {
       plane = this.createPlane(
         window.innerWidth,
         window.innerHeight,
-        new THREE.Vector3(0, 0, 210),
+        new THREE.Vector3(0, 0, 214),
         new THREE.Vector3(0, 0, 0)
       );
 
