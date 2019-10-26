@@ -281,7 +281,7 @@ class Home extends Component {
     camera.position.set(0, 0, 224);
     camera.lookAt(0, 0, 0);
     glRenderer = this.createGlRenderer();
-    const offsetTopCssPosition = windowAspect > 1 ? "150px" : "115px";
+    const offsetTopCssPosition = windowAspect > 1 ? "185px" : "115px";
     cssRenderer = this.createCssRenderer(offsetTopCssPosition);
     container = document.createElement("div");
     document.body.appendChild(container);

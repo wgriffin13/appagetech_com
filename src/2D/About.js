@@ -5,60 +5,61 @@ const Modal = posed.div({
   enter: {
     y: 0,
     opacity: 1,
-    delay: 300,
+    delay: 1000,
     transition: {
-      y: { type: "spring", stiffness: 1000, damping: 15 },
-      default: { duration: 300 }
+      y: { type: "spring", stiffness: 1200, damping: 15 },
+      default: { duration: 1000 }
     }
   },
   exit: {
-    y: 50,
+    y: 100,
     opacity: 0,
     transition: { duration: 150 }
   }
 });
 
-// const Shade = posed.div({
-//   enter: { opacity: 1 },
-//   exit: { opacity: 0 }
-// });
+const Sidebar = posed.ul({
+  open: {
+    x: "0%",
+    delayChildren: 20,
+    staggerChildren: 200
+  },
+  closed: { x: "-500%", delay: 30 }
+});
+
+const Item = posed.li({
+  open: { y: 0, opacity: 1 },
+  closed: { y: 40, opacity: 0 }
+});
 
 class About extends Component {
   constructor(props) {
     super(props);
+    this.state = { isVisible: false, isOpen: false };
   }
-  state = { isVisible: false };
 
   componentDidMount() {
-    // console.log("this.props.history", this.props.history);
-    // console.log("document.location", document.location);
-    // console.log("this.props", this.props);
-
     setTimeout(() => {
       this.setState({
         isVisible: !this.state.isVisible
       });
-    }, 1000);
+    }, 300);
     clearTimeout();
+    setTimeout(this.toggle, 2300);
   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   console.log("prevProps", prevProps);
-  //   console.log("prevState", prevState);
-  //   if (prevProps.location.pathname !== "/about") {
-  //     this.props.history.push("/about");
-  //   }
-  // }
+
+  toggle = () => this.setState({ isOpen: !this.state.isOpen });
 
   render() {
     const windowAspect = window.innerWidth / window.innerHeight;
-    const marginTop = windowAspect > 1 ? 380 : 1200;
+    const marginTop = windowAspect > 1 ? 50 : 1200;
     const textSize = windowAspect > 1 ? 20 : 24;
-    const lineSpace = windowAspect > 1 ? 2 : 1.8;
-    const paddingX = windowAspect > 1 ? 150 : 0;
+    const lineSpace = windowAspect > 1 ? 2.3 : 1.8;
+    const paddingX = windowAspect > 1 ? 50 : 0;
     const strongTextSize = windowAspect > 1 ? 42 : 36;
 
-    const { isVisible } = this.state;
-    console.log("about rendered!");
+    const { isVisible, isOpen } = this.state;
+
     return (
       <Fragment>
         <PoseGroup>
@@ -68,12 +69,13 @@ class About extends Component {
             <Modal
               key="modal"
               style={{
-                // position: "absolute",
-                width: "900px",
-                height: "1200px",
-                // background: "white",
-                borderRadius: "10px",
-                marginTop: marginTop
+                width: "64vw",
+                height: "90vh",
+                // borderRadius: "20px",
+                marginTop: marginTop,
+                paddingLeft: paddingX,
+                paddingRight: paddingX,
+                paddingTop: 0
               }}
             >
               <p
@@ -82,69 +84,64 @@ class About extends Component {
                   fontSize: textSize,
                   lineHeight: lineSpace,
                   textAlign: "justify",
-                  marginBottom: 50,
-                  padding: 0,
-                  marginLeft: -15,
-                  marginRight: -15
+                  marginBottom: 30
                 }}
               >
-                <strong style={{ fontSize: strongTextSize }}>App Age Technologies </strong> produces software that
-                informs, entertains, solves problems and enriches lives. Co-founders William Griffin and Preston Chaplin
-                bring unique and impressive professional experiences to this vanguard software development company.
-                Decades of experience in digital imaging and high-profile advertising production provides assurance that
-                your brand will be presented in the best possible light via App Age software. Extensive experience
-                manipulating highly technical data for the financial industry and providing financial consulting for
-                businesses big and small ensures that App Age can tackle complex technical challenges and advise clients
-                of any size on the best paths to success. From microsites to distributed mobile apps, we’re software
-                developers devoted to delivering success in surprising ways.
+                <span style={{ fontSize: strongTextSize, lineHeight: 1 }}>App Age Technologies </span>
+                produces software that informs, entertains, solves problems and enriches lives. Co-founders William
+                Griffin and Preston Chaplin bring unique and impressive professional experiences to this vanguard
+                software development company. Decades of experience in digital imaging and high-profile advertising
+                production provides assurance that your brand will be presented in the best possible light via App Age
+                software. Extensive experience manipulating highly technical data for the financial industry and
+                providing financial consulting for businesses big and small ensures that App Age can tackle complex
+                technical challenges and advise clients of any size on the best paths to success. From microsites to
+                distributed mobile apps, we’re software developers devoted to delivering success in surprising ways.
               </p>
-              {/* </div>
-                </div> */}
+              <div className="row justify-content-center">
+                <div className="column">
+                  <Sidebar
+                    style={{
+                      padding: "10px",
+                      display: "flex",
+                      flexDirection: "column",
+                      listStyle: "none"
+                    }}
+                    pose={isOpen ? "open" : "closed"}
+                  >
+                    <h3>Services</h3>
 
-              <div class="row justify-content-center" style={{ textSize: textSize, marginBottom: 50 }}>
-                <div class="row justify-content-center lead">
-                  <div class="column">
-                    <div class="row justify-content-center">
-                      <strong style={{ fontSize: strongTextSize }}>App Age Services </strong>
-                    </div>
-                    <div class="dropdown-divider mb-4"></div>
-                    <div
-                      class="row "
-                      style={{
-                        fontSize: textSize
-                      }}
-                    >
-                      <div class="column mr-5">
-                        <p>Web Development</p>
-                        <p>iOS Development</p>
-                        <p>Android Development</p>
-                        <p>Tech Product Design</p>
-                        <p>Frontend Web Creation</p>
-                        <p>Backend Engineering </p>
-                      </div>
-                      <div class="column">
-                        <p>Cloud services</p>
-                        <p>Process Automation</p>
-                        <p>Web Animations</p>
-                        <p>Interactive 3D Elements</p>
-                        <p>Computer Generated 3D Imaging</p>
-                        <p>Photo Retouching</p>
-                      </div>
-                    </div>
-                  </div>
+                    <Item className="item">Web Development</Item>
+                    <Item className="item">iOS Development</Item>
+                    <Item className="item">Android Development</Item>
+                    <Item className="item">Tech Product Design</Item>
+                    <Item className="item">Frontend Web Creation</Item>
+                    <Item className="item">Backend Engineering</Item>
+                    <Item className="item">Cloud services</Item>
+                    <Item className="item">Process Automation</Item>
+                    <Item className="item">Web Animations</Item>
+                    <Item className="item">Interactive 3D Elements</Item>
+                    <Item className="item">Computer Generated 3D Imaging</Item>
+                    <Item className="item">Photo Retouching</Item>
+                    <Item className="item">Photography</Item>
+                  </Sidebar>
                 </div>
-              </div>
+                <div className="column">
+                  <Sidebar
+                    style={{
+                      padding: "10px",
+                      display: "flex",
+                      flexDirection: "column",
+                      listStyle: "none"
+                    }}
+                    pose={isOpen ? "open" : "closed"}
+                  >
+                    <h3>Engagment Models</h3>
 
-              <div class="row justify-content-center" style={{ textSize: textSize }}>
-                <div class="row justify-content-center lead">
-                  <div class="column">
-                    <strong style={{ fontSize: strongTextSize }}>Engagement Models </strong>
-                    <div class="dropdown-divider mb-4"></div>
-                    <p>Fixed Price Contract</p>
-                    <p>Hourly Development Work</p>
-                    <p>Equity Based Partnerships</p>
-                    <p>Project Specific Consulting</p>
-                  </div>
+                    <Item className="item">Fixed Price Contract</Item>
+                    <Item className="item">Hourly Development Work</Item>
+                    <Item className="item">Equity Based Partnerships</Item>
+                    <Item className="item">Project Specific Consulting</Item>
+                  </Sidebar>
                 </div>
               </div>
             </Modal>
