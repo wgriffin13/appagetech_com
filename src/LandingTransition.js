@@ -10,7 +10,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   let touchEvent = false;
-
+  let mouseMoved = false;
   // Scene & Camera
   this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.25, 20);
   this.camera.position.z = 7.5;
@@ -91,17 +91,29 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
   this.removeLandingMouseDown = () => {
     document.removeEventListener("mousedown", onDocumentMouseDown, false);
     document.removeEventListener("touchstart", onDocumentTouchStart, false);
+    document.removeEventListener("mousemove", onDocumentMouseMove, false);
   };
 
   this.addLandingMouseDown = () => {
     document.addEventListener("mousedown", onDocumentMouseDown, false);
     document.addEventListener("touchstart", onDocumentTouchStart, false);
+    document.addEventListener("mousemove", onDocumentMouseMove, false);
+  };
+
+  const setMouseCoords = (x, y) => {
+    mouse.set((x / renderer.domElement.clientWidth) * 2 - 1, -(y / renderer.domElement.clientHeight) * 2 + 1);
+    mouseMoved = true;
+  };
+
+  const onDocumentMouseMove = event => {
+    event.preventDefault();
+    setMouseCoords(event.clientX, event.clientY);
   };
 
   const onDocumentMouseDown = event => {
     // Does not use event.preventDefault(), manually handles touch events
     if (touchEvent === false) {
-      console.log("Mouse click called");
+      // console.log("Mouse click called");
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(mouse, this.camera);
@@ -149,7 +161,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
       var starVertex = new THREE.Vector3();
       starVertex.x = Math.random() * 200 - 100;
       starVertex.y = Math.random() * 200 - 100;
-      starVertex.z = Math.random() * 100 - 100;
+      starVertex.z = Math.random() * 100 - 105;
 
       starGeometry.vertices.push(starVertex);
     }

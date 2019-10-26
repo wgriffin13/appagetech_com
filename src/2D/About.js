@@ -56,6 +56,12 @@ class About extends Component {
     }, 300);
     setTimeout(this.toggle, 2300);
   }
+  componentDidUpdate() {
+    console.log("this.props", this.props);
+    // if (this.props.location.pathname !== `/about`) {
+    //   this.props.history.push(`/about`);
+    // }
+  }
 
   toggle = () => this.setState({ isOpen: !this.state.isOpen });
 
