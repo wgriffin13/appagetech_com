@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import posed, { PoseGroup } from "react-pose";
+import SplitText from "react-pose-text";
 
 const Modal = posed.div({
   enter: {
@@ -7,7 +8,7 @@ const Modal = posed.div({
     opacity: 1,
     delay: 1000,
     transition: {
-      y: { type: "spring", stiffness: 1200, damping: 15 },
+      y: { type: "spring", stiffness: 1000, damping: 15 },
       default: { duration: 1000 }
     }
   },
@@ -32,6 +33,15 @@ const Item = posed.li({
   closed: { y: 40, opacity: 0 }
 });
 
+const charPoses = {
+  exit: { opacity: 0, y: 20 },
+  enter: {
+    opacity: 1,
+    y: 0,
+    delay: ({ charIndex }) => charIndex * 100
+  }
+};
+
 class About extends Component {
   constructor(props) {
     super(props);
@@ -44,7 +54,6 @@ class About extends Component {
         isVisible: !this.state.isVisible
       });
     }, 300);
-    clearTimeout();
     setTimeout(this.toggle, 2300);
   }
 
@@ -56,7 +65,7 @@ class About extends Component {
     const textSize = windowAspect > 1 ? 20 : 24;
     const lineSpace = windowAspect > 1 ? 2.3 : 1.8;
     const paddingX = windowAspect > 1 ? 50 : 0;
-    const strongTextSize = windowAspect > 1 ? 42 : 36;
+    const strongTextSize = windowAspect > 1 ? 36 : 36;
 
     const { isVisible, isOpen } = this.state;
 
@@ -71,7 +80,6 @@ class About extends Component {
               style={{
                 width: "64vw",
                 height: "90vh",
-                // borderRadius: "20px",
                 marginTop: marginTop,
                 paddingLeft: paddingX,
                 paddingRight: paddingX,
@@ -87,7 +95,11 @@ class About extends Component {
                   marginBottom: 30
                 }}
               >
-                <span style={{ fontSize: strongTextSize, lineHeight: 1 }}>App Age Technologies </span>
+                <span style={{ lineHeight: 1, fontSize: strongTextSize, fontWeight: 700, marginRight: 10 }}>
+                  <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
+                    App Age Technologies
+                  </SplitText>
+                </span>
                 produces software that informs, entertains, solves problems and enriches lives. Co-founders William
                 Griffin and Preston Chaplin bring unique and impressive professional experiences to this vanguard
                 software development company. Decades of experience in digital imaging and high-profile advertising
@@ -108,21 +120,28 @@ class About extends Component {
                     }}
                     pose={isOpen ? "open" : "closed"}
                   >
-                    <h3>Services</h3>
-
-                    <Item className="item">Web Development</Item>
-                    <Item className="item">iOS Development</Item>
-                    <Item className="item">Android Development</Item>
-                    <Item className="item">Tech Product Design</Item>
-                    <Item className="item">Frontend Web Creation</Item>
-                    <Item className="item">Backend Engineering</Item>
-                    <Item className="item">Cloud services</Item>
-                    <Item className="item">Process Automation</Item>
-                    <Item className="item">Web Animations</Item>
-                    <Item className="item">Interactive 3D Elements</Item>
-                    <Item className="item">Computer Generated 3D Imaging</Item>
-                    <Item className="item">Photo Retouching</Item>
-                    <Item className="item">Photography</Item>
+                    <div className="row justify-content-center">
+                      <div className="column mr-5">
+                        <h3>Services</h3>
+                        <div className="row justify-content-center">
+                          <div className="column">
+                            <Item className="item">Web Development</Item>
+                            <Item className="item">iOS Development</Item>
+                            <Item className="item">Android Development</Item>
+                            <Item className="item">Tech Product Design</Item>
+                            <Item className="item">Frontend Web Creation</Item>
+                            <Item className="item">Backend Engineering</Item>
+                            <Item className="item">Cloud services</Item>
+                            <Item className="item">Process Automation</Item>
+                            <Item className="item">Web Animations</Item>
+                            <Item className="item">Interactive 3D Elements</Item>
+                            <Item className="item">Computer Generated 3D Imaging</Item>
+                            <Item className="item">Photo Retouching</Item>
+                            <Item className="item">Photography</Item>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </Sidebar>
                 </div>
                 <div className="column">
