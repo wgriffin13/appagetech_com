@@ -53,8 +53,8 @@ class About extends Component {
       this.setState({
         isVisible: !this.state.isVisible
       });
-    }, 300);
-    setTimeout(this.toggle, 2300);
+    }, 500);
+    setTimeout(this.toggle, 2800);
   }
   componentDidUpdate() {
     console.log("this.props", this.props);
@@ -92,31 +92,34 @@ class About extends Component {
                 paddingTop: 0
               }}
             >
-              <p
-                class="lead"
-                style={{
-                  fontSize: textSize,
-                  lineHeight: lineSpace,
-                  textAlign: "justify",
-                  marginBottom: 30
-                }}
-              >
-                <span style={{ lineHeight: 1, fontSize: strongTextSize, fontWeight: 700, marginRight: 10 }}>
-                  <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
-                    App Age Technologies
-                  </SplitText>
-                </span>
-                produces software that informs, entertains, solves problems and enriches lives. Co-founders William
-                Griffin and Preston Chaplin bring unique and impressive professional experiences to this vanguard
-                software development company. Decades of experience in digital imaging and high-profile advertising
-                production provides assurance that your brand will be presented in the best possible light via App Age
-                software. Extensive experience manipulating highly technical data for the financial industry and
-                providing financial consulting for businesses big and small ensures that App Age can tackle complex
-                technical challenges and advise clients of any size on the best paths to success. From microsites to
-                distributed mobile apps, we’re software developers devoted to delivering success in surprising ways.
-              </p>
               <div className="row justify-content-center">
-                <div className="column">
+                <p
+                  className="lead"
+                  style={{
+                    fontSize: textSize,
+                    lineHeight: lineSpace,
+                    textAlign: "justify",
+                    marginBottom: 30
+                  }}
+                >
+                  <span style={{ lineHeight: 1, fontSize: strongTextSize, fontWeight: 700, marginRight: 10 }}>
+                    <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
+                      App Age Technologies
+                    </SplitText>
+                  </span>
+                  produces software that informs, entertains, solves problems and enriches lives. Co-founders William
+                  Griffin and Preston Chaplin bring unique and impressive professional experiences to this vanguard
+                  software development company. Decades of experience in digital imaging and high-profile advertising
+                  production provides assurance that your brand will be presented in the best possible light via App Age
+                  software. Extensive experience manipulating highly technical data for the financial industry and
+                  providing financial consulting for businesses big and small ensures that App Age can tackle complex
+                  technical challenges and advise clients of any size on the best paths to success. From microsites to
+                  distributed mobile apps, we’re software developers devoted to delivering success in surprising ways.
+                </p>
+              </div>
+
+              <div className="row justify-content-center">
+                <div className="column" style={{ marginRight: 50 }}>
                   <Sidebar
                     style={{
                       padding: "10px",
@@ -126,30 +129,32 @@ class About extends Component {
                     }}
                     pose={isOpen ? "open" : "closed"}
                   >
+                    <div className="row justify-content-center pr-5">
+                      <h2>Services</h2>
+                    </div>
+
                     <div className="row justify-content-center">
-                      <div className="column mr-5">
-                        <h3>Services</h3>
-                        <div className="row justify-content-center">
-                          <div className="column">
-                            <Item className="item">Web Development</Item>
-                            <Item className="item">iOS Development</Item>
-                            <Item className="item">Android Development</Item>
-                            <Item className="item">Tech Product Design</Item>
-                            <Item className="item">Frontend Web Creation</Item>
-                            <Item className="item">Backend Engineering</Item>
-                            <Item className="item">Cloud services</Item>
-                            <Item className="item">Process Automation</Item>
-                            <Item className="item">Web Animations</Item>
-                            <Item className="item">Interactive 3D Elements</Item>
-                            <Item className="item">Computer Generated 3D Imaging</Item>
-                            <Item className="item">Photo Retouching</Item>
-                            <Item className="item">Photography</Item>
-                          </div>
-                        </div>
+                      <div className="column mr-4">
+                        <Item className="item">Web Development</Item>
+                        <Item className="item">iOS Development</Item>
+                        <Item className="item">Android Development</Item>
+                        <Item className="item">Tech Product Design</Item>
+                        <Item className="item">Frontend Web Creation</Item>
+                        <Item className="item">Backend Engineering</Item>
+                        <Item className="item">Cloud services</Item>
+                      </div>
+                      <div className="column">
+                        <Item className="item">Process Automation</Item>
+                        <Item className="item">Web Animations</Item>
+                        <Item className="item">Interactive 3D Elements</Item>
+                        <Item className="item">Computer Generated 3D Imaging</Item>
+                        <Item className="item">Photo Retouching</Item>
+                        <Item className="item">Photography</Item>
                       </div>
                     </div>
                   </Sidebar>
                 </div>
+
                 <div className="column">
                   <Sidebar
                     style={{
