@@ -371,6 +371,7 @@ class Home extends Component {
         // Sets state with the name of the currently displayed object
         this.setState({ cssComponentDisplayed: reactComponentName, location: reactComponentName });
         console.log("cssComponentDisplayed", this.state.cssComponentDisplayed);
+
         // Pushes location to URL bar
         if (this.props.location.pathname !== `/${reactComponentName}`) {
           this.props.history.push(`/${reactComponentName}`);

@@ -58,6 +58,7 @@ class About extends Component {
   }
   componentDidUpdate() {
     console.log("this.props", this.props);
+    console.log("location", this.props.location);
     // if (this.props.location.pathname !== `/about`) {
     //   this.props.history.push(`/about`);
     // }
@@ -93,7 +94,7 @@ class About extends Component {
               }}
             >
               <p
-                class="lead"
+                className="lead"
                 style={{
                   fontSize: textSize,
                   lineHeight: lineSpace,
