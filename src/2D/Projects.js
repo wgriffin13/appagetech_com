@@ -76,8 +76,10 @@ class Projects extends Component {
                 className="shadow"
                 onClick={this.onClickBerland}
                 activeIndex={overlayIndex}
+                // defaultActiveIndex={overlayIndex}
                 onMouseEnter={this.handleHover}
                 onMouseLeave={this.handleHover}
+                onSelect={null}
               >
                 {berlandPics.map(imgSrc => (
                   <Carousel.Item key={imgSrc}>
@@ -98,6 +100,7 @@ class Projects extends Component {
                 activeIndex={overlayIndex}
                 onMouseEnter={this.handleHover}
                 onMouseLeave={this.handleHover}
+                onSelect={null}
               >
                 {todaysPics.map(imgSrc => (
                   <Carousel.Item key={imgSrc}>
