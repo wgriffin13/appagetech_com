@@ -3,32 +3,23 @@ import Carousel from "react-bootstrap/Carousel";
 import BerlandDetail from "./BerlandDetail";
 import TodaysIposDetail from "./TodaysIposDetail";
 import posed from "react-pose";
-import SplitText from "react-pose-text";
 
 const Box = posed.div({
   hoverable: true,
   pressable: true,
   init: {
     scale: 1,
-    boxShadow: "0px 0px 10px rgba(0,0,0,0.1)"
+    boxShadow: "0px 0px 0px rgba(0,0,0,0)"
   },
   hover: {
     scale: 1.2,
-    boxShadow: "0px 5px 10px rgba(0,0,0,0.3)"
+    boxShadow: "0px 5px 10px rgba(0,0,0,0.2)"
   },
   press: {
     scale: 1.1,
-    boxShadow: "0px 2px 5px rgba(0,0,0,0.2)"
+    boxShadow: "0px 2px 5px rgba(0,0,0,0.1)"
   }
 });
-const charPoses = {
-  exit: { opacity: 0, y: 20 },
-  enter: {
-    opacity: 1,
-    y: 0,
-    delay: ({ charIndex }) => charIndex * 100
-  }
-};
 
 class Projects extends Component {
   constructor(props) {
@@ -66,6 +57,7 @@ class Projects extends Component {
       "images/berlandAnimations/ScreenShots_Berland-width-525-6.png",
       "images/berlandAnimations/ScreenShots_Berland-width-525-7.png"
     ];
+
     const todaysPics = [
       "images/todaysIposAnimation/ScreenShots_TodaysIpos_525-SolidWhite.png",
       "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-1.png",
@@ -74,9 +66,13 @@ class Projects extends Component {
       "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-4.png",
       "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-5.png"
     ];
+
     const windowAspect = window.innerWidth / window.innerHeight;
-    const variableWidth = windowAspect > 1 ? 250 : 420;
+
+    const variableWidth = windowAspect > 1 ? 450 : 420;
+
     const variableMarginTop = windowAspect > 1 ? -300 : 0;
+
     const overlayIndex = !this.state.isHovered ? undefined : 0;
 
     return (
@@ -88,57 +84,49 @@ class Projects extends Component {
         />
         <div className="container" style={{ marginTop: variableMarginTop }}>
           <div className="row justify-content-center">
-            <Box
-              className="box"
-              onPressStart={this.onClickBerland}
-              style={{
-                background: "radial-gradient(#ff8684 50%, #E85656)",
-                color: "white",
-                borderRadius: "30px",
-                width: variableWidth,
-                height: variableWidth,
-                marginBottom: 25,
-                marginRight: 50,
-                display: "flex",
-                alignItems: "center"
-              }}
-            >
-              <div className="container">
-                <div className="row justify-content-center">
-                  <h5>
-                    <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
-                      toddberland.com
-                    </SplitText>
-                  </h5>
-                </div>
-              </div>
-            </Box>
-
-            <Box
-              className="box"
-              onPressStart={this.onClickTodaysIpos}
-              style={{
-                background: "radial-gradient(#55d07a 40%, #1A9C3F)",
-                color: "white",
-                borderRadius: "30px",
-                width: variableWidth,
-                height: variableWidth,
-                marginBottom: 25,
-                marginRight: 50,
-                display: "flex",
-                alignItems: "center"
-              }}
-            >
-              <div className="container">
-                <div className="row justify-content-center">
-                  <h5>
-                    <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
-                      todaysipos.com
-                    </SplitText>
-                  </h5>
-                </div>
-              </div>
-            </Box>
+            <div className="column-md-6" style={{ width: variableWidth, marginBottom: 25, marginRight: 25 }}>
+              <Carousel
+                pauseOnHover={false}
+                interval={1500}
+                controls={false}
+                indicators={false}
+                fade={true}
+                className="shadow"
+                onClick={this.onClickBerland}
+                activeIndex={overlayIndex}
+                // defaultActiveIndex={overlayIndex}
+                onMouseEnter={this.handleHover}
+                onMouseLeave={this.handleHover}
+                onSelect={null}
+              >
+                {berlandPics.map(imgSrc => (
+                  <Carousel.Item key={imgSrc}>
+                    <img src={imgSrc} alt="" style={{ width: variableWidth }} />
+                  </Carousel.Item>
+                ))}
+              </Carousel>
+            </div>
+            <div className="column-md-6" style={{ width: variableWidth }}>
+              <Carousel
+                pauseOnHover={false}
+                interval={1500}
+                controls={false}
+                indicators={false}
+                fade={true}
+                className="shadow"
+                onClick={this.onClickTodaysIpos}
+                activeIndex={overlayIndex}
+                onMouseEnter={this.handleHover}
+                onMouseLeave={this.handleHover}
+                onSelect={null}
+              >
+                {todaysPics.map(imgSrc => (
+                  <Carousel.Item key={imgSrc}>
+                    <img src={imgSrc} alt="" style={{ width: variableWidth }} />
+                  </Carousel.Item>
+                ))}
+              </Carousel>
+            </div>
           </div>
         </div>
       </div>

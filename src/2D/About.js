@@ -25,7 +25,7 @@ const Sidebar = posed.ul({
     delayChildren: 20,
     staggerChildren: 200
   },
-  closed: { x: "-500%", delay: 30 }
+  closed: { x: "-600%", delay: 300 }
 });
 
 const Item = posed.li({
@@ -54,11 +54,11 @@ class About extends Component {
         isVisible: !this.state.isVisible
       });
     }, 500);
-    setTimeout(this.toggle, 2800);
+    setTimeout(this.toggle, 2500);
   }
   componentDidUpdate() {
-    console.log("this.props", this.props);
-    console.log("location", this.props.location);
+    // console.log("this.props", this.props);
+    // console.log("location", this.props.location);
     // if (this.props.location.pathname !== `/about`) {
     //   this.props.history.push(`/about`);
     // }
@@ -120,7 +120,7 @@ class About extends Component {
               </div>
 
               <div className="row justify-content-center">
-                <div className="column" style={{ marginRight: 50 }}>
+                <div className="column" style={{ marginRight: 150 }}>
                   <Sidebar
                     style={{
                       padding: "10px",
@@ -130,7 +130,7 @@ class About extends Component {
                     }}
                     pose={isOpen ? "open" : "closed"}
                   >
-                    <div className="row justify-content-center pr-5">
+                    <div className="row justify-content-center pr-5 mr-5 mb-2">
                       <h2>Services</h2>
                     </div>
 
@@ -166,7 +166,7 @@ class About extends Component {
                     }}
                     pose={isOpen ? "open" : "closed"}
                   >
-                    <h3>Engagment Models</h3>
+                    <h2 className="mb-3">Engagment Models</h2>
 
                     <Item className="item">Fixed Price Contract</Item>
                     <Item className="item">Hourly Development Work</Item>

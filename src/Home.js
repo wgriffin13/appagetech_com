@@ -370,14 +370,14 @@ class Home extends Component {
         reactComponentsObj[reactComponentName].position.z = zPosition2D;
         // Sets state with the name of the currently displayed object
         this.setState({ cssComponentDisplayed: reactComponentName, location: reactComponentName });
-        console.log("cssComponentDisplayed", this.state.cssComponentDisplayed);
+        // console.log("cssComponentDisplayed", this.state.cssComponentDisplayed);
 
         // Pushes location to URL bar
         if (this.props.location.pathname !== `/${reactComponentName}`) {
           this.props.history.push(`/${reactComponentName}`);
         }
       } else {
-        console.log("inside showReactComponenets");
+        // console.log("inside showReactComponenets");
         cssScene.position.y = 0;
         reactComponentsObj[reactComponentName].position.z = zPosition2D;
         // Try TWEEN function
@@ -744,9 +744,9 @@ class Home extends Component {
     heightmapVariable.material.uniforms["mousePos"] = {
       value: new THREE.Vector2(10000, 10000)
     };
-    heightmapVariable.material.uniforms["mouseSize"] = { value: 3.0 };
+    heightmapVariable.material.uniforms["mouseSize"] = { value: 5 };
     heightmapVariable.material.uniforms["viscosityConstant"] = {
-      value: 0.97
+      value: 0.98
     };
     heightmapVariable.material.uniforms["heightCompensation"] = {
       value: 0
