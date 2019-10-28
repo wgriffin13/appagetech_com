@@ -746,7 +746,7 @@ class Home extends Component {
     };
     heightmapVariable.material.uniforms["mouseSize"] = { value: 5 };
     heightmapVariable.material.uniforms["viscosityConstant"] = {
-      value: 0.98
+      value: 0.97
     };
     heightmapVariable.material.uniforms["heightCompensation"] = {
       value: 0
