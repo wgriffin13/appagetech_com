@@ -151,10 +151,11 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
 
     const materialOptions = {
       size: 0.06,
-      transparency: true,
+      // transparency: true,
       opacity: 0.7
     };
 
+    // const starStuff = new THREE.PointMaterial(materialOptions);
     const starStuff = new THREE.PointCloudMaterial(materialOptions);
 
     for (var i = 0; i < starQty; i++) {
@@ -166,6 +167,7 @@ export default function LandingTransition(renderer, clearColor, toggleTransition
       starGeometry.vertices.push(starVertex);
     }
 
+    // const stars = new THREE.Points(starGeometry, starStuff);
     const stars = new THREE.PointCloud(starGeometry, starStuff);
     scene.add(stars);
   };

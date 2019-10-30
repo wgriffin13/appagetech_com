@@ -9,7 +9,7 @@ const Box = posed.div({
   pressable: true,
   init: {
     scale: 1,
-    boxShadow: "0px 0px 3px rgba(0,0,0,1)",
+    boxShadow: "0px 0px 3px rgba(0,0,0,0.1)",
     color: "white"
   },
   hover: {
@@ -74,7 +74,6 @@ class Projects extends Component {
               className="box"
               onPressStart={this.onClickBerland}
               style={{
-                // background: "radial-gradient(#ffee5f 80%, #a97b00)",
                 background: "#fa424a",
                 borderRadius: "30px",
                 borderColor: "black",
@@ -88,11 +87,11 @@ class Projects extends Component {
             >
               <div className="container">
                 <div className="row justify-content-center">
-                  <p style={{ fontSize: variableFontSize }}>
+                  <div style={{ fontSize: variableFontSize }}>
                     <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
                       toddberland.com
                     </SplitText>
-                  </p>
+                  </div>
                 </div>
               </div>
             </Box>
@@ -102,7 +101,6 @@ class Projects extends Component {
               onPressStart={this.onClickTodaysIpos}
               style={{
                 background: "#208BC7",
-                // background: "radial-gradient(#55d07a 40%, #1A9C3F)",
                 borderRadius: "30px",
                 borderColor: "black",
                 borderWidth: "4px",
@@ -115,11 +113,11 @@ class Projects extends Component {
             >
               <div className="container">
                 <div className="row justify-content-center">
-                  <p style={{ fontSize: variableFontSize }}>
+                  <div style={{ fontSize: variableFontSize }}>
                     <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
                       todaysipos.com
                     </SplitText>
-                  </p>
+                  </div>
                 </div>
               </div>
             </Box>

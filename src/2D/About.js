@@ -53,8 +53,8 @@ class About extends Component {
       this.setState({
         isVisible: !this.state.isVisible
       });
-    }, 1000);
-    setTimeout(this.toggle, 2500);
+    }, 700);
+    setTimeout(this.toggle, 2800);
   }
 
   toggle = () => this.setState({ isOpen: !this.state.isOpen });
@@ -64,9 +64,9 @@ class About extends Component {
     const marginTop = windowAspect > 1 ? 130 : -200;
     const textSize = windowAspect > 1 ? 20 : 24;
     const lineSpace = windowAspect > 1 ? 2.3 : 1.8;
-    const paddingX = windowAspect > 1 ? 50 : -15;
+    const paddingX = windowAspect > 1 ? 50 : 0;
     const strongTextSize = windowAspect > 1 ? 36 : 28;
-    const variableWidth = windowAspect > 1 ? "64vw" : null;
+    const variableWidth = windowAspect > 1 ? "64vw" : "100vw";
 
     const { isVisible, isOpen } = this.state;
 
@@ -88,7 +88,7 @@ class About extends Component {
               }}
             >
               <div className="row justify-content-center">
-                <p
+                <div
                   className="lead"
                   style={{
                     fontSize: textSize,
@@ -110,63 +110,59 @@ class About extends Component {
                   providing financial consulting for businesses big and small ensures that App Age can tackle complex
                   technical challenges and advise clients of any size on the best paths to success. From microsites to
                   distributed mobile apps, we’re software developers devoted to delivering success in surprising ways.
-                </p>
+                </div>
               </div>
 
-              <div className="row justify-content-center">
-                <div className="column" style={{ marginRight: 150 }}>
-                  <Sidebar
-                    style={{
-                      padding: "10px",
-                      display: "flex",
-                      flexDirection: "column",
-                      listStyle: "none"
-                    }}
-                    pose={isOpen ? "open" : "closed"}
-                  >
-                    <div className="row justify-content-center pr-5 mr-5 mb-2">
-                      <h2>Services</h2>
-                    </div>
+              <div className="container">
+                <div className="row justify-content-center">
+                  <div className="col-12 col-md-6">
+                    <Sidebar
+                      style={{
+                        padding: "10px",
+                        display: "flex",
+                        flexDirection: "column",
+                        listStyle: "none"
+                      }}
+                      pose={isOpen ? "open" : "closed"}
+                    >
+                      <Item className="item">
+                        <h2>Services</h2>
+                      </Item>
+                      <Item className="item">Web Development</Item>
+                      <Item className="item">iOS Development</Item>
+                      <Item className="item">Android Development</Item>
+                      <Item className="item">Tech Product Design</Item>
+                      <Item className="item">Frontend Web Creation</Item>
+                      <Item className="item">Backend Engineering</Item>
+                      <Item className="item">Cloud services</Item>
+                      <Item className="item">Process Automation</Item>
+                      <Item className="item">Web Animations</Item>
+                      <Item className="item">Interactive 3D Elements</Item>
+                      <Item className="item">Computer Generated 3D Imaging</Item>
+                      <Item className="item">Photo Retouching</Item>
+                      <Item className="item">Photography</Item>
+                    </Sidebar>
+                  </div>
 
-                    <div className="row justify-content-center">
-                      <div className="column mr-4">
-                        <Item className="item">Web Development</Item>
-                        <Item className="item">iOS Development</Item>
-                        <Item className="item">Android Development</Item>
-                        <Item className="item">Tech Product Design</Item>
-                        <Item className="item">Frontend Web Creation</Item>
-                        <Item className="item">Backend Engineering</Item>
-                        <Item className="item">Cloud services</Item>
-                      </div>
-                      <div className="column">
-                        <Item className="item">Process Automation</Item>
-                        <Item className="item">Web Animations</Item>
-                        <Item className="item">Interactive 3D Elements</Item>
-                        <Item className="item">Computer Generated 3D Imaging</Item>
-                        <Item className="item">Photo Retouching</Item>
-                        <Item className="item">Photography</Item>
-                      </div>
-                    </div>
-                  </Sidebar>
-                </div>
-
-                <div className="column">
-                  <Sidebar
-                    style={{
-                      padding: "10px",
-                      display: "flex",
-                      flexDirection: "column",
-                      listStyle: "none"
-                    }}
-                    pose={isOpen ? "open" : "closed"}
-                  >
-                    <h2 className="mb-3">Engagment Models</h2>
-
-                    <Item className="item">Fixed Price Contract</Item>
-                    <Item className="item">Hourly Development Work</Item>
-                    <Item className="item">Equity Based Partnerships</Item>
-                    <Item className="item">Project Specific Consulting</Item>
-                  </Sidebar>
+                  <div className="col-12 col-md-6">
+                    <Sidebar
+                      style={{
+                        padding: "10px",
+                        display: "flex",
+                        flexDirection: "column",
+                        listStyle: "none"
+                      }}
+                      pose={isOpen ? "open" : "closed"}
+                    >
+                      <Item className="item">
+                        <h2>Engagment Models</h2>
+                      </Item>
+                      <Item className="item">Fixed Price Contract</Item>
+                      <Item className="item">Hourly Development Work</Item>
+                      <Item className="item">Equity Based Partnerships</Item>
+                      <Item className="item">Project Specific Consulting</Item>
+                    </Sidebar>
+                  </div>
                 </div>
               </div>
             </Modal>
