@@ -244,16 +244,7 @@ class Home extends Component {
   };
 
   createPlane = (w, h, position, rotation) => {
-    // ** add background image texture ** //
-    const bgTexture = new THREE.TextureLoader().load("/images/AboutBG7.png");
-    bgTexture.wrapT = bgTexture.wrapS = THREE.MirroredRepeatWrapping;
-    bgTexture.repeat.set(windowAspect > 1 ? 198 : 80, windowAspect > 1 ? 198 : 80);
-    bgTexture.offset.x = 0.5;
-    bgTexture.offset.y = 0.5;
-
-    var material = new THREE.MeshBasicMaterial({
-      map: bgTexture
-    });
+    var material = new THREE.MeshBasicMaterial();
 
     var geometry = new THREE.PlaneGeometry(w, h);
 
@@ -744,7 +735,7 @@ class Home extends Component {
     heightmapVariable.material.uniforms["mousePos"] = {
       value: new THREE.Vector2(10000, 10000)
     };
-    heightmapVariable.material.uniforms["mouseSize"] = { value: 5 };
+    heightmapVariable.material.uniforms["mouseSize"] = { value: 4 };
     heightmapVariable.material.uniforms["viscosityConstant"] = {
       value: 0.97
     };

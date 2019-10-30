@@ -8,17 +8,21 @@ import Carousel from "react-bootstrap/Carousel";
 
 export default function TodaysIpos(props) {
   const screenShotAnimation = [
-    "images/todaysIposAnimation/ScreenShots_TodaysIpos_700px-1.png",
-    "images/todaysIposAnimation/ScreenShots_TodaysIpos_700px-2.png",
-    "images/todaysIposAnimation/ScreenShots_TodaysIpos_700px-3.png",
-    "images/todaysIposAnimation/ScreenShots_TodaysIpos_700px-4.png",
-    "images/todaysIposAnimation/ScreenShots_TodaysIpos_700px-5.png"
+    "images/todaysIposAnimation/WebScreenShots-700-Competition.png",
+    "images/todaysIposAnimation/WebScreenShots-700-Description.png",
+    "images/todaysIposAnimation/WebScreenShots-700-Financials.png",
+    "images/todaysIposAnimation/WebScreenShots-700-Proceeds.png",
+    "images/todaysIposAnimation/WebScreenShots-700-About.png"
   ];
   const iphoneAnimation = [
+    "images/todaysIposAnimation/IphoneTodaysIpos-1.png",
     "images/todaysIposAnimation/IphoneTodaysIpos-2.png",
     "images/todaysIposAnimation/IphoneTodaysIpos-3.png",
     "images/todaysIposAnimation/IphoneTodaysIpos-4.png",
-    "images/todaysIposAnimation/IphoneTodaysIpos-5.png"
+    "images/todaysIposAnimation/IphoneTodaysIpos-5.png",
+    "images/todaysIposAnimation/IphoneTodaysIpos-6.png",
+    "images/todaysIposAnimation/IphoneTodaysIpos-7.png",
+    "images/todaysIposAnimation/IphoneTodaysIpos-8.png"
   ];
 
   const windowAspect = window.innerWidth / window.innerHeight;
@@ -64,7 +68,10 @@ export default function TodaysIpos(props) {
                   marginRight: "auto"
                 }}
               >
-                <a href="https://todaysipos.com" target="_blank" rel='noreferrer noopener'
+                <a
+                  href="https://todaysipos.com"
+                  target="_blank"
+                  rel="noreferrer noopener"
                   style={{
                     textDecoration: "none",
                     color: "white"
@@ -110,7 +117,7 @@ export default function TodaysIpos(props) {
                   as={"container"}
                   pauseOnHover={false}
                   interval={1500}
-                  controls={true}
+                  controls={false}
                   indicators={true}
                   fade={true}
                   className="shadow"
@@ -125,17 +132,26 @@ export default function TodaysIpos(props) {
             </Row>
             <Row style={{ justifyContent: "center", marginBottom: 25 }}>
               <Col xs={12} md={8}>
-                <Carousel pauseOnHover={false} interval={1500} controls={true} indicators={true} fade={true}>
-                  {screenShotAnimation.map(imgSrc => (
-                    <Carousel.Item key={imgSrc}>
-                      {windowAspect > 1 ? (
-                        <img src={imgSrc} alt="" style={{ width: 700 }} /> //web
-                      ) : (
-                        <img src={imgSrc} alt="" style={{ width: 300 }} /> //mobile
-                      )}
-                    </Carousel.Item>
-                  ))}
-                </Carousel>
+                <Container>
+                  <Carousel
+                    pauseOnHover={false}
+                    interval={1500}
+                    controls={true}
+                    indicators={true}
+                    fade={true}
+                    className="shadow"
+                  >
+                    {screenShotAnimation.map(imgSrc => (
+                      <Carousel.Item key={imgSrc}>
+                        {windowAspect > 1 ? (
+                          <img src={imgSrc} alt="" /> //web
+                        ) : (
+                          <img src={imgSrc} alt="" style={{ width: 300 }} /> //mobile
+                        )}
+                      </Carousel.Item>
+                    ))}
+                  </Carousel>
+                </Container>
               </Col>
             </Row>
             <Row

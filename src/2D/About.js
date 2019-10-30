@@ -53,26 +53,20 @@ class About extends Component {
       this.setState({
         isVisible: !this.state.isVisible
       });
-    }, 500);
+    }, 1000);
     setTimeout(this.toggle, 2500);
-  }
-  componentDidUpdate() {
-    // console.log("this.props", this.props);
-    // console.log("location", this.props.location);
-    // if (this.props.location.pathname !== `/about`) {
-    //   this.props.history.push(`/about`);
-    // }
   }
 
   toggle = () => this.setState({ isOpen: !this.state.isOpen });
 
   render() {
     const windowAspect = window.innerWidth / window.innerHeight;
-    const marginTop = windowAspect > 1 ? 50 : 1200;
+    const marginTop = windowAspect > 1 ? 130 : -200;
     const textSize = windowAspect > 1 ? 20 : 24;
     const lineSpace = windowAspect > 1 ? 2.3 : 1.8;
-    const paddingX = windowAspect > 1 ? 50 : 0;
-    const strongTextSize = windowAspect > 1 ? 36 : 36;
+    const paddingX = windowAspect > 1 ? 50 : -15;
+    const strongTextSize = windowAspect > 1 ? 36 : 28;
+    const variableWidth = windowAspect > 1 ? "64vw" : null;
 
     const { isVisible, isOpen } = this.state;
 
@@ -85,7 +79,7 @@ class About extends Component {
             <Modal
               key="modal"
               style={{
-                width: "64vw",
+                width: variableWidth,
                 height: "90vh",
                 marginTop: marginTop,
                 paddingLeft: paddingX,

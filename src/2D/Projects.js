@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Carousel from "react-bootstrap/Carousel";
 import BerlandDetail from "./BerlandDetail";
 import TodaysIposDetail from "./TodaysIposDetail";
 import posed from "react-pose";
@@ -10,7 +9,8 @@ const Box = posed.div({
   pressable: true,
   init: {
     scale: 1,
-    boxShadow: "0px 0px 10px rgba(0,0,0,0.1)"
+    boxShadow: "0px 0px 3px rgba(0,0,0,1)",
+    color: "white"
   },
   hover: {
     scale: 1.2,
@@ -56,28 +56,10 @@ class Projects extends Component {
   };
 
   render() {
-    const berlandPics = [
-      "images/berlandAnimations/ScreenShots_Berland-width-525-SolidWhite.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-1.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-2.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-3.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-4.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-5.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-6.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-7.png"
-    ];
-    const todaysPics = [
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_525-SolidWhite.png",
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-1.png",
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-2.png",
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-3.png",
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-4.png",
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-5.png"
-    ];
     const windowAspect = window.innerWidth / window.innerHeight;
-    const variableWidth = windowAspect > 1 ? 250 : 420;
-    const variableMarginTop = windowAspect > 1 ? -300 : 0;
-    const overlayIndex = !this.state.isHovered ? undefined : 0;
+    const variableWidth = windowAspect > 1 ? 250 : 200;
+    const variableMarginTop = windowAspect > 1 ? -300 : -300;
+    const variableFontSize = windowAspect > 1 ? 24 : 22;
 
     return (
       <div>
@@ -86,30 +68,31 @@ class Projects extends Component {
           show={this.state.showTodaysIposDetail}
           onHide={() => this.setState({ showTodaysIposDetail: false })}
         />
-        <div className="container" style={{ marginTop: variableMarginTop }}>
+        <div className="container" style={{ marginTop: variableMarginTop, padding: 0, marginLeft: 0, marginRight: 0 }}>
           <div className="row justify-content-center">
             <Box
               className="box"
               onPressStart={this.onClickBerland}
               style={{
-                background: "radial-gradient(#ff8684 50%, #E85656)",
-                color: "white",
+                // background: "radial-gradient(#ffee5f 80%, #a97b00)",
+                background: "#fa424a",
                 borderRadius: "30px",
+                borderColor: "black",
+                borderWidth: "4px",
                 width: variableWidth,
                 height: variableWidth,
-                marginBottom: 25,
-                marginRight: 50,
+                margin: 10,
                 display: "flex",
                 alignItems: "center"
               }}
             >
               <div className="container">
                 <div className="row justify-content-center">
-                  <h5>
+                  <p style={{ fontSize: variableFontSize }}>
                     <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
                       toddberland.com
                     </SplitText>
-                  </h5>
+                  </p>
                 </div>
               </div>
             </Box>
@@ -118,24 +101,25 @@ class Projects extends Component {
               className="box"
               onPressStart={this.onClickTodaysIpos}
               style={{
-                background: "radial-gradient(#55d07a 40%, #1A9C3F)",
-                color: "white",
+                background: "#208BC7",
+                // background: "radial-gradient(#55d07a 40%, #1A9C3F)",
                 borderRadius: "30px",
+                borderColor: "black",
+                borderWidth: "4px",
                 width: variableWidth,
                 height: variableWidth,
-                marginBottom: 25,
-                marginRight: 50,
+                margin: 10,
                 display: "flex",
                 alignItems: "center"
               }}
             >
               <div className="container">
                 <div className="row justify-content-center">
-                  <h5>
+                  <p style={{ fontSize: variableFontSize }}>
                     <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
                       todaysipos.com
                     </SplitText>
-                  </h5>
+                  </p>
                 </div>
               </div>
             </Box>
