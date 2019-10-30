@@ -244,16 +244,7 @@ class Home extends Component {
   };
 
   createPlane = (w, h, position, rotation) => {
-    // ** add background image texture ** //
-    const bgTexture = new THREE.TextureLoader().load("/images/AboutBG7.png");
-    bgTexture.wrapT = bgTexture.wrapS = THREE.MirroredRepeatWrapping;
-    bgTexture.repeat.set(windowAspect > 1 ? 198 : 80, windowAspect > 1 ? 198 : 80);
-    bgTexture.offset.x = 0.5;
-    bgTexture.offset.y = 0.5;
-
-    var material = new THREE.MeshBasicMaterial({
-      map: bgTexture
-    });
+    var material = new THREE.MeshBasicMaterial();
 
     var geometry = new THREE.PlaneGeometry(w, h);
 
@@ -281,7 +272,7 @@ class Home extends Component {
     camera.position.set(0, 0, 224);
     camera.lookAt(0, 0, 0);
     glRenderer = this.createGlRenderer();
-    const offsetTopCssPosition = windowAspect > 1 ? "150px" : "115px";
+    const offsetTopCssPosition = windowAspect > 1 ? "185px" : "115px";
     cssRenderer = this.createCssRenderer(offsetTopCssPosition);
     container = document.createElement("div");
     document.body.appendChild(container);
@@ -360,6 +351,7 @@ class Home extends Component {
         parseInt(cssRenderer.domElement.style.zIndex, 10) === 0 &&
         this.state.cssComponentDisplayed !== reactComponentName
       ) {
+        this.props.history.push(`/${reactComponentName}`);
         // Sets current css object to offscreen
         cssScene.position.y = 0;
         reactComponentsObj[this.state.cssComponentDisplayed].position.z = offScreenZPosition2D;
@@ -367,6 +359,7 @@ class Home extends Component {
         reactComponentsObj[reactComponentName].position.z = zPosition2D;
         // Sets state with the name of the currently displayed object
         this.setState({ cssComponentDisplayed: reactComponentName, location: reactComponentName });
+
         // Pushes location to URL bar
         if (this.props.location.pathname !== `/${reactComponentName}`) {
           this.props.history.push(`/${reactComponentName}`);
@@ -738,7 +731,7 @@ class Home extends Component {
     heightmapVariable.material.uniforms["mousePos"] = {
       value: new THREE.Vector2(10000, 10000)
     };
-    heightmapVariable.material.uniforms["mouseSize"] = { value: 3.0 };
+    heightmapVariable.material.uniforms["mouseSize"] = { value: 4 };
     heightmapVariable.material.uniforms["viscosityConstant"] = {
       value: 0.97
     };
@@ -1067,7 +1060,6 @@ class Home extends Component {
 
       if (!this.state.show2D && windowAspect > 1) {
         camera.position.x += (mouseCoords.x - camera.position.x) * 0.05;
-        //camera.position.y += (-mouseCoords.y - camera.position.y) * 0.05;
         camera.lookAt(glScene.position);
       }
 
@@ -1301,7 +1293,7 @@ class Home extends Component {
     if (this.state.location === "about") {
       var yUp = event.touches[0].clientY;
       var yDiff = yDown - yUp;
-      cssScene.position.y += yDiff * 0.4;
+      cssScene.position.y += yDiff * 0.1;
       cssScene.position.clampScalar(-5, 200);
     }
   };

@@ -1,7 +1,34 @@
 import React, { Component } from "react";
-import Carousel from "react-bootstrap/Carousel";
 import BerlandDetail from "./BerlandDetail";
 import TodaysIposDetail from "./TodaysIposDetail";
+import posed from "react-pose";
+import SplitText from "react-pose-text";
+
+const Box = posed.div({
+  hoverable: true,
+  pressable: true,
+  init: {
+    scale: 1,
+    boxShadow: "0px 0px 3px rgba(0,0,0,0.1)",
+    color: "white"
+  },
+  hover: {
+    scale: 1.2,
+    boxShadow: "0px 5px 10px rgba(0,0,0,0.3)"
+  },
+  press: {
+    scale: 1.1,
+    boxShadow: "0px 2px 5px rgba(0,0,0,0.2)"
+  }
+});
+const charPoses = {
+  exit: { opacity: 0, y: 20 },
+  enter: {
+    opacity: 1,
+    y: 0,
+    delay: ({ charIndex }) => charIndex * 100
+  }
+};
 
 class Projects extends Component {
   constructor(props) {
@@ -29,33 +56,10 @@ class Projects extends Component {
   };
 
   render() {
-    const berlandPics = [
-      "images/berlandAnimations/ScreenShots_Berland-width-525-SolidWhite.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-1.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-2.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-3.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-4.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-5.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-6.png",
-      "images/berlandAnimations/ScreenShots_Berland-width-525-7.png"
-    ];
-
-    const todaysPics = [
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_525-SolidWhite.png",
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-1.png",
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-2.png",
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-3.png",
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-4.png",
-      "images/todaysIposAnimation/ScreenShots_TodaysIpos_width525-5.png"
-    ];
-
     const windowAspect = window.innerWidth / window.innerHeight;
-
-    const variableWidth = windowAspect > 1 ? 450 : 420;
-
-    const variableMarginTop = windowAspect > 1 ? -300 : 0;
-
-    const overlayIndex = !this.state.isHovered ? undefined : 0;
+    const variableWidth = windowAspect > 1 ? 250 : 200;
+    const variableMarginTop = windowAspect > 1 ? -300 : -300;
+    const variableFontSize = windowAspect > 1 ? 24 : 22;
 
     return (
       <div>
@@ -64,48 +68,59 @@ class Projects extends Component {
           show={this.state.showTodaysIposDetail}
           onHide={() => this.setState({ showTodaysIposDetail: false })}
         />
-        <div className="container" style={{ marginTop: variableMarginTop }}>
+        <div className="container" style={{ marginTop: variableMarginTop, padding: 0, marginLeft: 0, marginRight: 0 }}>
           <div className="row justify-content-center">
-            <div className="column-md-6" style={{ width: variableWidth, marginBottom: 25, marginRight: 25 }}>
-              <Carousel
-                pauseOnHover={false}
-                interval={1500}
-                controls={false}
-                indicators={false}
-                fade={true}
-                className="shadow"
-                onClick={this.onClickBerland}
-                activeIndex={overlayIndex}
-                onMouseEnter={this.handleHover}
-                onMouseLeave={this.handleHover}
-              >
-                {berlandPics.map(imgSrc => (
-                  <Carousel.Item key={imgSrc}>
-                    <img src={imgSrc} alt="" style={{ width: variableWidth }} />
-                  </Carousel.Item>
-                ))}
-              </Carousel>
-            </div>
-            <div className="column-md-6" style={{ width: variableWidth }}>
-              <Carousel
-                pauseOnHover={false}
-                interval={1500}
-                controls={false}
-                indicators={false}
-                fade={true}
-                className="shadow"
-                onClick={this.onClickTodaysIpos}
-                activeIndex={overlayIndex}
-                onMouseEnter={this.handleHover}
-                onMouseLeave={this.handleHover}
-              >
-                {todaysPics.map(imgSrc => (
-                  <Carousel.Item key={imgSrc}>
-                    <img src={imgSrc} alt="" style={{ width: variableWidth }} />
-                  </Carousel.Item>
-                ))}
-              </Carousel>
-            </div>
+            <Box
+              className="box"
+              onPressStart={this.onClickBerland}
+              style={{
+                background: "#fa424a",
+                borderRadius: "30px",
+                borderColor: "black",
+                borderWidth: "4px",
+                width: variableWidth,
+                height: variableWidth,
+                margin: 10,
+                display: "flex",
+                alignItems: "center"
+              }}
+            >
+              <div className="container">
+                <div className="row justify-content-center">
+                  <div style={{ fontSize: variableFontSize }}>
+                    <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
+                      toddberland.com
+                    </SplitText>
+                  </div>
+                </div>
+              </div>
+            </Box>
+
+            <Box
+              className="box"
+              onPressStart={this.onClickTodaysIpos}
+              style={{
+                background: "#208BC7",
+                borderRadius: "30px",
+                borderColor: "black",
+                borderWidth: "4px",
+                width: variableWidth,
+                height: variableWidth,
+                margin: 10,
+                display: "flex",
+                alignItems: "center"
+              }}
+            >
+              <div className="container">
+                <div className="row justify-content-center">
+                  <div style={{ fontSize: variableFontSize }}>
+                    <SplitText initialPose="exit" pose="enter" charPoses={charPoses}>
+                      todaysipos.com
+                    </SplitText>
+                  </div>
+                </div>
+              </div>
+            </Box>
           </div>
         </div>
       </div>

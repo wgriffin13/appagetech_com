@@ -42,7 +42,7 @@ export default function BerlandDetail(props) {
   const windowAspect = window.innerWidth / window.innerHeight;
 
   return (
-    <Modal {...props} size="xl" centered closeButton>
+    <Modal {...props} size="xl" centered>
       <Modal.Header
         style={{
           border: "1px solid #575757",
@@ -82,7 +82,10 @@ export default function BerlandDetail(props) {
                   marginRight: "auto"
                 }}
               >
-                <a href="https://toddberland.com" target="_blank" rel='noreferrer noopener'
+                <a
+                  href="https://toddberland.com"
+                  target="_blank"
+                  rel="noreferrer noopener"
                   style={{
                     textDecoration: "none",
                     color: "white"
@@ -151,7 +154,6 @@ export default function BerlandDetail(props) {
                   indicators={true}
                   fade={true}
                   className="shadow"
-                  fluid
                 >
                   {screenShotAnimation.map(imgSrc => (
                     <Carousel.Item key={imgSrc}>

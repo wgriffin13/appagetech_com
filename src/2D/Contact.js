@@ -3,16 +3,16 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Image from "react-bootstrap/Image";
 import "./contact.css";
-import ContactForm from './ContactForm';
+import ContactForm from "./ContactForm";
 
 class Contact extends Component {
   render() {
     const windowAspect = window.innerWidth / window.innerHeight;
-    const marginTop = windowAspect > 1 ? -350 : -230;
+    const marginTop = windowAspect > 1 ? -350 : -160;
     return (
       <div className="container" style={{ marginTop: marginTop }}>
         <Row>
-          <Col className="align-items-center" style={{ marginX: 0, marginBottom: 10 }}>
+          <Col className="align-items-center" style={{ marginX: 0, marginBottom: 3 }}>
             <Row className="mb-1">
               <Image src="images/Will_SlackProfilePic.jpg" roundedCircle></Image>
             </Row>
@@ -27,7 +27,7 @@ class Contact extends Component {
             </Row>
           </Col>
 
-          <Col className="align-items-center" style={{ marginX: 0, marginBottom: 10 }}>
+          <Col className="align-items-center" style={{ marginX: 0, marginBottom: 2 }}>
             <Row className="mb-1">
               <Image src="images/Preston_BW_profilePic2.jpg" roundedCircle></Image>
             </Row>
