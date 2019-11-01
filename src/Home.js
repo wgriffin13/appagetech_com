@@ -1216,10 +1216,11 @@ class Home extends Component {
   };
 
   onMouseWheel = event => {
+    event.preventDefault()
     if (this.state.location === "about") {
       cssScene.position.y -= event.deltaY * 0.1;
       // prevent scrolling beyond a min/max value
-      cssScene.position.clampScalar(-5, 100);
+      cssScene.position.clampScalar(0, 100);
     }
   };
 
@@ -1260,14 +1261,6 @@ class Home extends Component {
   };
 
   onTouchStartScrollable = event => {
-    document.addEventListener("touchmove", this.onTouchMoveScrollable, false);
-
-    document.addEventListener("touchend", this.onTouchEndScrollable, false);
-
-    if (this.state.location === "about") {
-      // xDown = event.touches[0].clientX;
-      yDown = event.touches[0].clientY;
-    }
 
     if (event.touches.length === 1) {
       // Assumes that click and mouse down will both be called by the browser
@@ -1286,21 +1279,6 @@ class Home extends Component {
         touchEvent = true;
       }
     }
-  };
-
-  onTouchMoveScrollable = event => {
-    // ... scrolling logic here
-    if (this.state.location === "about") {
-      var yUp = event.touches[0].clientY;
-      var yDiff = yDown - yUp;
-      cssScene.position.y += yDiff * 0.1;
-      cssScene.position.clampScalar(-5, 200);
-    }
-  };
-
-  onTouchEndScrollable = e => {
-    document.removeEventListener("touchmove", this.onTouchMoveScrollable);
-    document.removeEventListener("touchend", this.onTouchEndScrollable);
   };
 
   componentWillUnmount() {
