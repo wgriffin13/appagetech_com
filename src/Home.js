@@ -234,11 +234,14 @@ class Home extends Component {
 
   createCssRenderer = offsetTop => {
     var cssRenderer = new CSS3DRenderer();
-    cssRenderer.setSize(window.innerWidth, window.innerHeight);
+    const offSetTopScaled = window.innerHeight * .17
+    //console.log(offSetTopScaled)
+    cssRenderer.setSize(window.innerWidth, window.innerHeight - offSetTopScaled);
     // cssRenderer.antialias = true;
     cssRenderer.domElement.style.position = "fixed";
     cssRenderer.domElement.style.zIndex = -1;
-    cssRenderer.domElement.style.top = offsetTop;
+    cssRenderer.domElement.style.top = `${offSetTopScaled}px`;
+    cssRenderer.domElement.style.overflowY = 'scroll';
     // console.log("cssRenderer Size: ", cssRenderer.getSize());
     return cssRenderer;
   };
@@ -299,7 +302,6 @@ class Home extends Component {
     document.addEventListener("mousemove", this.onDocumentMouseMove, false);
     document.addEventListener("touchstart", this.onTouchStartScrollable, false);
     document.addEventListener("mousedown", this.onDocumentMouseDown, false);
-    window.addEventListener("wheel", this.onMouseWheel, false);
 
     this.initWater();
   };
@@ -1212,15 +1214,6 @@ class Home extends Component {
         waterUniforms["heightmap"].value = gpuCompute.getCurrentRenderTarget(heightmapVariable).texture;
         gpuCompute.compute();
       }
-    }
-  };
-
-  onMouseWheel = event => {
-    event.preventDefault()
-    if (this.state.location === "about") {
-      cssScene.position.y -= event.deltaY * 0.1;
-      // prevent scrolling beyond a min/max value
-      cssScene.position.clampScalar(0, 100);
     }
   };
 

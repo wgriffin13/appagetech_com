@@ -61,12 +61,9 @@ class About extends Component {
 
   render() {
     const windowAspect = window.innerWidth / window.innerHeight;
-    const marginTop = windowAspect > 1 ? 0 : -200;
     const textSize = windowAspect > 1 ? 20 : 24;
     const lineSpace = windowAspect > 1 ? 2.3 : 1.8;
-    const paddingX = windowAspect > 1 ? 50 : 0;
     const strongTextSize = windowAspect > 1 ? 36 : 28;
-    const variableWidth = windowAspect > 1 ? "64vw" : "100vw";
 
     const { isVisible, isOpen } = this.state;
 
@@ -79,22 +76,19 @@ class About extends Component {
             <Modal
               key="modal"
               style={{
-                width: variableWidth,
-                height: "90vh",
-                marginTop: marginTop,
-                paddingLeft: paddingX,
-                paddingRight: paddingX,
-                paddingTop: 0
+                width: "100vw",
+                height: "100vh",
+                paddingTop: 0,
               }}
             >
               <div className="row justify-content-center">
                 <div
-                  className="lead"
+                  className="lead col-xl-12 col-lg-10"
                   style={{
                     fontSize: textSize,
                     lineHeight: lineSpace,
                     textAlign: "justify",
-                    marginBottom: 30
+                    marginBottom: 30,
                   }}
                 >
                   <span style={{ lineHeight: 1, fontSize: strongTextSize, fontWeight: 700, marginRight: 10 }}>
